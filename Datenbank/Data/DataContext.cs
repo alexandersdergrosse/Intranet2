@@ -5,10 +5,7 @@ namespace Intranet2.Datenbank.Data
 {
     public class DataContext : DbContext
     {
-        public DataContext(DbContextOptions<DataContext> options)
-            : base(options)
-        {
-        }
+        public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
         public DbSet<Benutzer> Benutzer { get; set; } = null!;
 
