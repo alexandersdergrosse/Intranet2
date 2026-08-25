@@ -1,0 +1,407 @@
+﻿@page
+@model Intranet2.Pages.Ansprechpartner.AnsprechpartnerModel
+
+@{
+    ViewData["Title"] = "Ansprechpartner";
+}
+
+<style>
+    /* ========================================
+           ANSPRECHPARTNER
+           ======================================== */
+
+    .ansprechpartner-container {
+        font-family: Arial, sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 25px 20px 20px 20px;
+    }
+
+    .main-title {
+        font-size: 2.3em;
+        font-weight: bold;
+        color: #333;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+
+    /* ========================================
+           HAUPTLAYOUT
+           ======================================== */
+
+    .ansprechpartner-content {
+        display: grid;
+        grid-template-columns: 340px 1fr;
+        gap: 80px;
+        align-items: start;
+    }
+
+
+    /* ========================================
+           STANDORTLISTE
+           ======================================== */
+
+    .city-list-container {
+        width: 100%;
+    }
+
+    a.city-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 0;
+        border-bottom: 2px solid #4f7cff;
+        font-size: 1.1rem;
+        color: #333;
+        text-decoration: none;
+        transition: background-color 0.2s ease, padding-left 0.2s ease;
+    }
+
+        a.city-item:hover {
+            background-color: #f0f8ff;
+            padding-left: 8px;
+        }
+
+    .arrow {
+        font-size: 1.1rem;
+        margin-left: 10px;
+    }
+
+
+    /* ========================================
+           KARTENBEREICH
+           ======================================== */
+
+    .map-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .map-title {
+        color: #273551;
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
+
+    /* ========================================
+           DEUTSCHLANDKARTE
+
+           Das Bild ist 1024 x 1536 Pixel.
+           Das entspricht exakt 2 : 3.
+           ======================================== */
+
+    .deutschland-map {
+        position: relative;
+        width: min(100%, 330px);
+        aspect-ratio: 2 / 3;
+        margin: 0 auto;
+    }
+
+        .deutschland-map > img {
+            position: absolute;
+            inset: 0;
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+            background: transparent;
+            pointer-events: none;
+        }
+
+
+    /* ========================================
+           MARKER
+           ======================================== */
+
+    .map-marker {
+        position: absolute;
+        width: 14px;
+        height: 14px;
+        transform: translate(-50%, -50%);
+        background-color: #e30613;
+        border: 2px solid white;
+        border-radius: 50%;
+        box-shadow: 0 0 0 1px rgba(227, 6, 19, 0.45), 0 2px 5px rgba(0, 0, 0, 0.25);
+        cursor: pointer;
+        z-index: 10;
+        transition: transform 0.15s ease, background-color 0.15s ease;
+    }
+
+        .map-marker:hover,
+        .map-marker:focus {
+            background-color: #0091b6;
+            transform: translate(-50%, -50%) scale(1.4);
+            z-index: 20;
+            outline: none;
+        }
+
+
+    /* ========================================
+           MARKER-NAME
+           ======================================== */
+
+    .map-marker-label {
+        position: absolute;
+        left: 50%;
+        bottom: 21px;
+        transform: translateX(-50%);
+        padding: 4px 8px;
+        background-color: #273551;
+        color: white;
+        border-radius: 5px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        white-space: nowrap;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: opacity 0.15s ease, visibility 0.15s ease;
+    }
+
+        .map-marker-label::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 5px;
+            border-style: solid;
+            border-color: #273551 transparent transparent transparent;
+        }
+
+    .map-marker:hover .map-marker-label,
+    .map-marker:focus .map-marker-label {
+        opacity: 1;
+        visibility: visible;
+    }
+
+
+    /* ========================================
+           RESPONSIVE
+           ======================================== */
+
+    @@media (max-width: 991px) {
+
+        .ansprechpartner-content {
+            grid-template-columns: 1fr;
+            gap: 40px;
+        }
+
+        .city-list-container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .deutschland-map {
+            width: min(100%, 320px);
+        }
+    }
+
+    @@media (max-width: 575px) {
+
+        .ansprechpartner-container {
+            padding-left: 15px;
+            padding-right: 15px;
+        }
+
+        .main-title {
+            font-size: 2rem;
+        }
+
+        .deutschland-map {
+            width: min(100%, 290px);
+        }
+    }
+</style>
+
+
+<div class="ansprechpartner-container">
+
+    <h1 class="main-title">
+        @ViewData["Title"]
+    </h1>
+
+    <div class="ansprechpartner-content">
+
+        <!-- LINKE SEITE -->
+        <div class="city-list-container">
+
+            <a asp-page="/Ansprechpartner/Standort" asp-route-niederlassung="Bremen" class="city-item">
+
+                <span>Bremen</span>
+                <span class="arrow">ℹ️</span>
+
+            </a>
+
+
+            <a asp-page="/Ansprechpartner/Standort" asp-route-niederlassung="Flensburg" class="city-item">
+
+                <span>Flensburg</span>
+                <span class="arrow">ℹ️</span>
+
+            </a>
+
+
+            <a asp-page="/Ansprechpartner/Standort" asp-route-niederlassung="Hamburg" class="city-item">
+
+                <span>Hamburg</span>
+                <span class="arrow">ℹ️</span>
+
+            </a>
+
+
+            <a asp-page="/Ansprechpartner/Standort" asp-route-niederlassung="Osnabrück" class="city-item">
+
+                <span>Osnabrück</span>
+                <span class="arrow">ℹ️</span>
+
+            </a>
+
+
+            <a asp-page="/Ansprechpartner/Standort" asp-route-niederlassung="Recklinghausen" class="city-item">
+
+                <span>Recklinghausen</span>
+                <span class="arrow">ℹ️</span>
+
+            </a>
+
+
+            <a asp-page="/Ansprechpartner/Standort" asp-route-niederlassung="Bergheim" class="city-item">
+
+                <span>Bergheim</span>
+                <span class="arrow">ℹ️</span>
+
+            </a>
+
+
+            <a asp-page="/Ansprechpartner/Standort" asp-route-niederlassung="Schkeuditz" class="city-item">
+
+                <span>Schkeuditz</span>
+                <span class="arrow">ℹ️</span>
+
+            </a>
+
+
+            <a asp-page="/Ansprechpartner/Standort" asp-route-niederlassung="Lindenberg" class="city-item">
+
+                <span>Lindenberg</span>
+                <span class="arrow">ℹ️</span>
+
+            </a>
+
+
+            <a asp-page="/Ansprechpartner/Standort" asp-route-niederlassung="Fürth" class="city-item">
+
+                <span>Fürth</span>
+                <span class="arrow">ℹ️</span>
+
+            </a>
+
+
+            <a asp-page="/Ansprechpartner/Standort" asp-route-niederlassung="Heidelberg" class="city-item">
+
+                <span>Heidelberg</span>
+                <span class="arrow">ℹ️</span>
+
+            </a>
+
+        </div>
+
+
+
+        <!-- RECHTE SEITE -->
+        <div class="map-container">
+
+            <div class="map-title">
+                Unsere Standorte
+            </div>
+
+
+            <div class="deutschland-map">
+
+                <img src="~/Images/deutschlandkarte.png" asp-append-version="true" alt="Deutschlandkarte mit Kreutzträger Standorten" />
+
+                <!-- FLENSBURG -->
+                <a asp-page="/Ansprechpartner/Standort" asp-route-niederlassung="Flensburg" class="map-marker" style="left: 40.0%; top: 8.0%;" aria-label="Ansprechpartner Flensburg">
+                    <span class="map-marker-label">
+                        Flensburg
+                    </span>
+                </a>
+
+                <!--  HAMBURG -->
+                <a asp-page="/Ansprechpartner/Standort" asp-route-niederlassung="Hamburg" class="map-marker" style="left: 45.7%; top: 22.5%;" aria-label="Ansprechpartner Hamburg">
+                    <span class="map-marker-label">
+                        Hamburg
+                    </span>
+                </a>
+
+                <!-- BREMEN -->
+                <a asp-page="/Ansprechpartner/Standort" asp-route-niederlassung="Bremen" class="map-marker" style="left: 33.2%; top: 28.0%;" aria-label="Ansprechpartner Bremen">
+                    <span class="map-marker-label">
+                        Bremen
+                    </span>
+                </a>
+
+                <!-- OSNABRÜCK -->
+                <a asp-page="/Ansprechpartner/Standort" asp-route-niederlassung="Osnabrück" class="map-marker" style="left: 25.3%; top: 37.2%;" aria-label="Ansprechpartner Osnabrück">
+                    <span class="map-marker-label">
+                        Osnabrück
+                    </span>
+                </a>
+
+                <!-- RECKLINGHAUSEN -->
+                <a asp-page="/Ansprechpartner/Standort" asp-route-niederlassung="Recklinghausen" class="map-marker" style="left: 16.3%; top: 45.0%;" aria-label="Ansprechpartner Recklinghausen">
+                    <span class="map-marker-label">
+                        Recklinghausen
+                    </span>
+                </a>
+
+                <!-- BERGHEIM -->
+                <a asp-page="/Ansprechpartner/Standort" asp-route-niederlassung="Bergheim" class="map-marker" style="left: 10.5%; top: 52.7%;" aria-label="Ansprechpartner Bergheim">
+                    <span class="map-marker-label">
+                        Bergheim
+                    </span>
+                </a>
+
+                <!-- SCHKEUDITZ -->
+                <a asp-page="/Ansprechpartner/Standort" asp-route-niederlassung="Schkeuditz" class="map-marker" style="left: 69.1%; top: 47.5%;" aria-label="Ansprechpartner Schkeuditz">
+                    <span class="map-marker-label">
+                        Schkeuditz
+                    </span>
+                </a>
+
+                <!-- HEIDELBERG -->
+                <a asp-page="/Ansprechpartner/Standort" asp-route-niederlassung="Heidelberg" class="map-marker" style="left: 31.8%; top: 71.1%;" aria-label="Ansprechpartner Heidelberg">
+                    <span class="map-marker-label">
+                        Heidelberg
+                    </span>
+                </a>
+
+                <!-- FÜRTH -->
+                <a asp-page="/Ansprechpartner/Standort" asp-route-niederlassung="Fürth" class="map-marker" style="left: 55.0%; top: 69.2%;" aria-label="Ansprechpartner Fürth">
+                    <span class="map-marker-label">
+                        Fürth
+                    </span>
+                </a>
+
+                <!-- LINDENBERG -->
+                <a asp-page="/Ansprechpartner/Standort" asp-route-niederlassung="Lindenberg" class="map-marker" style="left: 44.6%; top: 91.6%;" aria-label="Ansprechpartner Lindenberg">
+                    <span class="map-marker-label">
+                        Lindenberg
+                    </span>
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

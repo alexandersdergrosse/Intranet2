@@ -1,0 +1,563 @@
+﻿@page
+@model Intranet2.Pages.Admin.NewsModel
+
+@{
+    ViewData["Title"] = "Newsverwaltung";
+}
+
+<style>
+
+    .news-editor-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 10px;
+        border: 1px solid #dee2e6;
+        border-bottom: none;
+        background: #f8f9fa;
+        border-radius: 6px 6px 0 0;
+    }
+
+
+    .news-editor-divider {
+        width: 1px;
+        background: #ced4da;
+        margin: 2px 5px;
+    }
+
+
+    .news-editor {
+        min-height: 280px;
+        padding: 15px;
+        border: 1px solid #dee2e6;
+        border-radius: 0 0 6px 6px;
+        background: white;
+        overflow-y: auto;
+    }
+
+
+        .news-editor:focus {
+            outline: none;
+            border-color: #0091b6;
+            box-shadow: 0 0 0 0.2rem rgba(0, 145, 182, 0.15);
+        }
+
+
+        .news-editor h2 {
+            margin-top: 20px;
+        }
+
+
+        .news-editor h3 {
+            margin-top: 18px;
+        }
+
+</style>
+
+<div class="container mt-4">
+
+    <!-- KOPFBEREICH -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h1 class="mb-1">
+                Newsverwaltung
+            </h1>
+
+            <p class="text-muted mb-0">
+                Neuigkeiten erstellen, bearbeiten und veröffentlichen.
+            </p>
+        </div>
+
+        @if (User.IsInRole(Rollen.Admin))
+        {
+            <a asp-page="/Admin/Index" class="btn btn-outline-secondary"> Zurück </a>
+        }
+        else
+        {
+            <a asp-page="/News/Index" class="btn btn-outline-secondary"> Zurück </a>
+        }
+    </div>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Meldung))
+    {
+        <div class="alert alert-success">
+            @Model.Meldung
+        </div>
+    }
+
+    <!-- FORMULAR -->
+    <div class="card shadow-sm mb-5">
+
+        <div class="card-header">
+
+            <h4 class="mb-0">
+
+                @if (Model.Formular.Id == 0)
+                {
+                    <text>Neue News erstellen</text>
+                }
+                else
+                {
+                    <text>News bearbeiten</text>
+                }
+            </h4>
+        </div>
+
+        <div class="card-body">
+
+            <form method="post" asp-page-handler="Speichern" enctype="multipart/form-data">
+
+                <input type="hidden" asp-for="Formular.Id" />
+
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <!-- TITEL -->
+                <div class="mb-3">
+                    <label asp-for="Formular.Titel" class="form-label">
+                        Titel
+                    </label>
+
+                    <input asp-for="Formular.Titel"class="form-control" placeholder="Überschrift der News" />
+
+                    <span asp-validation-for="Formular.Titel" class="text-danger"></span>
+                </div>
+
+                <!-- KURZTEXT -->
+                <div class="mb-3">
+                    <label asp-for="Formular.Kurztext" class="form-label">
+                        Kurztext
+                    </label>
+
+                    <textarea asp-for="Formular.Kurztext" class="form-control" rows="3" placeholder="Kurze Zusammenfassung für den News-Feed"></textarea>
+
+                    <span asp-validation-for="Formular.Kurztext" class="text-danger"></span>
+                </div>
+
+                <!-- INHALT / NEWS-EDITOR -->
+                <div class="mb-4">
+                    <label class="form-label">
+                        Inhalt
+                    </label>
+
+                    <!-- TOOLBAR -->
+                    <div class="news-editor-toolbar">
+
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-editor-command="bold" title="Fett">
+                            <strong>B</strong>
+                        </button>
+
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-editor-command="italic" title="Kursiv">
+                            <em>I</em>
+                        </button>
+
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-editor-command="underline" title="Unterstrichen">
+                            <u>U</u>
+                        </button>
+
+                        <span class="news-editor-divider"></span>
+
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-editor-command="formatBlock" data-editor-value="p">
+                            Text
+                        </button>
+
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-editor-command="formatBlock" data-editor-value="h2">
+                            H2
+                        </button>
+
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-editor-command="formatBlock" data-editor-value="h3">
+                            H3
+                        </button>
+
+                        <span class="news-editor-divider"></span>
+
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-editor-command="insertUnorderedList" title="Aufzählung">
+                            • Liste
+                        </button>
+
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-editor-command="insertOrderedList" title="Nummerierte Liste">
+                            1. Liste
+                        </button>
+
+                        <span class="news-editor-divider"></span>
+
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="newsEditorLink">
+                            🔗 Link
+                        </button>
+
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-editor-command="removeFormat">
+                            Formatierung entfernen
+                        </button>
+                    </div>
+
+                    <!-- EDITOR -->
+                    <div id="newsEditor" class="news-editor" contenteditable="true"></div>
+
+                    <!--
+                        Dieses Feld wird tatsächlich an ASP.NET gesendet.
+                        JavaScript überträgt den Editor-Inhalt hier hinein.
+                    -->
+                    <textarea asp-for="Formular.Inhalt" class="d-none"></textarea>
+
+                    <span asp-validation-for="Formular.Inhalt" class="text-danger"></span>
+                </div>
+
+                <!-- BILD -->
+                <div class="mb-4">
+
+                    <label asp-for="Formular.BildDatei" class="form-label">
+                        Bild
+                    </label>
+
+                    <input asp-for="Formular.BildDatei" type="file" class="form-control" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" />
+
+                    <div class="form-text">
+                        Erlaubt: JPG, JPEG, PNG und WebP.
+                        Maximale Dateigröße: 5 MB.
+                    </div>
+
+                    <span asp-validation-for="Formular.BildDatei" class="text-danger"></span>
+
+                    <!-- VORHANDENES BILD BEIM BEARBEITEN -->
+                    @if (!string.IsNullOrWhiteSpace(Model.Formular.AktuellesBildPfad))
+                    {
+                        <input type="hidden" asp-for="Formular.AktuellesBildPfad" />
+
+                        <div class="mt-3">
+                            <div class="mb-2">
+                                <strong>
+                                    Aktuelles Bild
+                                </strong>
+                            </div>
+
+                            <img src="@Url.Content(Model.Formular.AktuellesBildPfad)" alt="Aktuelles Newsbild" class="img-thumbnail" style="max-width: 350px; max-height: 220px; object-fit: cover;" />
+
+                            <div class="form-check mt-3">
+                                <input asp-for="Formular.BildEntfernen" class="form-check-input" />
+
+                                <label asp-for="Formular.BildEntfernen" class="form-check-label">
+                                    Aktuelles Bild entfernen
+                                </label>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+
+                <div class="row">
+                    <!-- KATEGORIE -->
+                    <div class="mb-3">
+                        <label asp-for="Formular.Kategorie" class="form-label">
+                            Kategorie
+                        </label>
+
+                        <select asp-for="Formular.Kategorie" class="form-select">
+
+                            <option value="">
+                                Bitte auswählen
+                            </option>
+
+                            @foreach (var kategorie in Model.Kategorien)
+                            {
+                                <option value="@kategorie.Key"> @kategorie.Key </option>
+                            }
+                        </select>
+
+                        <span asp-validation-for="Formular.Kategorie" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <!-- VERÖFFENTLICHUNGSDATUM -->
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Formular.VeroeffentlichtAm" class="form-label">
+                            Veröffentlichungsdatum
+                        </label>
+
+                        <input asp-for="Formular.VeroeffentlichtAm" asp-format="{0:yyyy-MM-ddTHH:mm}" type="datetime-local" class="form-control" />
+                    </div>
+
+                    <!-- STATUS -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label d-block">
+                            Status
+                        </label>
+
+                        <div class="d-flex align-items-center gap-4 mt-2">
+
+                            <!-- VERÖFFENTLICHT -->
+                            <div class="form-check">
+                                <input asp-for="Formular.IstVeroeffentlicht" class="form-check-input" />
+
+                                <label asp-for="Formular.IstVeroeffentlicht" class="form-check-label">
+                                    Veröffentlicht
+                                </label>
+                            </div>
+
+                            <!-- KURZMELDUNG -->
+                            <div class="form-check">
+                                <input asp-for="Formular.IstKurzmeldung" class="form-check-input" />
+
+                                <label asp-for="Formular.IstKurzmeldung" class="form-check-label">
+                                    Kurzmeldung im Startseiten-Feed
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BUTTONS -->
+                <div class="d-flex gap-2">
+
+                    <button type="submit" class="btn btn-primary">
+
+                        @if (Model.Formular.Id == 0)
+                        {
+                            <text>News erstellen</text>
+                        }
+                        else
+                        {
+                            <text>Änderungen speichern</text>
+                        }
+                    </button>
+
+                    @if (Model.Formular.Id != 0)
+                    {
+                        <a asp-page="/Admin/News" class="btn btn-outline-secondary">
+                            Bearbeiten abbrechen
+                        </a>
+                    }
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- VORHANDENE NEWS -->
+    <h2 class="mb-3">
+        Vorhandene News
+    </h2>
+
+    <div class="card shadow-sm">
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-light">
+
+                        <tr>
+
+                            <th>Bild</th>
+
+                            <th>Titel</th>
+
+                            <th>Kategorie</th>
+
+                            <th>Datum</th>
+
+                            <th>Status</th>
+
+                            <th>Aktionen</th>
+
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @if (Model.NewsListe.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">
+                                    Es wurden noch keine News erstellt.
+                                </td>
+                            </tr>
+                        }
+
+                        @foreach (var news in Model.NewsListe)
+                        {
+                            <tr>
+
+                                <!-- BILD -->
+                                <td style="width: 110px;">
+
+                                    @if (!string.IsNullOrWhiteSpace(news.BildPfad))
+                                    {
+                                        <img src="@Url.Content(news.BildPfad)" alt="@news.Titel" class="rounded" style=" width: 90px;  height: 60px; object-fit: cover;" />
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted small">
+                                            Kein Bild
+                                        </span>
+                                    }
+                                </td>
+
+                                <!-- TITEL -->
+                                <td>
+                                    <strong>
+                                        @news.Titel
+                                    </strong>
+
+                                    <div class="small text-muted">
+                                        @news.Kurztext
+                                    </div>
+                                </td>
+
+                                <!-- KATEGORIE -->
+                                <td>
+                                    <span class="badge bg-@news.KategorieFarbe">
+                                        @news.Kategorie
+                                    </span>
+                                </td>
+
+                                <!-- DATUM -->
+                                <td>
+                                    @news.VeroeffentlichtAm.ToString("dd.MM.yyyy HH:mm")
+                                </td>
+
+                                <!-- STATUS -->
+                                <td>
+                                    @if (!news.IstVeroeffentlicht)
+                                    {
+                                        <span class="badge bg-secondary">
+                                            Entwurf
+                                        </span>
+                                    }
+                                    else if (news.VeroeffentlichtAm > DateTime.Now)
+                                    {
+                                        <span class="badge bg-warning text-dark">
+                                            Geplant
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success">
+                                            Veröffentlicht
+                                        </span>
+                                    }
+                                </td>
+
+                                <!-- AKTIONEN -->
+                                <td>
+                                    <div class="d-flex gap-2">
+
+                                        <a asp-page="/Admin/News" asp-route-bearbeitenId="@news.Id" class="btn btn-sm btn-outline-primary">
+                                            Bearbeiten
+                                        </a>
+
+
+                                        <form method="post" asp-page-handler="Loeschen" onsubmit="return confirm('Diese News wirklich löschen?');">
+
+                                            <input type="hidden" name="id" value="@news.Id" />
+
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                Löschen
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+                const editor = document.getElementById("newsEditor");
+
+                const inhaltFeld = document.getElementById("Formular_Inhalt");
+
+                if (!editor || !inhaltFeld) {
+                    return;
+                }
+
+                const formular = editor.closest("form");
+
+                // BESTEHENDEN INHALT LADEN
+                if (inhaltFeld.value) {
+                    editor.innerHTML = inhaltFeld.value;
+                }
+
+                // EDITOR-INHALT MIT FORMULAR SYNCHRONISIEREN
+                function synchronisieren() {
+                    inhaltFeld.value = editor.innerHTML.trim();
+                }
+
+                editor.addEventListener("input", synchronisieren);
+
+                // FORMATIERUNGSBUTTONS
+                document
+                    .querySelectorAll("[data-editor-command]").forEach(function (button) 
+                    {
+
+                            // Auswahl nicht verlieren,
+                            // wenn Button angeklickt wird
+                            button.addEventListener("mousedown", function (event) 
+                            {
+                                    event.preventDefault();
+                            });
+
+                            button.addEventListener("click", function () 
+                                {
+                                    const command = button.dataset.editorCommand;
+
+                                    const value = button.dataset.editorValue ?? null;
+
+                                    editor.focus();
+
+                                    document.execCommand(command, false, value);
+
+                                    synchronisieren();
+                                }
+                            );
+                        }
+                    );
+
+                // LINK EINFÜGEN
+                const linkButton = document.getElementById("newsEditorLink");
+
+                if (linkButton) {
+
+                    linkButton.addEventListener("mousedown",function (event)  { event.preventDefault(); });
+
+                    linkButton.addEventListener("click", function () 
+                    {
+
+                            const url = prompt("Link eingeben:", "https://");
+
+                            if (!url) { return; }
+
+                            editor.focus();
+
+                            document.execCommand("createLink", false, url);
+
+                            synchronisieren();
+                        }
+                    );
+                }
+
+                // VOR ABSENDEN NOCH EINMAL SYNCHRONISIEREN
+                if (formular) 
+                {
+                    formular.addEventListener("submit", function () 
+                        {
+                            synchronisieren();
+                        }
+                    );
+                }
+            }
+        );
+    </script>
+}

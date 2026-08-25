@@ -1,0 +1,97 @@
+﻿@page
+@model Intranet2.Pages.News.DetailsModel
+
+@{
+    ViewData["Title"] = Model.News.Titel;
+}
+
+<div class="container py-4">
+
+    <!-- ZURÜCK -->
+    <div class="mb-4">
+
+        <a asp-page="/News/Index" class="text-decoration-none">
+            ← Zurück zu allen Neuigkeiten
+        </a>
+    </div>
+
+    <div class="row justify-content-center">
+
+        <div class="col-xl-9 col-lg-10">
+
+            <!-- KATEGORIE + DATUM -->
+            <div class="d-flex align-items-center gap-3 mb-3">
+
+                <span class="badge bg-@Model.News.KategorieFarbe">
+                    @Model.News.Kategorie
+                </span>
+
+                <span class="text-muted">
+                    @Model.News.VeroeffentlichtAm.ToString("dd.MM.yyyy HH:mm")
+                </span>
+
+            </div>
+
+            <!-- TITEL -->
+            <h1 class="fw-bold mb-3">
+                @Model.News.Titel
+            </h1>
+
+            <!-- KURZTEXT -->
+            <p class="lead text-muted mb-4">
+                @Model.News.Kurztext
+            </p>
+
+            <!-- BILD -->
+            @if (!string.IsNullOrWhiteSpace(Model.News.BildPfad))
+            {
+                <img src="@Url.Content(Model.News.BildPfad)" alt="@Model.News.Titel" class="img-fluid rounded mb-4 w-100" style="max-height: 500px; object-fit: cover;" />
+            }
+
+            <!-- INHALT -->
+            @if (!string.IsNullOrWhiteSpace(Model.News.Inhalt))
+            {
+                <div class="news-detail-inhalt">
+                    @Html.Raw(Model.News.Inhalt)
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<style>
+    .news-detail-inhalt {
+        font-size: 1.05rem;
+        line-height: 1.75;
+        white-space: pre-line;
+    }
+
+
+        .news-detail-inhalt h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+
+        .news-detail-inhalt h3 {
+            margin-top: 1.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+
+        .news-detail-inhalt ul,
+        .news-detail-inhalt ol {
+            margin-bottom: 1rem;
+        }
+
+
+        .news-detail-inhalt a {
+            color: #0091b6;
+            text-decoration: none;
+        }
+
+
+            .news-detail-inhalt a:hover {
+                text-decoration: underline;
+            }
+</style>

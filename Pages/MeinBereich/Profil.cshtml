@@ -1,0 +1,86 @@
+﻿@page
+@model Intranet2.Pages.MeinBereich.ProfilModel
+
+@{
+    ViewData["Title"] = "Mein Profil";
+}
+
+<div class="container py-4">
+    <!-- KOPFBEREICH -->
+    <div class="mb-4">
+        <h1 class="fw-bold mb-1">
+            Mein Profil
+        </h1>
+
+        <p class="text-muted mb-0">
+            Deine Benutzerdaten aus dem Windows-Netzwerk.
+        </p>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-7 col-lg-8">
+            <div class="profile-card">
+                <!-- NAME -->
+                @if (!string.IsNullOrWhiteSpace(Model.Anzeigename))
+                {
+                    <div class="profile-row">
+                        <div class="profile-label">
+                            Name
+                        </div>
+
+                        <div class="profile-value">
+                            @Model.Anzeigename
+                        </div>
+                    </div>
+                }
+
+                <!-- ANMELDENAME -->
+                <div class="profile-row">
+                    <div class="profile-label">
+                        Anmeldename
+                    </div>
+
+                    <div class="profile-value">
+                        @if (!string.IsNullOrWhiteSpace(Model.Anmeldename))
+                        {
+                            @Model.Anmeldename
+                        }
+                        else
+                        {
+                            <span class="text-muted">
+                                Nicht verfügbar
+                            </span>
+                        }
+                    </div>
+                </div>
+
+                <!-- E-MAIL -->
+                <div class="profile-row">
+                    <div class="profile-label">
+                        E-Mail-Adresse
+                    </div>
+
+                    <div class="profile-value">
+                        @if (!string.IsNullOrWhiteSpace(Model.Email))
+                        {
+                            <a href="mailto:@Model.EmailLink" class="text-decoration-none">
+                                @Model.Email
+                            </a>
+                        }
+                        else
+                        {
+                            <span class="text-muted">
+                                Keine E-Mail-Adresse im Active Directory hinterlegt.
+                            </span>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-muted small mt-3">
+                Die angezeigten Informationen werden automatisch
+                aus deinem Windows-/Active-Directory-Konto übernommen.
+            </div>
+        </div>
+    </div>
+</div>

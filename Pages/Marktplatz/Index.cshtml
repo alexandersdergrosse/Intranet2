@@ -1,0 +1,116 @@
+﻿@page
+@model Intranet2.Pages.Marktplatz.IndexModel
+
+@{
+    ViewData["Title"] = "Marktplatz";
+}
+
+<div class="container py-4">
+    <!-- KOPF -->
+    <div class="marketplace-header">
+        <div>
+            <h1 class="fw-bold mb-1">
+                Marktplatz
+            </h1>
+
+            <p class="text-muted mb-0">
+                Das Schwarze Brett für alle Mitarbeiter.
+            </p>
+        </div>
+
+        <a asp-page="/Marktplatz/Neu" class="btn btn-primary">
+            + Beitrag erstellen
+        </a>
+    </div>
+
+    <!-- BEITRÄGE -->
+    @if (Model.Beitraege.Count == 0)
+    {
+        <div class="marketplace-empty">
+            <h2 class="h4">
+                Noch keine Beiträge vorhanden
+            </h2>
+
+            <p class="text-muted mb-3">
+                Sei der Erste und stelle etwas auf das Schwarze Brett.
+            </p>
+
+            <a asp-page="/Marktplatz/Neu" class="btn btn-primary">
+                Beitrag erstellen
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var beitrag in Model.Beitraege)
+            {
+                string badgeFarbe = beitrag.Kategorie switch
+                {
+                    MarktplatzKategorien.Verkaufen => "primary",
+
+                    MarktplatzKategorien.Verschenken => "success",
+
+                    MarktplatzKategorien.Gesucht => "warning", _ => "secondary"
+                };
+
+                <div class="col-xl-4 col-lg-6 col-md-6">
+                    <article class="marketplace-card">
+                        @if (!string.IsNullOrWhiteSpace(beitrag.BildPfad))
+                        {
+                            <a asp-page="/Marktplatz/Details" asp-route-id="@beitrag.Id" class="marketplace-card-image-link">
+                                <img src="@Url.Content(beitrag.BildPfad)" alt="@beitrag.Titel" class="marketplace-card-image" />
+                            </a>
+                        }
+                        else
+                        {
+                            <div class="marketplace-card-placeholder">
+                                Schwarzes Brett
+                            </div>
+                        }
+
+                    <div class="marketplace-card-body">
+                        <div class="marketplace-card-meta">
+                            <span class="badge bg-@badgeFarbe">
+                                @beitrag.Kategorie
+                            </span>
+
+                            <span>
+                                @beitrag.ErstelltAm.ToString("dd.MM.yyyy")
+                            </span>
+                        </div>
+
+                        <h2 class="marketplace-card-title">
+                            <a asp-page="/Marktplatz/Details" asp-route-id="@beitrag.Id">
+                                @beitrag.Titel
+                            </a>
+                        </h2>
+
+                        <p class="marketplace-card-description">
+                            @(beitrag.Beschreibung.Length > 150 ? beitrag.Beschreibung.Substring(0, 150) + "…" : beitrag.Beschreibung)
+                        </p>
+
+
+                    @if (beitrag.Preis.HasValue)
+                            {
+                                <div class="marketplace-card-price">
+                                    @beitrag.Preis.Value.ToString("N2") €
+                                </div>
+                            }
+
+                            <div class="marketplace-card-footer">
+                                <span>
+                                    @beitrag.Benutzer.Name
+                                </span>
+
+                                <a asp-page="/Marktplatz/Details" asp-route-id="@beitrag.Id">
+                                    Ansehen →
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            }
+        </div>
+    }
+</div>

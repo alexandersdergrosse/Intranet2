@@ -1,0 +1,166 @@
+﻿@page
+@model Intranet2.Pages.Umfragen.IndexModel
+
+@{
+    ViewData["Title"] = "Umfragen";
+}
+
+
+<div class="container py-4">
+
+
+    <!-- KOPFBEREICH -->
+    <div class="mb-5">
+        <h1 class="fw-bold mb-2">
+            Umfragen
+        </h1>
+
+        <p class="text-muted mb-0">
+            Aktuelle und vergangene Mitarbeiterumfragen.
+        </p>
+    </div>
+
+    <!-- AKTUELLE UMFRAGEN -->
+    <section class="mb-5">
+        <h2 class="h3 fw-bold mb-3">
+            Aktuelle Umfragen
+        </h2>
+
+        @if (Model.AktiveUmfragen.Count == 0)
+        {
+            <div class="alert alert-info">
+                Zurzeit gibt es keine aktive Umfrage.
+            </div>
+        }
+        else
+        {
+            <div class="row g-4">
+                @foreach (var umfrage in Model.AktiveUmfragen)
+                {
+                    int stimmen = umfrage.Optionen.Sum(o => o.Stimmen.Count);
+
+                    <div class="col-xl-6 col-lg-6">
+                        <div class="poll-card h-100">
+                            <div class="poll-card-header">
+                                <span class="badge bg-success">
+                                    Aktiv
+                                </span>
+
+                                @if (umfrage.EndetAm.HasValue)
+                                {
+                                    <span class="text-muted small">
+                                        bis @umfrage.EndetAm.Value.ToString("dd.MM.yyyy HH:mm")
+                                    </span>
+                                }
+                            </div>
+
+                            <div class="poll-card-body">
+                                <h3 class="poll-card-title">
+                                    @umfrage.Frage
+                                </h3>
+
+                                @if (!string.IsNullOrWhiteSpace(umfrage.Beschreibung))
+                                {
+                                    <p class="text-muted">
+                                        @umfrage.Beschreibung
+                                    </p>
+                                }
+
+                                <div class="poll-card-meta">
+                                    @stimmen
+
+                                    @if (stimmen == 1)
+                                    {
+                                        <text>Stimme</text>
+                                    }
+                                    else
+                                    {
+                                        <text>Stimmen</text>
+                                    }
+                                </div>
+
+                                <a asp-page="/Umfragen/Details" asp-route-id="@umfrage.Id" class="btn btn-primary mt-3">
+                                    Zur Umfrage
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </section>
+
+    <!-- VERGANGENE UMFRAGEN -->
+    <section>
+        <h2 class="h3 fw-bold mb-3">
+            Vergangene Umfragen
+        </h2>
+
+        @if (Model.VergangeneUmfragen.Count == 0)
+        {
+            <div class="text-muted">
+                Es gibt noch keine vergangenen Umfragen.
+            </div>
+        }
+        else
+        {
+            <div class="row g-4">
+
+                @foreach (var umfrage in Model.VergangeneUmfragen)
+                {
+                    int stimmen = umfrage.Optionen.Sum(o => o.Stimmen.Count);
+
+                    <div class="col-xl-6 col-lg-6">
+
+                        <div class="poll-card poll-card-ended h-100">
+
+                            <div class="poll-card-header">
+
+                                <span class="badge bg-secondary">
+                                    Beendet
+                                </span>
+
+                                @if (umfrage.EndetAm.HasValue)
+                                {
+                                    <span class="text-muted small">
+                                        beendet am @umfrage.EndetAm.Value.ToString("dd.MM.yyyy")
+                                    </span>
+                                }
+                            </div>
+
+                            <div class="poll-card-body">
+                                <h3 class="poll-card-title">
+                                    @umfrage.Frage
+                                </h3>
+
+                                @if (!string.IsNullOrWhiteSpace(umfrage.Beschreibung))
+                                {
+                                    <p class="text-muted">
+                                        @umfrage.Beschreibung
+                                    </p>
+                                }
+
+                                <div class="poll-card-meta">
+                                    @stimmen
+
+                                    @if (stimmen == 1)
+                                    {
+                                        <text>Stimme</text>
+                                    }
+                                    else
+                                    {
+                                        <text>Stimmen</text>
+                                    }
+                                </div>
+
+                                <a asp-page="/Umfragen/Details" asp-route-id="@umfrage.Id" class="btn btn-outline-primary mt-3">
+                                    Ergebnisse ansehen
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </section>
+</div>

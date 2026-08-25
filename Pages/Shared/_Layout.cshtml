@@ -1,0 +1,588 @@
+﻿@inject Intranet2.Services.ActiveDirectory.MitarbeiterService MitarbeiterService
+<!DOCTYPE html>
+<html lang="en">
+
+@{
+    int neueMarktplatzBeitraege = Context.Items["NeueMarktplatzBeitraege"] is int anzahl ? anzahl : 0;
+}
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Intranet</title> <!--Tab title-->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Intranet2.styles.css" asp-append-version="true" />
+    <link rel="icon" type="image/png" sizes="32x32" href="~/Images/logok.png"> <!--Kleines Logo im Tab-->
+    <link rel="icon" type="image/png" sizes="16x16" href="~/Images/logok.png"> <!--Kleines Logo im Tab-->
+</head>
+
+<body>
+    <header>
+        <!-- Topbar -->
+        <div class="bg-white text-black py-1 border-bottom">
+            <div class="container-fluid d-flex align-items-center justify-content-between p-0 px-3">
+
+                <!-- Logo & Titel (links) -->
+                <div class="d-flex align-items-center">
+                    <a href="/index">
+                        <img src="~/Images/kt-logo.png" alt="Kreutzträger Logo" height="90" width="450">
+                    </a>
+                    <a class="text-decoration-none fw-bold fs-4 ms-3" style="color: #273551" href="/index">
+                        Intranet
+                    </a>
+                </div>
+
+                <!-- Angemeldeter Benutzer -->
+                <div class="d-flex align-items-center">
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        string windowsName = User.Identity.Name ?? string.Empty;
+
+                        var mitarbeiter = MitarbeiterService.GetMitarbeiterFuerBenutzername(windowsName);
+
+                        string anzeigename;
+
+                        if (mitarbeiter != null)
+                        {
+                            string vorname = mitarbeiter.FirstName?.Trim() ?? string.Empty;
+
+                            string nachname = mitarbeiter.LastName?.Trim() ?? string.Empty;
+
+                            anzeigename = $"{vorname} {nachname}".Trim();
+
+                            // Falls Vorname/Nachname im AD fehlen,
+                            // DisplayName als Fallback verwenden.
+                            if (string.IsNullOrWhiteSpace(anzeigename))
+                            {
+                                anzeigename = mitarbeiter.DisplayName;
+                            }
+                        }
+                        else
+                        {
+                            // Fallback, falls AD nicht erreichbar ist
+                            anzeigename = windowsName.Contains("\\") ? windowsName.Split('\\').Last() : windowsName;
+                        }
+
+                        <span class="fs-5 text-black">
+                            <strong>
+                                Hallo @anzeigename!
+                            </strong>
+                        </span>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Haupt-Navigation -->
+        <nav class="navbar navbar-expand-lg main-nav">
+            <div class="container-fluid">
+
+                <!-- Mobile Toggle Button -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Navigation umschalten">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Navigation Items -->
+                <div class="collapse navbar-collapse" id="mainNavbar">
+                    <ul class="navbar-nav w-100 justify-content-between">
+
+                        <!-- 1. Home -->
+                        <li class="nav-item">
+                            <a class="nav-link nav-box" href="/Index">
+                                Home
+                            </a>
+                        </li>
+
+                        <!-- 2. Kira -->
+                        <li class="nav-item">
+                            <a class="nav-link nav-box nav-box-kira" href="https://kira.kreutztraeger.de/" target="_blank" rel="noopener noreferrer">
+                                <strong>Kira</strong>
+                            </a>
+                        </li>
+
+                        <!-- 3. Kalender
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle nav-box" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Kalender
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="">Firmeninterne Termine</a></li>
+                                <li><a class="dropdown-item" href="">Termine (Historie nach Monat)</a></li>
+                                <li><a class="dropdown-item" href="">Projekte/Service etc.</a></li>
+                            </ul>
+                        </li>  -->
+
+                        <!-- 4. News -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle nav-box" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                News
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" asp-page="/News/Index">Mitarbeiter-News</a></li>
+                                <li><a class="dropdown-item" asp-page="/Umfragen/Index">Umfragen</a></li>
+                                <li><a class="dropdown-item" asp-page="/News/Archiv">Historie nach Monat</a></li>
+
+                                @if (User.IsInRole(Rollen.Admin) || User.IsInRole(Rollen.Redaktion))
+                                {
+                                    <li>
+                                        <hr class="dropdown-divider" />
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item" asp-page="/Admin/News"> News verwalten </a>
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item" asp-page="/Admin/Umfragen"> Umfragen verwalten </a>
+                                    </li>
+                                }
+                            </ul>
+                        </li>
+
+                        <!-- 5. Ansprechpartner --> 
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle nav-box" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Ansprechpartner
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/Ansprechpartner/Ansprechpartner">Niederlassungen</a></li>
+                                <li><a class="dropdown-item" href="/Ansprechpartner/Abteilungen">Abteilungen</a></li>
+                            </ul>
+                        </li>
+
+                        <!-- 6. Dokumente / Wiki -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle nav-box" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Dokumente / Wiki
+                            </a>
+
+                            <ul class="dropdown-menu">
+
+                                <!-- ALLGEMEIN / PERSONAL -->
+                                <li class="dropdown-submenu">
+                                    <a class="dropdown-item dropdown-toggle" href="#" data-submenu-toggle>
+                                        Allgemein / Personal
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/06_Betriebsinterne%20Unterlagen/Allgemein" target="_blank" rel="noopener noreferrer">
+                                                📁 Allgemein (Übersicht)
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/06_Betriebsinterne%20Unterlagen/Besprechungen%20%26%20Monteurtreffen" target="_blank" rel="noopener noreferrer">
+                                                📁 Besprechungen &amp; Monteurtreffen
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/06_Betriebsinterne%20Unterlagen/Infoboard" target="_blank" rel="noopener noreferrer">
+                                                📁 Infoboard
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/06_Betriebsinterne%20Unterlagen/Pr%C3%A4sentationen" target="_blank" rel="noopener noreferrer">
+                                                📁 Präsentationen
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+
+                                <!-- ORGANISATION -->
+                                <li class="dropdown-submenu">
+                                    <a class="dropdown-item dropdown-toggle" href="#" data-submenu-toggle>
+                                        Organisation
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/06_Betriebsinterne%20Unterlagen/Kompetenzteam" target="_blank" rel="noopener noreferrer">
+                                                📁 Kompetenzteam
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/06_Betriebsinterne%20Unterlagen/Projektierung" target="_blank" rel="noopener noreferrer">
+                                                📁 Projektierung
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/06_Betriebsinterne%20Unterlagen/Wiki-Beschreibungen" target="_blank" rel="noopener noreferrer">
+                                                📁 Wiki-Beschreibungen
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+
+                                <!-- QUALITÄTSMANAGEMENT -->
+                                <li class="dropdown-submenu">
+                                    <a class="dropdown-item dropdown-toggle" href="#" data-submenu-toggle>
+                                        Qualitätsmanagement
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/11_DIN%20EN%20ISO%209001/Qualit%C3%A4tsmanagement" target="_blank" rel="noopener noreferrer">
+                                                📁 QM-Handbuch (ISO 9001)
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/11_DIN%20EN%20ISO%209001/Zertifikat" target="_blank" rel="noopener noreferrer">
+                                                📄 Zertifikat ISO 9001
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/11_DIN%20EN%20ISO%209001/Treibhausgasbilanz" target="_blank" rel="noopener noreferrer">
+                                                📁 Treibhausgasbilanz (ISO 14064)
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/10_Verfahrensanweisungen" target="_blank" rel="noopener noreferrer">
+                                                📁 Verfahrensanweisungen
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/06_Betriebsinterne%20Unterlagen/Abnahmedokumentation" target="_blank" rel="noopener noreferrer">
+                                                📁 Abnahmedokumentation
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+
+                                <!-- ANLAGENBAU / ARBEITSANWEISUNGEN -->
+                                <li class="dropdown-submenu">
+                                    <a class="dropdown-item dropdown-toggle" href="#" data-submenu-toggle>
+                                        Anlagenbau
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/06_Betriebsinterne%20Unterlagen/01_AAA%20Arbeits-Anweisungen%20Anlagenbau" target="_blank" rel="noopener noreferrer">
+                                                📁 Arbeitsanweisungen Anlagenbau (AAA)
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/06_Betriebsinterne%20Unterlagen/02_AAV%20Arbeits-Anweisungen%20Verfahren" target="_blank" rel="noopener noreferrer">
+                                                📁 Arbeitsanweisungen Verfahren (AAV)
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/06_Betriebsinterne%20Unterlagen/03_Isolierung" target="_blank" rel="noopener noreferrer">
+                                                📁 Isolierung
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/06_Betriebsinterne%20Unterlagen/04_Rohrleitungsbau" target="_blank" rel="noopener noreferrer">
+                                                📁 Rohrleitungsbau
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/06_Betriebsinterne%20Unterlagen/06_Fachunternehmererkl%C3%A4rung" target="_blank" rel="noopener noreferrer">
+                                                📁 Fachunternehmererklärung
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/06_Betriebsinterne%20Unterlagen/Inbetriebnahme" target="_blank" rel="noopener noreferrer">
+                                                📁 Inbetriebnahme
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/12_Freigegebene%20Zeichnungen%20CAD" target="_blank" rel="noopener noreferrer">
+                                                📁 Freigegebene Zeichnungen (CAD)
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/08_Service%20Wartung" target="_blank" rel="noopener noreferrer">
+                                                📁 Service &amp; Wartung
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+
+                                <!-- ARBEITSSICHERHEIT -->
+                                <li class="dropdown-submenu">
+                                    <a class="dropdown-item dropdown-toggle" href="#" data-submenu-toggle>
+                                        Arbeitssicherheit
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/01_Arbeits-%20%26%20Gesundheitsschutz/01_Unterweisungen" target="_blank" rel="noopener noreferrer">
+                                                📁 Unterweisungen
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/01_Arbeits-%20%26%20Gesundheitsschutz/02_Betriebsanweisungen" target="_blank" rel="noopener noreferrer">
+                                                📁 Betriebsanweisungen
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/01_Arbeits-%20%26%20Gesundheitsschutz/03_Gef%C3%A4hrdungsbeurteilung" target="_blank" rel="noopener noreferrer">
+                                                📁 Gefährdungsbeurteilung
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/01_Arbeits-%20%26%20Gesundheitsschutz/05_Sicherheitsdatenbl%C3%A4tter" target="_blank" rel="noopener noreferrer">
+                                                📁 Sicherheitsdatenblätter
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/01_Arbeits-%20%26%20Gesundheitsschutz/06_Baustellenakte" target="_blank" rel="noopener noreferrer">
+                                                📁 Baustellenakte
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/01_Arbeits-%20%26%20Gesundheitsschutz/06.1_Checkliste%20Baustellenbegehung" target="_blank" rel="noopener noreferrer">
+                                                📄 Checkliste Baustellenbegehung
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/01_Arbeits-%20%26%20Gesundheitsschutz/18_ADR%20Gefahrgut%20im%20PKW" target="_blank" rel="noopener noreferrer">
+                                                📁 ADR Gefahrgut im PKW
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/01_Arbeits-%20%26%20Gesundheitsschutz" target="_blank" rel="noopener noreferrer">
+                                                📁 Alle ASI-Dokumente (Übersicht)
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+
+                                <!-- ZERTIFIZIERUNGEN & SCHULUNGEN -->
+                                <li class="dropdown-submenu">
+                                    <a class="dropdown-item dropdown-toggle" href="#" data-submenu-toggle>
+                                        Zertifizierungen &amp; Schulungen
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/06_Betriebsinterne%20Unterlagen/Ausweise,%20Schulungen%20%26%20Zertifikate" target="_blank" rel="noopener noreferrer">
+                                                📁 Ausweise, Schulungen &amp; Zertifikate
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/06_Betriebsinterne%20Unterlagen/Schulungen" target="_blank" rel="noopener noreferrer">
+                                                📁 Schulungsunterlagen
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/06_Betriebsinterne%20Unterlagen/Schwei%C3%9Ftechnik_Schulungsunterlagen" target="_blank" rel="noopener noreferrer">
+                                                📁 Schweißtechnik Schulungsunterlagen
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/01_Arbeits-%20%26%20Gesundheitsschutz/07_Ausbildung%20%26%20Bestellung" target="_blank" rel="noopener noreferrer">
+                                                📁 Ausbildung &amp; Bestellung (ASI)
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/06_Betriebsinterne%20Unterlagen/Zertifizierung_DGRL" target="_blank" rel="noopener noreferrer">
+                                                📁 Zertifizierung DGRL
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/11_DIN%20EN%20ISO%209001/Zertifikat" target="_blank" rel="noopener noreferrer">
+                                                📄 Zertifikat ISO 9001
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+
+                                <!-- IT & DATENSCHUTZ -->
+                                <li class="dropdown-submenu">
+                                    <a class="dropdown-item dropdown-toggle" href="#" data-submenu-toggle>
+                                        IT &amp; Datenschutz
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/06_Betriebsinterne%20Unterlagen/IT-OT-Sicherheit/KKT%20interne%20AAV%20-%20IT%20Sicherheit/Stand%202026-04/Leitlinie%20zur%20Informationssicherheit%202022-07_ge%C3%A4ndert.pdf" target="_blank" rel="noopener noreferrer">
+                                                📄 Leitlinie zur Informationssicherheit
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/06_Betriebsinterne%20Unterlagen/IT-OT-Sicherheit/KKT%20interne%20AAV%20-%20IT%20Sicherheit/Stand%202026-04/Regeln%20f%C3%BCr%20Mitarbeiter%202022-07_ge%C3%A4ndert.pdf" target="_blank" rel="noopener noreferrer">
+                                                📄 Regeln für Mitarbeiter
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/06_Betriebsinterne%20Unterlagen/IT-OT-Sicherheit/KKT%20interne%20AAV%20-%20IT%20Sicherheit/Stand%202026-04/Regeln%20f%C3%BCr%20Dienstleister%202022-07_ge%C3%A4ndert.pdf" target="_blank" rel="noopener noreferrer">
+                                                📄 Regeln für Dienstleister
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/06_Betriebsinterne%20Unterlagen/IT-OT-Sicherheit/KKT%20interne%20AAV%20-%20IT%20Sicherheit/Stand%202026-04/Handyrichtlinie%202022-07_ge%C3%A4ndert.pdf" target="_blank" rel="noopener noreferrer">
+                                                📄 Handyrichtlinie
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/06_Betriebsinterne%20Unterlagen/IT-OT-Sicherheit/KKT%20interne%20AAV%20-%20IT%20Sicherheit/Stand%202026-04/Berechtigungskonzept%202022-07_Entwurf_ge%C3%A4ndert.pdf" target="_blank" rel="noopener noreferrer">
+                                                📄 Berechtigungskonzept
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/06_Betriebsinterne%20Unterlagen/IT-OT-Sicherheit/KKT%20interne%20AAV%20-%20IT%20Sicherheit/Stand%202026-04/Datensicherungskonzept%202022-07_ge%C3%A4ndert.pdf" target="_blank" rel="noopener noreferrer">
+                                                📄 Datensicherungskonzept
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/06_Betriebsinterne%20Unterlagen/IT-OT-Sicherheit/KKT%20interne%20AAV%20-%20IT%20Sicherheit/Stand%202026-04/Notfallkonzept%202022-07_ge%C3%A4ndert.pdf" target="_blank" rel="noopener noreferrer">
+                                                📄 Notfallkonzept
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/06_Betriebsinterne%20Unterlagen/IT-OT-Sicherheit/KKT%20interne%20AAV%20-%20IT%20Sicherheit/Stand%202026-04/Dokumentation_IT-Sicherheit.pdf" target="_blank" rel="noopener noreferrer">
+                                                📄 Dokumentation IT-Sicherheit
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/06_Betriebsinterne%20Unterlagen/IT-OT-Sicherheit/KKT%20interne%20AAV%20-%20IT%20Sicherheit/Stand%202026-04/Netzwerkplan.png.pdf" target="_blank" rel="noopener noreferrer">
+                                                📄 Netzwerkplan
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider" /></li>
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS/Bibliothek/06_Betriebsinterne%20Unterlagen/IT-OT-Sicherheit" target="_blank" rel="noopener noreferrer">
+                                                📁 Alle IT-OT-Dokumente (Übersicht)
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+
+                                <li>
+                                    <hr class="dropdown-divider" />
+                                </li>
+
+                                <!-- ELEARNIO -->
+                                <li>
+                                    <a class="dropdown-item" href="https://kreutztraeger-kaeltetechnik.elearnio.net/#/my/dashboard" target="_blank" rel="noopener noreferrer">
+                                        🎓 Elearnio
+                                    </a>
+                                </li>
+
+                                <!-- DMS GESAMT -->
+                                <li>
+                                    <a class="dropdown-item" href="https://kreutztraeger.sharepoint.com/sites/DMS" target="_blank" rel="noopener noreferrer">
+                                        🗂️ DMS (Gesamtübersicht)
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </li>
+
+                        <!-- 7. Links -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle nav-box" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Links
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="https://kreutztraeger-kaeltetechnik.de/" target="_blank" rel="noopener noreferrer">Kreutzträger Kältetechnik</a></li>
+                                <li><a class="dropdown-item" href="https://kreutztraeger.ch/" target="_blank" rel="noopener noreferrer">Kreutzträger Kältetechnik Schweiz</a></li>
+                                <li><a class="dropdown-item" href="https://peters-kaelte.de/" target="_blank" rel="noopener noreferrer">Peters Kältetechnik</a></li>
+                            </ul>
+                        </li>
+
+                        <!-- 8. Jobs -->
+                        <li class="nav-item">
+                            <a class="nav-link nav-box" href="/Jobs/Index">
+                                Jobs
+                            </a>
+                        </li>
+
+                        <!-- 9. Marktplatz -->
+                        <li class="nav-item">
+                            <a class="nav-link nav-box" asp-page="/Marktplatz/Index">
+                                Marktplatz
+                                @if (neueMarktplatzBeitraege > 0)
+                                {
+                                    <span class="marketplace-nav-badge">
+                                        +@neueMarktplatzBeitraege
+                                    </span>
+                                }
+                            </a>
+                        </li>
+
+                        <!-- 10. Kreutzträger+ -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle nav-box" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Kreutzträger+
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="dropdown-submenu">
+                                    <a class="dropdown-item dropdown-toggle" href="#" data-submenu-toggle>Benefits</a>
+
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item" href="https://portal.bikeleasing.de" target="_blank" rel="noopener noreferrer">Bike Leasing</a>
+                                        </li>
+
+                                        <li>
+                                            <a class="dropdown-item" href="https://kreutztraeger.mitarbeiterangebote.de/login" target="_blank" rel="noopener noreferrer">Corporate Benefits</a>
+                                        </li>
+
+                                        <li>
+                                            <a class="dropdown-item" href="https://de.egym-wellpass.com/de-de" target="_blank" rel="noopener noreferrer">EGYM Wellpass</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li><a class="dropdown-item" href="">Gesundheitsvorsorge</a></li>
+                            </ul>
+                        </li>
+
+                        <!-- 11. Notfall (je NL) 
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle nav-box" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Notfall (je NL)
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="">Ersthelfer</a></li>
+                                <li><a class="dropdown-item" href="">Brandschutz</a></li>
+                            </ul>
+                        </li> -->
+
+                        <!-- ADMIN -->
+                        @if (User.IsInRole(Rollen.Admin))
+                        {
+                            <li class="nav-item dropdown">
+
+                                <a class="nav-link dropdown-toggle nav-box" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Admin</a>
+
+                                <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                                    <li><a class="dropdown-item" asp-page="/Admin/Index">Übersicht</a></li>
+                                    <li><a class="dropdown-item" asp-page="/Admin/Benutzer">Benutzerverwaltung</a></li>
+                                    <li><a class="dropdown-item" asp-page="/Admin/News">Newsverwaltung</a></li>
+                                    <li><a class="dropdown-item" asp-page="/Admin/Umfragen"> Umfragen verwalten </a></li>
+                                </ul>
+
+                            </li>
+                        }
+
+                        <!-- 12. Mein Bereich -->
+                        <li class="nav-item dropdown">
+
+                            <a class="nav-link dropdown-toggle nav-box" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"> Mein Bereich</a>
+
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <!--<li><a class="dropdown-item" href="">Mein Arbeitsplatz</a></li>-->
+                                <li><a class="dropdown-item" asp-page="/MeinBereich/Profil">Mein Profil</a></li>
+                            </ul>
+
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+
+
+<!--
+    Farben Logo
+    Hellblau CMYK 100/10/20/0 - Pantone 313 - RAL 5015 - RGB 0/145/182 #0091b6
+    Dunkelblau CMYK 100/90/60/0 - Pantone 2767 - RAL 5011 - RGB 39/54/81 #273551
+-->

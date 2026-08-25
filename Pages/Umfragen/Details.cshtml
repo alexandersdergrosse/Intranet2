@@ -1,0 +1,157 @@
+﻿@page
+@model Intranet2.Pages.Umfragen.DetailsModel
+
+@{
+    ViewData["Title"] = Model.Umfrage.Frage;
+}
+
+<div class="container py-4">
+    <div class="mb-4">
+        <a asp-page="/Umfragen/Index" class="text-decoration-none">
+            ← Zurück zu allen Umfragen
+        </a>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-xl-8 col-lg-9">
+            <div class="poll-detail-card">
+                <!-- STATUS -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    @if (Model.IstBeendet)
+                    {
+                        <span class="badge bg-secondary">
+                            Beendet
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-success">
+                            Aktiv
+                        </span>
+                    }
+
+                    <span class="text-muted small">
+                        Start: @Model.Umfrage.StartetAm.ToString("dd.MM.yyyy HH:mm")
+                    </span>
+                </div>
+
+                <!-- FRAGE -->
+                <h1 class="poll-detail-title">
+                    @Model.Umfrage.Frage
+                </h1>
+
+                @if (!string.IsNullOrWhiteSpace(Model.Umfrage.Beschreibung))
+                {
+                    <p class="poll-detail-description">
+                        @Model.Umfrage.Beschreibung
+                    </p>
+                }
+
+                @if (!string.IsNullOrWhiteSpace(Model.Meldung))
+                {
+                    <div class="alert alert-info">
+                        @Model.Meldung
+                    </div>
+                }
+
+                <hr class="my-4" />
+
+                @if (!Model.IstBeendet && !Model.EigeneOptionId.HasValue)
+                {
+                    <!-- ABSTIMMEN -->
+                    <form method="post" asp-page-handler="Abstimmen">
+
+                        <input type="hidden" name="umfrageId" value="@Model.Umfrage.Id" />
+
+                        <div class="poll-detail-options">
+                            @foreach (var option in Model.Umfrage.Optionen.OrderBy(o => o.Sortierung))
+                            {
+                                <label class="poll-detail-option">
+                                    <input type="radio" name="optionId" value="@option.Id" required />
+                                    <span>
+                                        @option.Text
+                                    </span>
+                                </label>
+                            }
+                        </div>
+
+                        <button type="submit" class="btn btn-primary mt-4">
+                            Abstimmen
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <!-- ERGEBNISSE -->
+                    <h2 class="h4 fw-bold mb-4">
+                        Ergebnis
+                    </h2>
+
+                    @foreach (var option in Model.Umfrage.Optionen.OrderBy(o => o.Sortierung))
+                    {
+                        int stimmen = option.Stimmen.Count;
+
+                        double prozent = Model.GesamtStimmen == 0 ? 0 : stimmen * 100.0 / Model.GesamtStimmen;
+
+                        bool eigeneAntwort = Model.EigeneOptionId == option.Id;
+
+                        <div class="poll-detail-result">
+
+                            <div class="poll-detail-result-header">
+                                <span>
+                                    @option.Text
+
+                                    @if (eigeneAntwort)
+                                    {
+                                        <strong class="poll-own-vote">
+                                            ✓ Deine Stimme
+                                        </strong>
+                                    }
+                                </span>
+
+                                <strong>
+                                    @prozent.ToString("0") %
+                                </strong>
+                            </div>
+
+                            <div class="poll-detail-progress">
+                                <div class="poll-detail-progress-bar"
+                                     style="width: @prozent.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)%;">
+                                </div>
+                            </div>
+
+                            <div class="poll-detail-votes">
+                                @stimmen
+
+                                @if (stimmen == 1)
+                                {
+                                    <text>Stimme</text>
+                                }
+                                else
+                                {
+                                    <text>Stimmen</text>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    <div class="poll-detail-total">
+                        Insgesamt
+                        <strong>
+                            @Model.GesamtStimmen
+                        </strong>
+
+                        @if (Model.GesamtStimmen == 1)
+                        {
+                            <text>Stimme</text>
+                        }
+                        else
+                        {
+                            <text>Stimmen</text>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

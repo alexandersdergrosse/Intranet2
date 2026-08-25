@@ -1,0 +1,158 @@
+﻿@page
+@model Intranet2.Pages.Ansprechpartner.AbteilungenModel
+
+@{
+    ViewData["Title"] = "Abteilungen";
+}
+
+
+<style>
+
+    .abteilungen-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+
+
+    .abteilungen-title {
+        font-size: 2.3rem;
+        font-weight: bold;
+        color: #333;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+
+    .abteilungen-description {
+        text-align: center;
+        color: #6c757d;
+        margin-bottom: 35px;
+    }
+
+
+    .abteilungen-list {
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+
+    .abteilung-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 18px;
+        border-bottom: 2px solid #0091b6;
+        color: #333;
+        text-decoration: none;
+        transition: background-color 0.2s ease, padding-left 0.2s ease;
+    }
+
+
+        .abteilung-item:hover {
+            background-color: #f0f8ff;
+            padding-left: 25px;
+            color: #273551;
+        }
+
+
+    .abteilung-name {
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+
+    .abteilung-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+
+    .mitarbeiter-anzahl {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+
+
+    .abteilung-arrow {
+        font-size: 1.1rem;
+    }
+
+</style>
+
+
+<div class="abteilungen-container">
+
+    <div class="mb-4">
+
+        <a asp-page="/Ansprechpartner/Ansprechpartner" class="text-decoration-none">
+            ← Zurück zu Ansprechpartner
+        </a>
+
+    </div>
+
+
+    <h1 class="abteilungen-title">
+        Abteilungen
+    </h1>
+
+
+    <p class="abteilungen-description">
+        Ansprechpartner nach Abteilung
+    </p>
+
+
+    @if (Model.Abteilungen.Count == 0)
+    {
+        <div class="alert alert-warning">
+
+            Es wurden keine Abteilungen
+            im Active Directory gefunden.
+
+        </div>
+    }
+    else
+    {
+        <div class="abteilungen-list">
+
+            @foreach (var abteilung in Model.Abteilungen)
+            {
+                <a asp-page="/Ansprechpartner/Abteilung" asp-route-abteilung="@abteilung.Name" class="abteilung-item">
+
+                    <span class="abteilung-name">
+                        @abteilung.Name
+                    </span>
+
+
+                    <span class="abteilung-info">
+
+                        <span class="mitarbeiter-anzahl">
+
+                            @abteilung.Mitarbeiter.Count
+
+                            @if (abteilung.Mitarbeiter.Count == 1)
+                            {
+                                <text>Mitarbeiter</text>
+                            }
+                            else
+                            {
+                                <text>Mitarbeiter</text>
+                            }
+
+                        </span>
+
+
+                        <span class="abteilung-arrow">
+                            ℹ️
+                        </span>
+
+                    </span>
+
+                </a>
+            }
+
+        </div>
+    }
+
+</div>

@@ -1,0 +1,66 @@
+﻿@page
+@model Intranet2.Pages.Admin.IndexModel
+
+@{
+    ViewData["Title"] = "Administration";
+}
+
+<div class="container mt-4">
+
+    <h1 class="mb-4">Administration</h1>
+
+    <div class="row g-4">
+
+        <!-- Benutzerverwaltung -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+
+                <div class="card-body">
+                    <h4 class="card-title">
+                        Benutzerverwaltung
+                    </h4>
+
+                    <p class="card-text">
+                        Windows-Benutzer verwalten,
+                        Rollen vergeben und Benutzer
+                        aktivieren oder deaktivieren.
+                    </p>
+                </div>
+
+                <div class="card-footer bg-white border-0">
+                    <a asp-page="/Admin/Benutzer" class="btn btn-primary">
+                        Benutzer verwalten
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- News-Verwaltung -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+
+                <div class="card-body">
+                    <h4 class="card-title">
+                        News
+                    </h4>
+
+                    <p class="card-text">
+                        Neuigkeiten erstellen,
+                        bearbeiten und löschen.
+                    </p>
+                </div>
+
+                <div class="card-footer bg-white border-0">
+                    <a asp-page="/Admin/News" class="btn btn-primary">
+                        News verwalten
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>

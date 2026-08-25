@@ -1,0 +1,137 @@
+﻿@page
+@model Intranet2.Pages.Jobs.IndexModel
+
+@{
+    ViewData["Title"] = "Stellenangebote";
+}
+
+<div class="container jobs-page">
+
+    <!-- KOPFBEREICH -->
+    <section class="jobs-hero">
+
+        <div class="jobs-hero-content">
+
+            <span class="jobs-kicker">
+                Karriere
+            </span>
+
+            <h1>
+                Aktuelle Stellenangebote
+            </h1>
+
+            <p>
+                Hier findest du die aktuell ausgeschriebenen Stellen
+                bei Kreutzträger Kältetechnik.
+            </p>
+
+
+            <div class="jobs-summary">
+
+                <div class="jobs-summary-item">
+                    <strong>@Model.Stellenangebote.Count</strong>
+                    <span>offene Stellen</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- STELLENANGEBOTE -->
+    <section id="stellen" class="jobs-list">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <div>
+                <h2 class="jobs-section-title">
+                    Offene Stellen
+                </h2>
+
+                <p class="text-muted mb-0">
+                    Wähle eine Stelle aus, um die vollständige
+                    Ausschreibung auf der Kreutzträger-Webseite zu öffnen.
+                </p>
+
+            </div>
+
+
+            @if (!Model.Ladefehler)
+            {
+                <span id="jobCount" class="jobs-count">
+                    @Model.Stellenangebote.Count Stellen
+                </span>
+            }
+
+        </div>
+
+
+        <!-- FEHLERMELDUNG -->
+        @if (Model.Ladefehler)
+        {
+            <div class="alert alert-warning">
+
+                <strong>
+                    Stellenangebote momentan nicht verfügbar.
+                </strong>
+
+                <br />
+
+                Die aktuellen Stellenangebote konnten momentan
+                nicht von der Kreutzträger-Webseite geladen werden.
+
+            </div>
+        }
+        else
+        {
+            <!-- JOB-KARTEN -->
+            <div class="row g-4" id="jobCards">
+
+                @foreach (var job in Model.Stellenangebote)
+                {
+                    <div class="col-xl-6 col-lg-6">
+                        <article class="job-card">
+
+                            <!-- Inhalt -->
+                            <div class="job-card-body">
+
+                                <span class="jobs-kicker">
+                                    Stellenangebot
+                                </span>
+
+
+                                <h3>
+                                    @job.Titel
+                                </h3>
+
+
+                                @if (!string.IsNullOrWhiteSpace(job.Beschreibung))
+                                {
+                                    <p>
+                                        @job.Beschreibung
+                                    </p>
+                                }
+
+                            </div>
+
+
+                            <!-- Link -->
+                            <div class="job-card-footer">
+
+                                <a href="@job.Url" target="_blank" rel="noopener noreferrer" class="job-details-link">
+                                    Stellenanzeige ansehen <span aria-hidden="true">→</span>
+                                </a>
+                            </div>
+
+                        </article>
+                    </div>
+
+                }
+            </div>
+
+        }
+    </section>
+
+</div>

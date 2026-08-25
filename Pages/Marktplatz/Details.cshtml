@@ -1,0 +1,95 @@
+﻿@page
+@model Intranet2.Pages.Marktplatz.DetailsModel
+@{
+    ViewData["Title"] = Model.Beitrag.Titel;
+
+    string badgeFarbe = Model.Beitrag.Kategorie switch 
+    { 
+        MarktplatzKategorien.Verkaufen => "primary",
+        MarktplatzKategorien.Verschenken => "success", 
+        MarktplatzKategorien.Gesucht => "warning", _ => "secondary" 
+    };
+}
+
+<div class="container py-4">
+    <div class="mb-4">
+        <a asp-page="/Marktplatz/Index" class="text-decoration-none">
+            ← Zurück zum Marktplatz
+        </a>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-xl-9">
+            <article class="marketplace-detail">
+                @if (!string.IsNullOrWhiteSpace(Model.Beitrag.BildPfad))
+                {
+                    <img src="@Url.Content(Model.Beitrag.BildPfad)"  alt="@Model.Beitrag.Titel" class="marketplace-detail-image" />
+                }
+
+                <div class="marketplace-detail-body">
+
+
+                    <div class="marketplace-detail-meta">
+                        <span class="badge bg-@badgeFarbe">
+                            @Model.Beitrag.Kategorie
+                        </span>
+
+                        <span>
+                            @Model.Beitrag.ErstelltAm.ToString("dd.MM.yyyy HH:mm")
+                        </span>
+                    </div>
+
+                    <h1 class="marketplace-detail-title">
+                        @Model.Beitrag.Titel
+                    </h1>
+
+
+                    @if (Model.Beitrag.Preis.HasValue)
+                    {
+                        <div class="marketplace-detail-price">
+                            @Model.Beitrag.Preis.Value.ToString("N2") €
+                        </div>
+                    }
+
+                    <div class="marketplace-detail-description">
+                        @Model.Beitrag.Beschreibung
+                    </div>
+
+                    <hr />
+
+                    <div class="marketplace-author">
+                        <div>
+                            <span class="text-muted">
+                                Eingestellt von
+                            </span>
+
+                            <strong>
+                                @Model.Beitrag.Benutzer.Name
+                            </strong>
+                        </div>
+
+                        @if (!string.IsNullOrWhiteSpace(Model.Beitrag.Benutzer.Email))
+                        {
+                            <a href="mailto:@Model.Beitrag.Benutzer.Email" class="btn btn-outline-primary">
+                                Kontakt aufnehmen
+                            </a>
+                        }
+                    </div>
+
+                    @if (Model.DarfLoeschen)
+                    {
+                        <hr />
+
+                        <form method="post" asp-page-handler="Loeschen" onsubmit="return confirm('Diesen Marktplatz-Beitrag wirklich löschen?');">
+                            <input type="hidden" name="id" value="@Model.Beitrag.Id" />
+
+                            <button type="submit" class="btn btn-outline-danger">
+                                Beitrag löschen
+                            </button>
+                        </form>
+                    }
+                </div>
+            </article>
+        </div>
+    </div>
+</div>

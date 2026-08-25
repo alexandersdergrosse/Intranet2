@@ -1,0 +1,330 @@
+﻿@page
+@model Intranet2.Pages.Admin.BenutzerModel
+
+@{
+    ViewData["Title"] = "Benutzerverwaltung";
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h1 class="mb-1">
+                Benutzerverwaltung
+            </h1>
+
+            <p class="text-muted mb-0">
+                Windows-Benutzer, Rollen und Zugriffsstatus verwalten.
+            </p>
+        </div>
+
+        <a asp-page="/Admin/Index"
+           class="btn btn-outline-secondary">
+            Zurück
+        </a>
+
+    </div>
+
+
+    @if (!string.IsNullOrWhiteSpace(Model.Meldung))
+    {
+        <div class="alert alert-info">
+            @Model.Meldung
+        </div>
+    }
+
+
+    <div class="card shadow-sm">
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>Windows-Benutzer</th>
+                            <th>E-Mail</th>
+                            <th>Rolle</th>
+                            <th>Status</th>
+                            <th>Registriert</th>
+                            <th>Aktionen</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var benutzer in Model.BenutzerListe)
+                        {
+                            bool eigenerBenutzer = string.Equals(benutzer.WindowsBenutzername, User.Identity?.Name, StringComparison.OrdinalIgnoreCase);
+
+                            <tr>
+
+                                <!-- Name -->
+                                <td>
+                                    <strong>
+                                        @benutzer.Name
+                                    </strong>
+
+                                    @if (eigenerBenutzer)
+                                    {
+                                        <span class="badge bg-info text-dark ms-1">
+                                            Du
+                                        </span>
+                                    }
+                                </td>
+
+
+                                <!-- Windows Benutzer -->
+                                <td>
+                                    @benutzer.WindowsBenutzername
+                                </td>
+
+
+                                <!-- E-Mail -->
+                                <td>
+                                    @if (string.IsNullOrWhiteSpace(benutzer.Email))
+                                    {
+                                        <span class="text-muted">
+                                            -
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        @benutzer.Email
+                                    }
+                                </td>
+
+
+                                <!-- Rolle -->
+                                <td>
+
+                                    <form method="post" asp-page-handler="Rolle" class="d-flex gap-2">
+
+                                        <input type="hidden" name="id" value="@benutzer.Id" />
+
+                                        <select name="rolle" class="form-select form-select-sm" style="min-width: 130px;" disabled="@eigenerBenutzer">
+
+                                            @foreach (string rolle in new[] { Rollen.Benutzer, Rollen.Redaktion, Rollen.Admin})
+                                            {
+                                                if (benutzer.Rolle == rolle)
+                                                {
+                                                    <option value="@rolle" selected>
+                                                        @rolle
+                                                    </option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="@rolle">
+                                                        @rolle
+                                                    </option>
+                                                }
+                                            }
+                                        </select>
+
+
+                                        @if (!eigenerBenutzer)
+                                        {
+                                            <button type="submit" class="btn btn-sm btn-outline-primary">
+                                                Speichern
+                                            </button>
+                                        }
+
+                                    </form>
+
+                                </td>
+
+
+                                <!-- Status -->
+                                <td>
+                                    @if (benutzer.IstAktiv)
+                                    {
+                                        <span class="badge bg-success">
+                                            Aktiv
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">
+                                            Deaktiviert
+                                        </span>
+                                    }
+                                </td>
+
+
+                                <!-- Registrierungsdatum -->
+                                <td>
+                                    @benutzer.RegisteredAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+                                </td>
+
+
+                                <!-- Aktionen -->
+                                <td>
+                                    @if (!eigenerBenutzer)
+                                    {
+                                        <form method="post" asp-page-handler="Status">
+
+                                            <input type="hidden" name="id" value="@benutzer.Id" />
+
+                                            @if (benutzer.IstAktiv)
+                                            {
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                    Deaktivieren
+                                                </button>
+                                            }
+                                            else
+                                            {
+                                                <button type="submit" class="btn btn-sm btn-outline-success">
+                                                    Aktivieren
+                                                </button>
+                                            }
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">
+                                            Eigenes Konto
+                                        </span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- BENUTZER-HISTORIE -->
+    <div class="mt-5">
+        <div class="mb-3">
+            <h2 class="h3 mb-1">
+                Benutzer-Historie
+            </h2>
+
+            <p class="text-muted mb-0">
+                Neue Benutzer und Änderungen an bestehenden Benutzerkonten.
+            </p>
+        </div>
+
+        <div class="card shadow-sm">
+
+            <div class="card-body p-0">
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>
+                                    Zeitpunkt
+                                </th>
+
+                                <th>
+                                    Benutzer
+                                </th>
+
+                                <th>
+                                    Aktion
+                                </th>
+
+                                <th>
+                                    Änderung
+                                </th>
+
+                                <th>
+                                    Ausgeführt von
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @if (Model.ProtokollListe.Count == 0)
+                            {
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">
+                                        Noch keine Benutzeränderungen protokolliert.
+                                    </td>
+                                </tr>
+                            }
+
+                            @foreach (var protokoll in Model.ProtokollListe)
+                            {
+                                string badgeFarbe = protokoll.Aktion switch
+                                {
+                                    "Neu angelegt" => "success", "Rolle geändert" => "primary", "Status geändert" => "warning", _ => "secondary"
+                                };
+
+                                <tr>
+                                    <!-- ZEITPUNKT -->
+                                    <td class="text-nowrap">
+                                        @protokoll.Zeitpunkt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")
+                                    </td>
+
+                                    <!-- BENUTZER -->
+                                    <td>
+                                        <strong>
+                                            @protokoll.BenutzerName
+                                        </strong>
+
+                                        <div class="small text-muted">
+                                            @protokoll.WindowsBenutzername
+                                        </div>
+                                    </td>
+
+                                    <!-- AKTION -->
+                                    <td>
+                                        <span class="badge bg-@badgeFarbe">
+                                            @protokoll.Aktion
+                                        </span>
+                                    </td>
+
+                                    <!-- ÄNDERUNG -->
+                                    <td>
+                                        @if (!string.IsNullOrWhiteSpace(protokoll.Feld))
+                                        {
+                                            <div>
+                                                <strong>
+                                                    @protokoll.Feld:
+                                                </strong>
+                                            </div>
+
+                                            <span class="text-muted">
+                                                @(protokoll.AlterWert ?? "-")
+                                            </span>
+
+                                            <span class="mx-2">
+                                                →
+                                            </span>
+
+                                            <strong>
+                                                @(protokoll.NeuerWert ?? "-")
+                                            </strong>
+                                        }
+                                        else
+                                        {
+                                            <span>
+                                                @(protokoll.NeuerWert ?? "-")
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <!-- AUSGEFÜHRT VON -->
+                                    <td>
+                                        @protokoll.AusgefuehrtVon
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="text-muted small mt-2">
+            Angezeigt werden die letzten 100 Einträge.
+        </div>
+    </div>
+</div>

@@ -1,0 +1,120 @@
+﻿@page
+@model Intranet2.Pages.Marktplatz.NeuModel
+
+@{
+    ViewData["Title"] = "Beitrag erstellen";
+}
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-8 col-lg-9">
+            <div class="marketplace-form-card">
+                <div class="mb-4">
+                    <h1 class="fw-bold mb-1">
+                        Beitrag erstellen
+                    </h1>
+
+                    <p class="text-muted mb-0">
+                        Stelle etwas auf das Schwarze Brett.
+                    </p>
+                </div>
+
+                <form method="post" enctype="multipart/form-data">
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <!-- TITEL -->
+                    <div class="mb-3">
+                        <label asp-for="Formular.Titel" class="form-label">
+                            Titel
+                        </label>
+
+                        <input asp-for="Formular.Titel" class="form-control" placeholder="z. B. Fahrrad zu verkaufen" />
+
+                        <span asp-validation-for="Formular.Titel" class="text-danger"></span>
+                    </div>
+
+                    <div class="row">
+                        <!-- KATEGORIE -->
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Formular.Kategorie" class="form-label">
+                                Kategorie
+                            </label>
+
+                            <select asp-for="Formular.Kategorie" class="form-select">
+                                @foreach (string kategorie in Model.Kategorien)
+                                {
+                                    <option value="@kategorie">
+                                        @kategorie
+                                    </option>
+                                }
+                            </select>
+                        </div>
+
+                        <!-- PREIS -->
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Formular.Preis" class="form-label">
+                                Preis
+                                <span class="text-muted">
+                                    (optional)
+                                </span>
+                            </label>
+
+                            <div class="input-group">
+                                <input asp-for="Formular.Preis" type="number" step="0.01" min="0" class="form-control" />
+
+                                <span class="input-group-text">
+                                    €
+                                </span>
+                            </div>
+
+                            <span asp-validation-for="Formular.Preis" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <!-- BESCHREIBUNG -->
+                    <div class="mb-3">
+                        <label asp-for="Formular.Beschreibung" class="form-label">
+                            Beschreibung
+                        </label>
+
+                        <textarea asp-for="Formular.Beschreibung" class="form-control" rows="7" placeholder="Beschreibe dein Angebot oder Gesuch..."></textarea>
+
+                        <span asp-validation-for="Formular.Beschreibung" class="text-danger"></span>
+                    </div>
+
+                    <!-- BILD -->
+                    <div class="mb-4">
+                        <label asp-for="Bild" class="form-label">
+                            Bild
+                            <span class="text-muted"> (optional) </span>
+                        </label>
+
+                        <input asp-for="Bild" type="file" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
+
+                        <div class="form-text">
+                            JPG, PNG oder WebP, maximal 5 MB.
+                        </div>
+
+                        <span asp-validation-for="Bild" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit"  class="btn btn-primary">
+                            Veröffentlichen
+                        </button>
+
+                        <a asp-page="/Marktplatz/Index" class="btn btn-outline-secondary">
+                            Abbrechen
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}
