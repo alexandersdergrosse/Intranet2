@@ -55,12 +55,11 @@
                 };
 
                 <div class="col-xl-4 col-lg-6 col-md-6">
-                    <article class="marketplace-card">
+                    <article class="marketplace-card position-relative">
+
                         @if (!string.IsNullOrWhiteSpace(beitrag.BildPfad))
                         {
-                            <a asp-page="/Marktplatz/Details" asp-route-id="@beitrag.Id" class="marketplace-card-image-link">
-                                <img src="@Url.Content(beitrag.BildPfad)" alt="@beitrag.Titel" class="marketplace-card-image" />
-                            </a>
+                            <img src="@Url.Content(beitrag.BildPfad)" alt="@beitrag.Titel" class="marketplace-card-image" />
                         }
                         else
                         {
@@ -74,22 +73,20 @@
                             <span class="badge bg-@badgeFarbe">
                                 @beitrag.Kategorie
                             </span>
-
                             <span>
                                 @beitrag.ErstelltAm.ToString("dd.MM.yyyy")
                             </span>
                         </div>
 
                         <h2 class="marketplace-card-title">
-                            <a asp-page="/Marktplatz/Details" asp-route-id="@beitrag.Id">
-                                @beitrag.Titel
-                            </a>
+                            @beitrag.Titel
                         </h2>
 
                         <p class="marketplace-card-description">
-                            @(beitrag.Beschreibung.Length > 150 ? beitrag.Beschreibung.Substring(0, 150) + "…" : beitrag.Beschreibung)
-                        </p>
-
+                            @(beitrag.Beschreibung.Length > 150
+                                                    ? beitrag.Beschreibung.Substring(0, 150) + "…"
+                                                    : beitrag.Beschreibung)
+                    </p>
 
                     @if (beitrag.Preis.HasValue)
                             {
@@ -99,17 +96,18 @@
                             }
 
                             <div class="marketplace-card-footer">
-                                <span>
-                                    @beitrag.Benutzer.Name
-                                </span>
-
-                                <a asp-page="/Marktplatz/Details" asp-route-id="@beitrag.Id">
+                                <span>@beitrag.Benutzer.Name</span>
+                                <a asp-page="/Marktplatz/Details"
+                                   asp-route-id="@beitrag.Id"
+                                   class="stretched-link">
                                     Ansehen →
                                 </a>
                             </div>
                         </div>
+
                     </article>
                 </div>
+
             }
         </div>
     }

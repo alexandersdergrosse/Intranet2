@@ -1,0 +1,94 @@
+﻿@page "{id:int}"
+@model Intranet2.Pages.Marktplatz.BearbeitenModel
+
+@{
+    ViewData["Title"] = "Beitrag bearbeiten";
+}
+
+<div class="container py-4">
+    <div class="mb-4">
+        <a asp-page="/Marktplatz/Details" asp-route-id="@Model.Beitrag.Id" class="text-decoration-none">
+            ← Zurück zum Beitrag
+        </a>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-xl-7 col-lg-9">
+            <h1 class="fw-bold mb-4">Beitrag bearbeiten</h1>
+
+            <form method="post" enctype="multipart/form-data">
+                <input type="hidden" asp-for="Beitrag.Id" />
+
+                <!-- TITEL -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Titel</label>
+                    <input asp-for="Formular.Titel" class="form-control" placeholder="z. B. Alte Couch zu verkaufen" />
+                    <span asp-validation-for="Formular.Titel" class="text-danger small"></span>
+                </div>
+
+                <!-- KATEGORIE -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Kategorie</label>
+                    <select asp-for="Formular.Kategorie" class="form-select">
+                        @foreach (var kat in Model.Kategorien)
+                        {
+                            <option value="@kat">@kat</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Formular.Kategorie" class="text-danger small"></span>
+                </div>
+
+                <!-- BESCHREIBUNG -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Beschreibung</label>
+                    <textarea asp-for="Formular.Beschreibung" class="form-control" rows="5" placeholder="Beschreibe deinen Artikel..."></textarea>
+                    <span asp-validation-for="Formular.Beschreibung" class="text-danger small"></span>
+                </div>
+
+                <!-- PREIS -->
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Preis (€) <span class="text-muted fw-normal">– optional</span></label>
+                    <input asp-for="Formular.Preis" class="form-control" type="number" step="0.01" min="0" placeholder="0,00" />
+                    <span asp-validation-for="Formular.Preis" class="text-danger small"></span>
+                </div>
+
+                <!-- AKTUELLES BILD -->
+                @if (!string.IsNullOrWhiteSpace(Model.Beitrag.BildPfad))
+                {
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Aktuelles Bild</label>
+                        <div>
+                            <img src="@Url.Content(Model.Beitrag.BildPfad)" alt="Aktuelles Bild" style="max-height: 200px; border-radius: 8px;" class="mb-2" />
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" asp-for="BildLoeschen" id="bildLoeschen" />
+                            <label class="form-check-label text-danger" for="bildLoeschen">
+                                Aktuelles Bild löschen
+                            </label>
+                        </div>
+                    </div>
+                }
+
+                <!-- NEUES BILD -->
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">
+                        @(string.IsNullOrWhiteSpace(Model.Beitrag.BildPfad) ? "Bild" : "Neues Bild hochladen")
+                        <span class="text-muted fw-normal">– optional, max. 5 MB (JPG, PNG, WebP)</span>
+                    </label>
+                    <input type="file" name="Bild" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
+                    <span class="text-danger small">@ViewData["BildFehler"]</span>
+                </div>
+
+                <!-- BUTTONS -->
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        Änderungen speichern
+                    </button>
+                    <a asp-page="/Marktplatz/Details" asp-route-id="@Model.Beitrag.Id" class="btn btn-outline-secondary">
+                        Abbrechen
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

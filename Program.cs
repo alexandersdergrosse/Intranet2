@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.EntityFrameworkCore;
 using Intranet2.Services.Jobs;
 using Intranet2.Services.ActiveDirectory;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -89,6 +90,16 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
+// UPLOADS-ORDNER ALS STATISCHE DATEIEN EINBINDEN
+string uploadPfad = builder.Configuration["Uploads:Pfad"] ?? Path.Combine(builder.Environment.WebRootPath, "Images", "Marktplatz");
+Directory.CreateDirectory(uploadPfad);
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(uploadPfad),
+    RequestPath = "/uploads"
+});
+
 app.UseRouting();
 
 
@@ -99,6 +110,16 @@ app.UseAuthentication();
 // UND ROLLE ALS CLAIM HINZUFÜGEN
 app.Use(async (context, next) =>
 {
+    // ? FIX 1: Statische Dateien komplett überspringen
+    string path = context.Request.Path.Value ?? "";
+    bool istStatischeDatei = path.StartsWith("/css") || path.StartsWith("/js") || path.StartsWith("/lib") || path.StartsWith("/Images") || path.StartsWith("/uploads") || path.StartsWith("/favicon");
+
+    if (istStatischeDatei)
+    {
+        await next();
+        return;
+    }
+
     if (context.User.Identity?.IsAuthenticated == true)
     {
         string? windowsBenutzername = context.User.Identity.Name;
@@ -107,18 +128,13 @@ app.Use(async (context, next) =>
         {
             var db = context.RequestServices.GetRequiredService<DataContext>();
 
-            // Benutzer in der Datenbank suchen
             Benutzer? benutzer = await db.Benutzer.FirstOrDefaultAsync(b => b.WindowsBenutzername == windowsBenutzername);
 
-            // Neuen Windows-Benutzer automatisch anlegen
             if (benutzer == null)
             {
                 string name = windowsBenutzername;
-
                 if (windowsBenutzername.Contains("\\"))
-                {
                     name = windowsBenutzername.Split('\\').Last();
-                }
 
                 benutzer = new Benutzer
                 {
@@ -133,43 +149,48 @@ app.Use(async (context, next) =>
 
                 db.Benutzer.Add(benutzer);
 
-                await db.SaveChangesAsync();
+                // ? FIX 2: Race Condition absichern
+                try
+                {
+                    await db.SaveChangesAsync();
 
-                // NEUEN BENUTZER PROTOKOLLIEREN
-                BenutzerProtokoll protokoll = new BenutzerProtokoll
+                    // Nur protokollieren wenn INSERT wirklich geklappt hat
+                    db.BenutzerProtokolle.Add(new BenutzerProtokoll
                     {
                         BenutzerId = benutzer.Id,
-
                         BenutzerName = benutzer.Name,
-
                         WindowsBenutzername = benutzer.WindowsBenutzername,
-
                         Aktion = "Neu angelegt",
-
                         Feld = null,
-
                         AlterWert = null,
-
                         NeuerWert = $"Rolle: {benutzer.Rolle}; Status: Aktiv",
-
                         AusgefuehrtVon = "System (erste Anmeldung)",
-
                         Zeitpunkt = DateTime.UtcNow
-                    };
+                    });
+                    await db.SaveChangesAsync();
+                }
+                catch (Exception)
+                {
+                    // ? Anderer Request war schneller – Benutzer nochmal laden
+                    db.ChangeTracker.Clear();
+                    benutzer = await db.Benutzer.FirstOrDefaultAsync(b => b.WindowsBenutzername == windowsBenutzername);
+                }
+            }
 
-                db.BenutzerProtokolle.Add(protokoll);
-
-                await db.SaveChangesAsync();
+            // Benutzer konnte nicht geladen werden ? überspringen
+            if (benutzer == null)
+            {
+                await next();
+                return;
             }
 
             // NEUE MARKTPLATZ-BEITRÄGE
             DateTime letzterMarktplatzBesuch = benutzer.LetzterMarktplatzBesuch ?? benutzer.RegisteredAt;
-
-            int neueMarktplatzBeitraege = await db.MarktplatzBeitraege.CountAsync(m => m.ErstelltAm > letzterMarktplatzBesuch && m.BenutzerId != benutzer.Id);
-
+            int neueMarktplatzBeitraege = await db.MarktplatzBeitraege
+                .CountAsync(m => m.ErstelltAm > letzterMarktplatzBesuch && m.BenutzerId != benutzer.Id);
             context.Items["NeueMarktplatzBeitraege"] = neueMarktplatzBeitraege;
 
-            // Deaktivierte Benutzer sperren
+            // DEAKTIVIERTE BENUTZER SPERREN
             if (!benutzer.IstAktiv)
             {
                 context.Response.StatusCode = StatusCodes.Status403Forbidden;
@@ -179,34 +200,24 @@ app.Use(async (context, next) =>
                 return;
             }
 
-            // ROLLEN AUS DER DATENBANK ÜBERNEHMEN
+            // ROLLEN HINZUFÜGEN
             var rollenClaims = new List<Claim>();
 
-            // Jeder aktive Benutzer erhält die Basisrolle Benutzer.
             rollenClaims.Add(new Claim(ClaimTypes.Role, Rollen.Benutzer));
 
-            // Administratoren erhalten zusätzlich die Admin-Rolle.
-            if (benutzer.Rolle == Rollen.Admin)
-            {
-                rollenClaims.Add(new Claim(ClaimTypes.Role, Rollen.Admin));
-            }
+            if (benutzer.Rolle == Rollen.Admin) rollenClaims.Add(new Claim(ClaimTypes.Role, Rollen.Admin));
 
-            // Mitglieder der Redaktion erhalten die Redaktionsrolle.
-            if (benutzer.Rolle == Rollen.Redaktion)
-            {
-                rollenClaims.Add(new Claim( ClaimTypes.Role, Rollen.Redaktion));
-            }
+            if (benutzer.Rolle == Rollen.Redaktion) rollenClaims.Add(new Claim(ClaimTypes.Role, Rollen.Redaktion));
 
-            // Eigene Identität für Intranet-Rollen erstellen.
             var rollenIdentity = new ClaimsIdentity(rollenClaims, "IntranetRollen");
 
-            // Rollen zur bestehenden Windows-Identität hinzufügen.
             context.User.AddIdentity(rollenIdentity);
         }
     }
 
     await next();
 });
+
 
 // BERECHTIGUNGEN PRÜFEN
 

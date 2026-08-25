@@ -1461,12 +1461,13 @@ img {
     border-radius: var(--kt-radius-md);
     box-shadow: var(--kt-shadow-sm);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
 }
 
 
     .marketplace-card:hover {
-        transform: translateY(-3px);
-        box-shadow: var(--kt-shadow-md);
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px rgba(39, 53, 81, 0.12);
     }
 
 

@@ -13,11 +13,13 @@ namespace Intranet2.Pages.Marktplatz
     {
         private readonly DataContext _context;
         private readonly IWebHostEnvironment _environment;
+        private readonly IConfiguration _configuration;
 
-        public NeuModel(DataContext context, IWebHostEnvironment environment)
+        public NeuModel(DataContext context, IWebHostEnvironment environment, IConfiguration configuration)
         {
             _context = context;
             _environment = environment;
+            _configuration = configuration;
         }
 
         [BindProperty]
@@ -80,26 +82,25 @@ namespace Intranet2.Pages.Marktplatz
 
             // BILD SPEICHERN
             string? bildPfad = null;
-
             if (Bild != null)
             {
                 string endung = Path.GetExtension(Bild.FileName).ToLowerInvariant();
-
                 string dateiname = $"{Guid.NewGuid()}{endung}";
 
-                string ordner = Path.Combine(_environment.WebRootPath, "Images", "Marktplatz");
+                // Zentralen Upload-Ordner aus appsettings lesen
+                string ordner = _configuration["Uploads:Pfad"] ?? Path.Combine(_environment.WebRootPath, "Images", "Marktplatz");
 
                 Directory.CreateDirectory(ordner);
 
                 string kompletterPfad = Path.Combine(ordner, dateiname);
 
                 await using FileStream stream = new FileStream(kompletterPfad, FileMode.Create);
-
                 await Bild.CopyToAsync(stream);
 
-
-                bildPfad = $"/Images/Marktplatz/{dateiname}";
+                // URL zeigt jetzt auf /uploads/... statt /Images/Marktplatz/...
+                bildPfad = $"/uploads/{dateiname}";
             }
+
 
             // BEITRAG ERSTELLEN
             MarktplatzBeitrag beitrag = new MarktplatzBeitrag

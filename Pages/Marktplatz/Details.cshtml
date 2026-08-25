@@ -59,34 +59,47 @@
 
                     <div class="marketplace-author">
                         <div>
-                            <span class="text-muted">
-                                Eingestellt von
-                            </span>
-
-                            <strong>
-                                @Model.Beitrag.Benutzer.Name
-                            </strong>
+                            <span class="text-muted">Eingestellt von</span>
+                            <strong>@Model.Beitrag.Benutzer.Name</strong>
                         </div>
 
                         @if (!string.IsNullOrWhiteSpace(Model.Beitrag.Benutzer.Email))
                         {
-                            <a href="mailto:@Model.Beitrag.Benutzer.Email" class="btn btn-outline-primary">
-                                Kontakt aufnehmen
-                            </a>
+                            <div class="d-flex gap-2 flex-wrap">
+
+                                <!-- TEAMS-NACHRICHT -->
+                                <a href="https://teams.microsoft.com/l/chat/0/0?users=@Model.Beitrag.Benutzer.Email" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+                                    💬 Teams-Nachricht
+                                </a>
+
+                                <!-- E-MAIL -->
+                                <a href="mailto:@Model.Beitrag.Benutzer.Email"
+                                   class="btn btn-outline-secondary btn-sm">
+                                    ✉️ E-Mail schreiben
+                                </a>
+
+                            </div>
                         }
                     </div>
+
 
                     @if (Model.DarfLoeschen)
                     {
                         <hr />
+                        <div class="d-flex gap-2">
+                            <!-- BEARBEITEN-BUTTON (NEU) -->
+                            <a asp-page="/Marktplatz/Bearbeiten" asp-route-id="@Model.Beitrag.Id" class="btn btn-outline-primary">
+                                ✏️ Beitrag bearbeiten
+                            </a>
 
-                        <form method="post" asp-page-handler="Loeschen" onsubmit="return confirm('Diesen Marktplatz-Beitrag wirklich löschen?');">
-                            <input type="hidden" name="id" value="@Model.Beitrag.Id" />
-
-                            <button type="submit" class="btn btn-outline-danger">
-                                Beitrag löschen
-                            </button>
-                        </form>
+                            <!-- LÖSCHEN-BUTTON (bereits vorhanden) -->
+                            <form method="post" asp-page-handler="Loeschen" onsubmit="return confirm('Diesen Marktplatz-Beitrag wirklich löschen?');">
+                                <input type="hidden" name="id" value="@Model.Beitrag.Id" />
+                                <button type="submit" class="btn btn-outline-danger">
+                                    🗑️ Beitrag löschen
+                                </button>
+                            </form>
+                        </div>
                     }
                 </div>
             </article>
