@@ -1,0 +1,110 @@
+﻿@page
+@model Intranet2.Pages.Notfall.SicherheitsbeauftragtModel
+
+@{
+    ViewData["Title"] = "Sicherheitsbeauftragte je Niederlassung";
+}
+
+<div class="container-fluid home-page">
+
+    <div class="mb-3">
+        <a asp-page="/Notfall/Beauftragungen" class="text-decoration-none">
+            ← Zurück zur Übersicht
+        </a>
+    </div>
+
+    <div class="home-section-header mb-4">
+        <div>
+            <h1 class="mb-1"> Sicherheitsbeauftragte je Niederlassung</h1>
+            <p class="text-muted mb-0">Eure Ansprechpartner für Arbeitssicherheit vor Ort</p>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+
+        @foreach (var eintrag in Model.Sicherheitsbeauftragte)
+        {
+            @foreach (var person in eintrag.Personen)
+            {
+                <div class="col-xl-3 col-lg-4 col-md-6">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-body text-center p-4">
+
+                            <!-- NIEDERLASSUNG BADGE -->
+                            <span class="badge mb-3" style="background-color: #273551; font-size: 0.8rem;">
+                                📍 @eintrag.Niederlassung
+                            </span>
+
+                            <br />
+
+                            <!-- FOTO--> 
+                            @if (!string.IsNullOrWhiteSpace(person.FotoUrl))
+                            {
+                                <img src="@person.FotoUrl" alt="@person.Name" class="rounded-circle mb-3" style="width: 90px; height: 90px; object-fit: cover; object-position: top;" />
+                            }
+                            else
+                            {
+                                <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mb-3 mx-auto" style="width: 90px; height: 90px;">
+                                    <span class="text-white fw-bold fs-4">
+                                        @(person.Name.Length > 0 ? person.Name[0].ToString().ToUpper() : "?")
+                                    </span>
+                                </div>
+                            }
+
+
+                            <!-- NAME -->
+                            <h5 class="card-title fw-bold mb-3">@person.Name</h5>
+
+                            <!-- KONTAKTDATEN -->
+                            @if (!string.IsNullOrWhiteSpace(person.Telefon))
+                            {
+                                <p class="mb-1 small">
+                                    📞 <a href="tel:@person.Telefon" class="text-decoration-none text-muted">
+                                        @person.Telefon
+                                    </a>
+                                </p>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(person.Mobil))
+                            {
+                                <p class="mb-1 small">
+                                    📱 <a href="tel:@person.Mobil" class="text-decoration-none text-muted">
+                                        @person.Mobil
+                                    </a>
+                                </p>
+                            }
+                            @if (!string.IsNullOrWhiteSpace(person.Email))
+                            {
+                                <p class="mb-2 small">
+                                    ✉️ <a href="mailto:@person.Email" class="text-decoration-none text-muted">
+                                        @person.Email
+                                    </a>
+                                </p>
+                            }
+
+                            <!-- TEAMS BUTTON -->
+                            @if (!string.IsNullOrWhiteSpace(person.Email))
+                            {
+                                <a href="https://teams.microsoft.com/l/chat/0/0?users=@person.Email"
+                                   target="_blank" rel="noopener noreferrer"
+                                   class="btn btn-outline-primary btn-sm mt-2">
+                                    💬 Teams-Nachricht
+                                </a>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+
+    </div>
+
+    <div class="alert alert-info d-flex gap-2 align-items-center">
+        <span style="font-size: 1.3rem;">ℹ️</span>
+        <div>
+            Die Kontaktdaten werden automatisch aus dem Active Directory geladen.
+            Bei Änderungen wende dich bitte an die IT-Abteilung.
+        </div>
+    </div>
+
+</div>

@@ -7,8 +7,11 @@ using Microsoft.EntityFrameworkCore;
 using Intranet2.Services.Jobs;
 using Intranet2.Services.ActiveDirectory;
 using Microsoft.Extensions.FileProviders;
+using Intranet2.Services.Fotos;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.WebHost.UseUrls("http://localhost:5005", "https://localhost:5006");
 
 // Razor Pages
 builder.Services.AddRazorPages();
@@ -76,6 +79,9 @@ builder.Services.AddAuthorization(options =>
 });
 
 
+// MITARBEITERFOTO-SERVICE
+builder.Services.AddSingleton<Intranet2.Services.Fotos.MitarbeiterFotoService>();
+
 var app = builder.Build();
 
 
@@ -100,8 +106,20 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/uploads"
 });
 
-app.UseRouting();
+// MITARBEITERFOTOS VOM FILESERVER EINBINDEN
+string fotosPfad = builder.Configuration["Mitarbeiterfotos:Pfad"]
+                   ?? @"\\fileserver\Volume_V\mitarbeiter_fotos";
 
+if (Directory.Exists(fotosPfad))
+{
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(fotosPfad),
+        RequestPath = "/mitarbeiterfotos"
+    });
+}
+
+app.UseRouting();
 
 // WINDOWS-BENUTZER AUTHENTIFIZIEREN
 app.UseAuthentication();

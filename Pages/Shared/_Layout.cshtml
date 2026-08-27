@@ -523,16 +523,26 @@
                             </ul>
                         </li>
 
-                        <!-- 11. Notfall (je NL) 
+                        <!-- 11. Notfall -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle nav-box" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Notfall (je NL)
+                            <a class="nav-link dropdown-toggle nav-box" href="#" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                Notfall
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="">Ersthelfer</a></li>
-                                <li><a class="dropdown-item" href="">Brandschutz</a></li>
+                                <li>
+                                    <a class="dropdown-item" asp-page="/Notfall/Beauftragungen">
+                                        Beauftragungen & Verantwortliche
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-page="/Notfall/Sicherheitsbeauftragte">
+                                        Sicherheitsbeauftragte je Niederlassung
+                                    </a>
+                                </li>
                             </ul>
-                        </li> -->
+                        </li>
+
 
                         <!-- ADMIN -->
                         @if (User.IsInRole(Rollen.Admin))
@@ -580,7 +590,6 @@
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
-
 
 <!--
     Farben Logo
