@@ -138,70 +138,274 @@ img {
     border-color: var(--kt-hellblau);
 }
 
+/* =========================================================
+   4. KREUTZTRÄGER TOPBAR
+   ========================================================= */
+
+/*
+   Desktop-Aufbau nach dem Kopfbereich der öffentlichen
+   Kreutzträger-Webseite.
+
+   Referenzwerte der Homepage:
+   - äußerer horizontaler Abstand: 4vw
+   - vertikaler Abstand: 2vh oben / 2vh unten
+   - Logo gerendert: 450 x 90 px
+   - Spaltenprinzip: 3 / 6 / 3
+*/
+
+.kt-topbar {
+    position: relative;
+    width: 100%;
+    background-color: #ffffff;
+    border-bottom: 1px solid #f0f1f4;
+}
+
+.kt-topbar-inner {
+    display: grid;
+    grid-template-columns: minmax(450px, 25%) minmax(0, 50%) minmax(0, 25%);
+    align-items: center;
+    width: 100%;
+    margin: 0;
+    padding: 2vh 4vw;
+    background-color: #ffffff;
+    box-sizing: border-box;
+}
+
+
+/* ---------------------------------------------------------
+   Logo
+   --------------------------------------------------------- */
+
+.kt-topbar-left {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    min-width: 450px;
+}
+
+.kt-logo-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 550px;
+    height: 110px;
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    flex: 0 0 450px;
+}
+
+.kt-topbar-logo {
+    display: block !important;
+    width: 550px !important;
+    height: 110px !important;
+    min-width: 550px !important;
+    max-width: none !important;
+    min-height: 110px !important;
+    max-height: 110px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    object-fit: contain;
+    object-position: left center;
+    flex: 0 0 550px;
+}
+
+
+/* ---------------------------------------------------------
+   Intranet-Titel
+   --------------------------------------------------------- */
+
+.kt-topbar-center {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    min-width: 0;
+}
+
+.kt-intranet-title {
+    margin: 0;
+    padding: 0;
+    color: #242e51;
+    font-family: "Gotham Book", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 700;
+    letter-spacing: 0;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.25s ease-out;
+}
+
+    .kt-intranet-title:hover,
+    .kt-intranet-title:focus {
+        color: #0093be;
+    }
+
+
+/* ---------------------------------------------------------
+   Angemeldeter Benutzer
+   --------------------------------------------------------- */
+
+.kt-topbar-right {
+    position: absolute;
+    top: 0;
+    right: 4vw;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    z-index: 2;
+}
+
+.kt-user-area {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.kt-user-name {
+    margin: 0;
+    padding: 0;
+    color: #242e51;
+    font-family: "Gotham Book", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 28px;
+    font-weight: 600;
+    letter-spacing: 0;
+    white-space: nowrap;
+}
+
 
 /* =========================================================
-   4. HAUPTNAVIGATION
+   5. HAUPTNAVIGATION
    ========================================================= */
+
+/*
+   Original-Farben der Homepage:
+   Normal:  #f0f1f4 / #242e51
+   Hover:   #e7e8ec / #02a0c7
+*/
 
 .main-nav {
     position: sticky;
     top: 0;
     z-index: 1020;
+    width: 100%;
+    margin: 0;
     padding: 0;
-    background: var(--kt-hellblau);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    background-color: #f0f1f4;
+    border: 0;
+    box-shadow: none;
 }
 
+    .main-nav .container-fluid {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
 
-    .main-nav .navbar-nav {
-        gap: 0;
+.kt-main-menu {
+    display: flex;
+    align-items: stretch;
+    justify-content: stretch;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    gap: 0;
+}
+
+.main-nav .nav-item {
+    display: flex;
+    align-items: stretch;
+    flex: 1 1 0;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border-right: 1px solid #ffffff;
+}
+
+    .main-nav .nav-item:first-child {
+        border-left: 1px solid #ffffff;
     }
 
 
 /* ---------------------------------------------------------
-   Navigationseinträge
+   Hauptmenüpunkte
    --------------------------------------------------------- */
 
 .nav-box {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0.9rem 0.8rem;
-    color: var(--kt-weiss) !important;
-    font-size: 0.95rem;
-    font-weight: 500;
+    width: 100%;
+    min-height: 66px;
+    margin: 0;
+    padding: 0 0.7rem;
+    color: #242e51 !important;
+    background-color: #f0f1f4;
+    font-family: "Gotham Book", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 28px;
+    font-weight: 600;
+    letter-spacing: 0;
     text-align: center;
     white-space: nowrap;
+    text-decoration: none;
+    border: 0;
     border-radius: 0;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition: color 0.25s ease-out, background-color 0.25s ease-out;
 }
 
-
-    .nav-box:hover {
-        color: var(--kt-weiss) !important;
-        background: var(--kt-hellblau-hover);
-    }
-
-
-    /* Aktiver Zustand */
-
-    .nav-box:active,
+    .nav-box:hover,
+    .nav-box:focus,
+    .nav-item.dropdown:hover > .nav-box,
+    .nav-item.dropdown.show > .nav-box,
     .nav-box.active,
     .nav-item.active > .nav-box {
-        color: var(--kt-weiss) !important;
-        background: var(--kt-rot);
+        color: #02a0c7 !important;
+        background-color: #e7e8ec;
     }
 
 
-/* Externe Links */
+/* ---------------------------------------------------------
+   Kira hervorheben
+   --------------------------------------------------------- */
+
+/*
+   Gleiche Logik wie der aktive Menüpunkt der Homepage:
+   hellgrauer Hintergrund + cyanfarbene Schrift.
+*/
+
+.nav-box-kira {
+    color: #02a0c7 !important;
+    background-color: #e7e8ec;
+    font-weight: 700;
+}
+
+    .nav-box-kira strong {
+        color: inherit;
+        font-weight: 700;
+        text-shadow: none !important;
+    }
+
+    .nav-box-kira:hover,
+    .nav-box-kira:focus {
+        color: #02a0c7 !important;
+        background-color: #e7e8ec;
+    }
+
+
+/* ---------------------------------------------------------
+   Externe Links
+   --------------------------------------------------------- */
 
 .external-link-icon {
     margin-left: 0.3rem;
     font-size: 0.8em;
-    opacity: 0.7;
-    transition: opacity 0.2s ease;
+    opacity: 0.65;
+    transition: opacity 0.25s ease-out;
 }
-
 
 .nav-box:hover .external-link-icon {
     opacity: 1;
@@ -209,102 +413,139 @@ img {
 
 
 /* =========================================================
-   5. DROPDOWNS
+   DROPDOWNS
    ========================================================= */
 
-.dropdown-toggle::after {
-    margin-left: 0.4rem;
-    transition: transform 0.2s ease;
+/*
+   Wichtig:
+   Das Dropdown beginnt erst UNTER dem ursprünglichen
+   Navigationspunkt. Der Hauptmenüpunkt bleibt sichtbar.
+*/
+
+.main-nav .nav-item.dropdown {
+    position: relative;
 }
 
 
-/* Nur Pfeil des geöffneten Hauptmenüs drehen */
+    /* Haupt-Dropdown */
 
-.nav-item.dropdown.show > .dropdown-toggle::after {
-    transform: rotate(180deg);
-}
-
-
-.dropdown-menu {
-    min-width: 220px;
-    padding: 0.5rem 0;
-    margin-top: 0;
-    border: none;
-    border-radius: 0 0 var(--kt-radius-sm) var(--kt-radius-sm);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    animation: dropdownSlideDown 0.2s ease;
-}
-
-
-@keyframes dropdownSlideDown {
-    from {
-        opacity: 0;
-        transform: translateY(-8px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-
-/* Dropdown-Einträge */
-
-.dropdown-item {
-    padding: 0.7rem 1.2rem;
-    color: #000000;
-    font-size: 0.9rem;
-    transition: background-color 0.2s ease, color 0.2s ease, padding-left 0.2s ease;
-}
-
-
-    .dropdown-item:hover {
-        padding-left: 1.8rem;
-        color: var(--kt-weiss);
-        background: linear-gradient( 90deg, var(--kt-hellblau) 0%, var(--kt-hellblau-hover) 100% );
+    .main-nav .nav-item.dropdown > .dropdown-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        min-width: 230px;
+        margin: 0;
+        padding: 0.4rem 0;
+        background-color: #e7e8ec;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        z-index: 2000;
     }
 
 
-.dropdown-divider {
-    margin: 0.5rem 0;
-    border-color: var(--kt-border);
-}
+        /* Dropdown am rechten Rand, z. B. Admin / Mein Bereich */
+
+        .main-nav .nav-item.dropdown > .dropdown-menu.dropdown-menu-end {
+            right: 0;
+            left: auto;
+        }
+
+
+    /* ---------------------------------------------------------
+   HAUPTMENÜPUNKT BLEIBT SICHTBAR
+   --------------------------------------------------------- */
+
+    .main-nav .nav-item.dropdown:hover > .nav-box,
+    .main-nav .nav-item.dropdown.show > .nav-box {
+        color: #02a0c7 !important;
+        background-color: #e7e8ec;
+    }
 
 
 /* ---------------------------------------------------------
-   Verschachtelte Dropdowns
+   DROPDOWN-EINTRÄGE
    --------------------------------------------------------- */
+
+.main-nav .dropdown-item {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1.2rem;
+    color: #242e51;
+    font-size: 0.9rem;
+    font-weight: 500;
+    white-space: nowrap;
+    background-color: transparent;
+    border: none;
+    transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+
+    .main-nav .dropdown-item:hover,
+    .main-nav .dropdown-item:focus {
+        color: #02a0c7;
+        background-color: #f0f1f4;
+    }
+
+
+/* Trennlinie */
+
+.main-nav .dropdown-divider {
+    margin: 0.4rem 0;
+    border-color: #d4d6da;
+}
+
+/* =========================================================
+   7. VERSCHACHTELTE DROPDOWNS
+   ========================================================= */
 
 .dropdown-submenu {
     position: relative;
 }
 
-
     .dropdown-submenu > .dropdown-menu {
         display: none;
         top: 0;
         left: 100%;
-        margin-top: -0.5rem;
-        margin-left: 0.1rem;
+        margin: 0;
     }
-
 
     .dropdown-submenu.show > .dropdown-menu {
         display: block;
     }
 
-
+    /* Schlichter Chevron nach rechts */
     .dropdown-submenu > .dropdown-toggle::after {
-        float: right;
-        margin-top: 0.5rem;
-        transform: rotate(-90deg);
+        display: inline-block;
+        width: 0.45em;
+        height: 0.45em;
+        margin-left: auto;
+        border-top: 2px solid currentColor;
+        border-right: 2px solid currentColor;
+        border-bottom: 0;
+        border-left: 0;
+        background: none;
+        content: "";
+        transform: rotate(45deg);
+        flex-shrink: 0;
+        transition: transform 0.2s ease;
+    }
+
+    .dropdown-submenu > a {
+        display: flex !important;
+        align-items: center;
+        justify-content: space-between;
+        white-space: nowrap;
+    }
+
+    .dropdown-submenu.show > .dropdown-toggle::after {
+        transform: rotate(135deg);
     }
 
 
-/* ---------------------------------------------------------
-   Desktop Dropdown-Verhalten
-   --------------------------------------------------------- */
+/* =========================================================
+   8. DESKTOP-DROPDOWNS
+   ========================================================= */
 
 @media (min-width: 992px) {
 
@@ -312,215 +553,278 @@ img {
         z-index: 2000;
     }
 
-
     .main-nav .dropdown-menu-end {
-        right: 8px;
+        right: 0;
         left: auto;
     }
 
-
-    .navbar .nav-item.dropdown:hover > .dropdown-menu {
+    .main-nav .nav-item.dropdown:hover > .dropdown-menu {
         display: block;
     }
 
-
-    .dropdown-submenu:hover > .dropdown-menu {
+    .main-nav .dropdown-submenu:hover > .dropdown-menu {
         display: block;
     }
 
-
-    .navbar .dropdown-item {
-        cursor: pointer;
+    .dropdown-submenu:hover > .dropdown-toggle::after {
+        transform: rotate(135deg);
     }
 }
 
 
 /* =========================================================
-   6. MOBILE NAVIGATION
+   9. MOBILE NAVIGATION
    ========================================================= */
 
 .navbar-toggler {
-    padding: 0.5rem 0.75rem;
-    border-color: rgba(255, 255, 255, 0.5);
+    margin: 0.65rem 0;
+    padding: 0.5rem 0.7rem;
+    border: 1px solid rgba(36, 46, 81, 0.25);
+    border-radius: 0;
 }
-
 
 .navbar-toggler-icon {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='%23242e51' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+.navbar-toggler:focus {
+    border-color: #0093be;
+    box-shadow: 0 0 0 0.2rem rgba(0, 147, 190, 0.15);
 }
 
 
-.navbar-toggler:focus {
-    box-shadow: 0 0 0 0.2rem rgba(0, 145, 182, 0.25);
+/* =========================================================
+   10. TABLET / MOBILE
+   ========================================================= */
+
+@media (max-width: 1199.98px) {
+
+    .kt-topbar-inner {
+        grid-template-columns: 300px minmax(0, 1fr) auto;
+        padding: 1.5vh 3vw;
+        column-gap: 1.25rem;
+    }
+
+    .kt-topbar-left {
+        min-width: 300px;
+    }
+
+    .kt-logo-link {
+        width: 300px;
+        height: 60px;
+        flex-basis: 300px;
+    }
+
+    .kt-topbar-logo {
+        width: 300px !important;
+        height: 60px !important;
+        min-width: 300px !important;
+        min-height: 60px !important;
+        max-height: 60px !important;
+        flex-basis: 300px;
+    }
+
+    .kt-intranet-title {
+        font-size: 18px;
+    }
+
+    .kt-user-name {
+        font-size: 14px;
+    }
+
+    .nav-box {
+        padding: 0 0.45rem;
+        font-size: 13px;
+    }
 }
 
 
 @media (max-width: 991.98px) {
 
+    .kt-topbar-inner {
+        grid-template-columns: 260px minmax(0, 1fr) auto;
+        padding: 1rem 1.25rem;
+    }
+
+    .kt-topbar-left {
+        min-width: 260px;
+    }
+
+    .kt-topbar-right {
+        position: static;
+        top: auto;
+        right: auto;
+        bottom: auto;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    .kt-logo-link {
+        width: 260px;
+        height: 52px;
+        flex-basis: 260px;
+    }
+
+    .kt-topbar-logo {
+        width: 260px !important;
+        height: 52px !important;
+        min-width: 260px !important;
+        min-height: 52px !important;
+        max-height: 52px !important;
+        flex-basis: 260px;
+    }
+
+    .kt-user-name {
+        font-size: 13px;
+    }
+
     .main-nav {
         position: relative;
     }
 
+        .main-nav .container-fluid {
+            padding-right: 1.25rem;
+            padding-left: 1.25rem;
+        }
 
-    .navbar-collapse {
-        margin-top: 0.5rem;
-        background: var(--kt-dunkelblau);
-        border-radius: var(--kt-radius-sm);
+    .kt-main-menu {
+        display: block;
     }
 
+    .main-nav .nav-item,
+    .main-nav .nav-item:first-child {
+        display: block;
+        width: 100%;
+        border-right: 0;
+        border-left: 0;
+        border-bottom: 1px solid #ffffff;
+    }
+
+    .navbar-collapse {
+        margin-bottom: 0.75rem;
+        background-color: #f0f1f4;
+        border: 1px solid #dedfe3;
+    }
 
     .nav-box {
         justify-content: flex-start;
-        padding: 1rem 1.5rem;
-        font-size: 1rem;
+        min-height: 48px;
+        padding: 0.8rem 1.2rem;
+        color: #242e51 !important;
+        font-size: 15px;
+        line-height: 22px;
         text-align: left;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-
-    .nav-item:last-child .nav-box {
-        border-bottom: none;
-    }
-
-
-    .dropdown-menu {
-        margin-left: 1rem;
-        background: rgba(0, 0, 0, 0.1);
-        border-radius: 0;
+    .main-nav .dropdown-menu {
+        margin: 0;
+        padding: 0;
+        background-color: #e7e8ec;
+        border: 0;
         box-shadow: none;
     }
 
-
-    .dropdown-item {
-        padding: 0.7rem 1.5rem;
-        color: rgba(255, 255, 255, 0.9);
+    .main-nav .dropdown-item {
+        padding: 0.7rem 1.6rem;
+        color: #242e51;
+        font-size: 14px;
     }
 
-
-        .dropdown-item:hover {
-            padding-left: 1.5rem;
-            color: var(--kt-weiss);
-            background: rgba(255, 255, 255, 0.1);
+        .main-nav .dropdown-item:hover,
+        .main-nav .dropdown-item:focus {
+            color: #0093be;
+            background-color: #dedfe4;
         }
-
 
     .dropdown-submenu > .dropdown-menu {
         position: static;
-        margin-top: 0;
-        margin-left: 1rem;
-        border: none;
-        box-shadow: none;
+        margin: 0;
+        background-color: #dedfe4;
     }
-
 
     .dropdown-submenu > .dropdown-toggle::after {
-        transform: rotate(0deg);
+        transform: rotate(45deg);
     }
 
-
-    main {
-        padding: 1rem 0;
-    }
-}
-
-
-/* =========================================================
-   7. NAVIGATION RESPONSIVE
-   ========================================================= */
-
-/* 992px - 1199px */
-
-@media (min-width: 992px) and (max-width: 1199.98px) {
-
-    .nav-box {
-        padding: 0.8rem 0.5rem;
-        font-size: 0.8rem;
-    }
-}
-
-
-/* 1200px - 1399px */
-
-@media (min-width: 1200px) and (max-width: 1399.98px) {
-
-    .nav-box {
-        padding: 0.9rem 0.7rem;
-        font-size: 0.85rem;
-    }
-}
-
-
-/* Ab 1400px */
-
-@media (min-width: 1400px) {
-
-    .nav-box {
-        padding: 0.9rem 1rem;
-        font-size: 0.95rem;
-    }
-}
-
-
-/* Ultra-Wide */
-
-@media (min-width: 1920px) {
-
-    .main-nav .container-fluid,
-    .container-fluid {
-        max-width: 1800px;
-        margin-right: auto;
-        margin-left: auto;
-    }
-
-
-    .nav-box {
-        padding: 1rem 1.5rem;
-        font-size: 1rem;
-    }
-}
-
-
-/* 4K */
-
-@media (min-width: 2560px) {
-
-    .main-nav .container-fluid,
-    .container-fluid {
-        max-width: 2400px;
-    }
-
-
-    .nav-box {
-        padding: 1.2rem 2rem;
-        font-size: 1.1rem;
-    }
-
-
-    .dropdown-item {
-        padding: 0.9rem 1.5rem;
-        font-size: 1rem;
+    .dropdown-submenu.show > .dropdown-toggle::after {
+        transform: rotate(135deg);
     }
 }
 
 
 /* =========================================================
-   8. ACCESSIBILITY
+   11. KLEINE BILDSCHIRME
    ========================================================= */
 
-.nav-box:focus,
-.dropdown-item:focus {
-    outline: 2px solid var(--kt-hellblau);
+@media (max-width: 575.98px) {
+
+    .kt-topbar-inner {
+        grid-template-columns: 1fr auto;
+        grid-template-rows: auto auto;
+        gap: 0.5rem 1rem;
+        padding: 0.7rem 1rem;
+    }
+
+    .kt-topbar-left {
+        grid-column: 1;
+        grid-row: 1;
+        min-width: 0;
+    }
+
+    .kt-logo-link {
+        width: 210px;
+        height: 42px;
+        flex-basis: 210px;
+    }
+
+    .kt-topbar-logo {
+        width: 210px !important;
+        height: 42px !important;
+        min-width: 210px !important;
+        min-height: 42px !important;
+        max-height: 42px !important;
+        flex-basis: 210px;
+    }
+
+    .kt-topbar-center {
+        grid-column: 2;
+        grid-row: 1;
+        justify-content: flex-end;
+    }
+
+    .kt-topbar-right {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        justify-content: flex-end;
+    }
+
+    .kt-intranet-title {
+        font-size: 16px;
+        line-height: 22px;
+    }
+
+    .kt-user-name {
+        font-size: 13px;
+        line-height: 20px;
+    }
+}
+
+
+/* =========================================================
+   12. ACCESSIBILITY
+   ========================================================= */
+
+.nav-box:focus-visible,
+.dropdown-item:focus-visible,
+.kt-intranet-title:focus-visible {
+    outline: 2px solid #0093be;
     outline-offset: -2px;
 }
 
 
-.nav-item:focus-within > .nav-box {
-    background: var(--kt-hellblau-hover);
-}
-
-
 /* =========================================================
-   9. JOBS / STELLENANGEBOTE
+   15. JOBS / STELLENANGEBOTE
    ========================================================= */
 
 .jobs-page {
@@ -860,7 +1164,7 @@ img {
 
 
 /* =========================================================
-   10. STARTSEITE
+   16. STARTSEITE
    ========================================================= */
 
 .home-page {
@@ -1066,7 +1370,7 @@ img {
 }
 
 /* =========================================================
-   11. UMFRAGEN / STARTSEITEN-FEED
+   17. UMFRAGEN / STARTSEITEN-FEED
    ========================================================= */
 
 .home-poll {
@@ -1216,7 +1520,7 @@ img {
 }
 
 /* =========================================================
-   12. UMFRAGEN - ÜBERSICHT UND DETAILSEITE
+   18. UMFRAGEN - ÜBERSICHT UND DETAILSEITE
    ========================================================= */
 
 /* ---------------------------------------------------------
@@ -1414,7 +1718,7 @@ img {
 }
 
 /* =========================================================
-   13. MARKTPLATZ
+   19. MARKTPLATZ
    ========================================================= */
 
 /* ---------------------------------------------------------
@@ -1702,7 +2006,7 @@ img {
 }
 
 /* =========================================================
-   14. MEIN PROFIL
+   20. MEIN PROFIL
    ========================================================= */
 
 .profile-card {
@@ -1762,7 +2066,7 @@ img {
 }
 
 /* =========================================================
-   15. DOKUMENTE
+   21. DOKUMENTE
    ========================================================= */
 
 .dokumente-page {
@@ -1916,208 +2220,4 @@ img {
     .dokumente-accordion-body {
         padding: 1rem;
     }
-}
-/* =========================================================
-   15. DOKUMENTE
-   ========================================================= */
-
-.dokumente-page {
-    max-width: 1100px;
-}
-
-
-/* ---------------------------------------------------------
-   Accordion
-   --------------------------------------------------------- */
-
-.dokumente-accordion {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-
-.dokumente-accordion-item {
-    overflow: hidden;
-    background: var(--kt-weiss);
-    border: 1px solid var(--kt-border) !important;
-    border-radius: var(--kt-radius-md) !important;
-    box-shadow: var(--kt-shadow-sm);
-}
-
-
-.dokumente-accordion .accordion-button {
-    padding: 1.2rem 1.4rem;
-    color: var(--kt-dunkelblau);
-    background: var(--kt-weiss);
-    font-size: 1.05rem;
-    font-weight: 700;
-    box-shadow: none;
-}
-
-
-    .dokumente-accordion .accordion-button:not(.collapsed) {
-        color: var(--kt-weiss);
-        background: var(--kt-dunkelblau);
-    }
-
-
-    .dokumente-accordion .accordion-button:focus {
-        border-color: var(--kt-hellblau);
-        box-shadow: none;
-    }
-
-
-    .dokumente-accordion
-    .accordion-button:not(.collapsed)::after {
-        filter: brightness(0) invert(1);
-    }
-
-
-/* ---------------------------------------------------------
-   Inhalt
-   --------------------------------------------------------- */
-
-.dokumente-accordion-body {
-    padding: 1.5rem;
-}
-
-
-.dokumente-description {
-    margin-bottom: 1.3rem;
-    color: var(--kt-text-muted);
-    line-height: 1.6;
-}
-
-
-/* ---------------------------------------------------------
-   Speicherort
-   --------------------------------------------------------- */
-
-.dokumente-path {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-    padding: 1rem;
-    background: var(--kt-grau);
-    border-radius: var(--kt-radius-sm);
-}
-
-
-    .dokumente-path span {
-        color: var(--kt-text-muted);
-        font-size: 0.78rem;
-        font-weight: 700;
-        text-transform: uppercase;
-    }
-
-
-    .dokumente-path code {
-        color: var(--kt-dunkelblau);
-        white-space: normal;
-        word-break: break-word;
-    }
-
-
-/* ---------------------------------------------------------
-   Hervorgehobene Dokumente
-   --------------------------------------------------------- */
-
-.dokumente-highlights {
-    display: flex;
-    flex-direction: column;
-    gap: 0.7rem;
-    margin-top: 1.2rem;
-}
-
-
-.dokumente-highlight {
-    padding: 0.9rem 1rem;
-    background: var(--kt-weiss);
-    border: 1px solid var(--kt-border);
-    border-radius: var(--kt-radius-sm);
-}
-
-
-    .dokumente-highlight div {
-        display: flex;
-        flex-direction: column;
-        gap: 0.2rem;
-    }
-
-
-    .dokumente-highlight strong {
-        color: var(--kt-dunkelblau);
-    }
-
-
-    .dokumente-highlight span {
-        color: var(--kt-text-muted);
-        font-size: 0.85rem;
-    }
-
-
-/* ---------------------------------------------------------
-   Mobile
-   --------------------------------------------------------- */
-
-@media (max-width: 575.98px) {
-
-    .dokumente-accordion .accordion-button {
-        padding: 1rem;
-        font-size: 0.95rem;
-    }
-
-
-    .dokumente-accordion-body {
-        padding: 1rem;
-    }
-}
-
-/* =========================================================
-   16. DROPDOWN SUBMENU PFEIL
-   ========================================================= */
-
-/* Pfeil entfernen und durch schönen Chevron ersetzen */
-.dropdown-submenu > .dropdown-toggle::after {
-    display: inline-block;
-    width: 0.45em;
-    height: 0.45em;
-    border-right: 2px solid currentColor;
-    border-top: 2px solid currentColor;
-    transform: rotate(45deg);
-    margin-left: auto;
-    flex-shrink: 0;
-    transition: transform 0.2s ease;
-    /* Bootstrap-Standard-Pfeil überschreiben */
-    border-bottom: none;
-    border-left: none;
-    background: none;
-    content: "";
-    vertical-align: middle;
-}
-
-/* Submenu-Link als Flex damit Pfeil immer rechts bleibt */
-.dropdown-submenu > a {
-    display: flex !important;
-    justify-content: space-between;
-    align-items: center;
-    white-space: nowrap;
-}
-
-/* Pfeil dreht sich wenn Submenu offen ist */
-.dropdown-submenu.show > .dropdown-toggle::after {
-    transform: rotate(135deg);
-}
-
-/* Desktop: Pfeil dreht sich beim Hover */
-@media (min-width: 992px) {
-    .dropdown-submenu:hover > .dropdown-toggle::after {
-        transform: rotate(135deg);
-    }
-}
-
-/*Kira umrandung*/
-.nav-box-kira strong {
-    text-shadow: 0 0 5px black, 0 0 5px black;
 }

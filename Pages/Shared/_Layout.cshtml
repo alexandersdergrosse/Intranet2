@@ -12,46 +12,54 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Intranet2.styles.css" asp-append-version="true" />
-    <link rel="icon" type="image/png" sizes="32x32" href="~/Images/logok.png"> <!--Kleines Logo im Tab-->
-    <link rel="icon" type="image/png" sizes="16x16" href="~/Images/logok.png"> <!--Kleines Logo im Tab-->
+    <link rel="icon" type="image/png" sizes="32x32" href="~/Images/kt-logo-favicon-apple.jpg"> <!--Kleines Logo im Tab-->
+    <link rel="icon" type="image/png" sizes="16x16" href="~/Images/kt-logo-favicon-apple.jpg"> <!--Kleines Logo im Tab-->
 </head>
 
 <body>
     <header>
-        <!-- Topbar -->
-        <div class="bg-white text-black py-1 border-bottom">
-            <div class="container-fluid d-flex align-items-center justify-content-between p-0 px-3">
+        <!-- KOPFBEREICH WIE KREUTZTRÄGER-HOMEPAGE -->
 
-                <!-- Logo & Titel (links) -->
-                <div class="d-flex align-items-center">
-                    <a href="/index">
-                        <img src="~/Images/kt-logo.png" alt="Kreutzträger Logo" height="90" width="450">
+        <div class="kt-topbar">
+            <div class="kt-topbar-inner">
+                <!-- LINKS: KREUTZTRÄGER-LOGO -->
+                <div class="kt-topbar-left">
+                    <a asp-page="/Index" class="kt-logo-link">
+                        <img src="~/Images/kt-logo.png" alt="Kreutzträger Kältetechnik" class="kt-topbar-logo" />
                     </a>
-                    <a class="text-decoration-none fw-bold fs-4 ms-3" style="color: #273551" href="/index">
+                    <a asp-page="/Index" class="kt-intranet-title">
                         Intranet
                     </a>
                 </div>
 
-                <!-- Angemeldeter Benutzer -->
-                <div class="d-flex align-items-center">
+                <!-- RECHTS: ANGEMELDETER MITARBEITER -->
+                <div class="kt-topbar-right">
+
                     @if (User.Identity?.IsAuthenticated == true)
                     {
-                        string windowsName = User.Identity.Name ?? string.Empty;
+                        string windowsName =
+                        User.Identity.Name
+                        ?? string.Empty;
 
-                        var mitarbeiter = MitarbeiterService.GetMitarbeiterFuerBenutzername(windowsName);
+                        var mitarbeiter =
+                        MitarbeiterService
+                        .GetMitarbeiterFuerBenutzername(windowsName);
 
                         string anzeigename;
 
                         if (mitarbeiter != null)
                         {
-                            string vorname = mitarbeiter.FirstName?.Trim() ?? string.Empty;
+                            string vorname =
+                            mitarbeiter.FirstName?.Trim()
+                            ?? string.Empty;
 
-                            string nachname = mitarbeiter.LastName?.Trim() ?? string.Empty;
+                            string nachname =
+                            mitarbeiter.LastName?.Trim()
+                            ?? string.Empty;
 
-                            anzeigename = $"{vorname} {nachname}".Trim();
+                            anzeigename =
+                            $"{vorname} {nachname}".Trim();
 
-                            // Falls Vorname/Nachname im AD fehlen,
-                            // DisplayName als Fallback verwenden.
                             if (string.IsNullOrWhiteSpace(anzeigename))
                             {
                                 anzeigename = mitarbeiter.DisplayName;
@@ -59,16 +67,19 @@
                         }
                         else
                         {
-                            // Fallback, falls AD nicht erreichbar ist
-                            anzeigename = windowsName.Contains("\\") ? windowsName.Split('\\').Last() : windowsName;
+                            anzeigename =
+                            windowsName.Contains("\\")
+                            ? windowsName.Split('\\').Last()
+                            : windowsName;
                         }
 
-                        <span class="fs-5 text-black">
-                            <strong>
+                        <div class="kt-user-area">
+                            <span class="kt-user-name">
                                 Hallo @anzeigename!
-                            </strong>
-                        </span>
+                            </span>
+                        </div>
                     }
+
                 </div>
             </div>
         </div>
@@ -84,7 +95,7 @@
 
                 <!-- Navigation Items -->
                 <div class="collapse navbar-collapse" id="mainNavbar">
-                    <ul class="navbar-nav w-100 justify-content-between">
+                    <ul class="navbar-nav w-100 kt-main-menu">
 
                         <!-- 1. Home -->
                         <li class="nav-item">
@@ -540,6 +551,16 @@
                                         Sicherheitsbeauftragte je Niederlassung
                                     </a>
                                 </li>
+                                <li>
+                                    <a class="dropdown-item" asp-page="/Notfall/">
+                                        Verhalten im Notfall
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" asp-page="/Notfall/">
+                                        Verhalten bei Cyber Angriffen
+                                    </a>
+                                </li>
                             </ul>
                         </li>
 
@@ -569,6 +590,7 @@
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <!--<li><a class="dropdown-item" href="">Mein Arbeitsplatz</a></li>-->
                                 <li><a class="dropdown-item" asp-page="/MeinBereich/Profil">Mein Profil</a></li>
+                                <li><a class="dropdown-item" asp-page="/MeinBereich/">Anmerkungen</a></li>
                             </ul>
 
                         </li>
