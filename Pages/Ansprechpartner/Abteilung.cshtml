@@ -65,6 +65,28 @@
 
                         <div class="card-body">
 
+                            <!-- Foto -->
+                            @{
+                                string? fotoUrl = Model.Fotos.GetValueOrDefault(mitarbeiter.SamAccountName);
+                            }
+                            <div class="text-center mb-3">
+                                @if (!string.IsNullOrWhiteSpace(fotoUrl))
+                                {
+                                    <img src="@fotoUrl"
+                                         alt="@mitarbeiter.DisplayName"
+                                         class="rounded-circle"
+                                         style="width: 90px; height: 90px; object-fit: cover; object-position: top;" />
+                                }
+                                else
+                                {
+                                    <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto"
+                                         style="width: 90px; height: 90px;">
+                                        <span class="text-white fw-bold fs-4">
+                                            @(mitarbeiter.FirstName?.Length > 0 ? mitarbeiter.FirstName[0].ToString().ToUpper() : "?")
+                                        </span>
+                                    </div>
+                                }
+                            </div>
 
                             <!-- Name -->
                             <h2 class="h5 fw-bold mb-1">

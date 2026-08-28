@@ -367,35 +367,6 @@ img {
         background-color: #e7e8ec;
     }
 
-
-/* ---------------------------------------------------------
-   Kira hervorheben
-   --------------------------------------------------------- */
-
-/*
-   Gleiche Logik wie der aktive Menüpunkt der Homepage:
-   hellgrauer Hintergrund + cyanfarbene Schrift.
-*/
-
-.nav-box-kira {
-    color: #02a0c7 !important;
-    background-color: #e7e8ec;
-    font-weight: 700;
-}
-
-    .nav-box-kira strong {
-        color: inherit;
-        font-weight: 700;
-        text-shadow: none !important;
-    }
-
-    .nav-box-kira:hover,
-    .nav-box-kira:focus {
-        color: #02a0c7 !important;
-        background-color: #e7e8ec;
-    }
-
-
 /* ---------------------------------------------------------
    Externe Links
    --------------------------------------------------------- */
@@ -411,16 +382,9 @@ img {
     opacity: 1;
 }
 
-
 /* =========================================================
    DROPDOWNS
    ========================================================= */
-
-/*
-   Wichtig:
-   Das Dropdown beginnt erst UNTER dem ursprünglichen
-   Navigationspunkt. Der Hauptmenüpunkt bleibt sichtbar.
-*/
 
 .main-nav .nav-item.dropdown {
     position: relative;
@@ -2219,5 +2183,102 @@ img {
 
     .dokumente-accordion-body {
         padding: 1rem;
+    }
+}
+
+/* =========================================================
+   ERSTHELFER
+   ========================================================= */
+
+.ersthelfer-card {
+    overflow: hidden;
+    background-color: var(--kt-weiss);
+    border: 1px solid var(--kt-border);
+    border-radius: var(--kt-radius-md);
+    box-shadow: var(--kt-shadow-sm);
+}
+
+
+.ersthelfer-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.25rem;
+    border-bottom: 1px solid var(--kt-border-light);
+}
+
+
+.ersthelfer-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 46px;
+    height: 46px;
+    color: var(--kt-weiss);
+    background-color: var(--kt-rot);
+    border-radius: 50%;
+    font-size: 1.8rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+
+.ersthelfer-name {
+    margin: 0 0 0.2rem;
+    color: var(--kt-dunkelblau);
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+
+.ersthelfer-bereich {
+    color: var(--kt-text-muted);
+    font-size: 0.85rem;
+}
+
+
+.ersthelfer-contact {
+    padding: 1.1rem 1.25rem;
+}
+
+
+.ersthelfer-contact-row {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 1rem;
+    padding: 0.4rem 0;
+}
+
+
+.ersthelfer-contact-label {
+    color: var(--kt-text-muted);
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+
+.ersthelfer-contact-row a {
+    color: var(--kt-hellblau);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+
+    .ersthelfer-contact-row a:hover {
+        color: var(--kt-hellblau-hover);
+        text-decoration: underline;
+    }
+
+
+/* ---------------------------------------------------------
+   Mobil
+   --------------------------------------------------------- */
+
+@media (max-width: 575.98px) {
+
+    .ersthelfer-contact-row {
+        grid-template-columns: 1fr;
+        gap: 0.15rem;
     }
 }

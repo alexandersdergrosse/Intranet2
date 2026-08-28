@@ -6,15 +6,25 @@
 }
 
 <div class="container py-4">
-    <div class="mb-4">
-        <h1 class="fw-bold mb-1">
-            Umfragen verwalten
-        </h1>
-
-        <p class="text-muted">
-            Umfragen für die Startseite erstellen und auswerten.
-        </p>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="fw-bold mb-1">
+                Umfragen verwalten
+            </h1>
+            <p class="text-muted">
+                Umfragen für die Startseite erstellen und auswerten.
+            </p>
+        </div>
+        @if (User.IsInRole(Rollen.Admin))
+        {
+            <a asp-page="/Admin/Index" class="btn btn-outline-secondary">Zurück</a>
+        }
+        else
+        {
+            <a asp-page="/Umfragen/Index" class="btn btn-outline-secondary">Zurück</a>
+        }
     </div>
+
 
     @if (!string.IsNullOrWhiteSpace(Model.Meldung))
     {

@@ -1,0 +1,91 @@
+﻿@page
+@model Intranet2.Pages.Notfall.ErsthelferModel
+
+@{
+    ViewData["Title"] = "Ersthelfer";
+}
+
+<div class="container-fluid px-3 px-lg-4">
+    <!-- ÜBERSCHRIFT -->
+    <div class="mb-4">
+        <h1 class="fw-bold mb-2" style="color: var(--kt-dunkelblau);">
+            Ersthelfer
+        </h1>
+    </div>
+
+    <!-- HINWEIS -->
+    <div class="alert alert-info mb-4">
+        <strong>Im Notfall:</strong>
+        Wendet euch an einen der unten aufgeführten Ersthelfer.
+        Bei schweren oder lebensbedrohlichen Notfällen ist
+        zusätzlich der Rettungsdienst unter
+        <strong>112</strong>
+        zu verständigen.
+    </div>
+
+
+    <!-- ERSTHELFER NACH BEREICH -->
+    @foreach (var gruppe in Model.Ersthelfer.GroupBy(e => e.Bereich))
+    {
+        <section class="mb-5">
+            <h2 class="h4 fw-bold mb-3" style="color: var(--kt-dunkelblau);">
+                @gruppe.Key
+            </h2>
+
+            <div class="row g-3">
+                @foreach (var ersthelfer in gruppe)
+                {
+                    <div class="col-12 col-md-6 col-xl-4">
+                        <div class="ersthelfer-card h-100">
+                            <div class="ersthelfer-card-header">
+                                @if (!string.IsNullOrWhiteSpace(ersthelfer.FotoUrl))
+                                {
+                                    <img src="@ersthelfer.FotoUrl" alt="@ersthelfer.Name" class="rounded-circle me-3 flex-shrink-0" style="width: 70px; height: 70px; object-fit: cover; object-position: top;" />
+                                }
+                                else
+                                {
+                                    <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center me-3 flex-shrink-0" style="width: 70px; height: 70px;">
+                                        <span class="text-white fw-bold fs-5">
+                                            @(ersthelfer.Name.Length > 0 ? ersthelfer.Name[0].ToString().ToUpper() : "?")
+                                        </span>
+                                    </div>
+                                }
+
+                                <div>
+                                    <h3 class="ersthelfer-name">
+                                        @ersthelfer.Name
+                                    </h3>
+                                    <div class="ersthelfer-bereich">
+                                        @ersthelfer.Bereich
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="ersthelfer-contact">
+                                <div class="ersthelfer-contact-row">
+                                    <span class="ersthelfer-contact-label">
+                                        Telefon
+                                    </span>
+
+                                    <a href="tel:@ersthelfer.Telefon">
+                                        @ersthelfer.Telefon
+                                    </a>
+                                </div>
+
+                                <div class="ersthelfer-contact-row">
+                                    <span class="ersthelfer-contact-label">
+                                        Mobil
+                                    </span>
+
+                                    <a href="tel:@ersthelfer.Mobil.Replace(" ", "")">
+                                        @ersthelfer.Mobil
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </section>
+    }
+</div>
