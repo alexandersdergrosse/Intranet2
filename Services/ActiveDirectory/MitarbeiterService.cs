@@ -82,6 +82,8 @@ namespace Intranet2.Services.ActiveDirectory
 
                 searcher.PropertiesToLoad.Add("department");
 
+                searcher.PropertiesToLoad.Add("description");
+
                 searcher.PropertiesToLoad.Add("telephoneNumber");
 
                 searcher.PropertiesToLoad.Add("mobile");
@@ -102,8 +104,7 @@ namespace Intranet2.Services.ActiveDirectory
 
                 foreach (SearchResult result in results)
                 {
-                    var mitarbeiterEintrag =
-                        new Mitarbeiter
+                    var mitarbeiterEintrag = new Mitarbeiter
                         {
                             DisplayName = GetProperty(result, "displayName"),
 
@@ -121,14 +122,13 @@ namespace Intranet2.Services.ActiveDirectory
 
                             Department = GetProperty(result, "department"),
 
+                            Description = GetProperty(result, "description"),
+
                             TelephoneNumber = GetProperty(result, "telephoneNumber"),
 
                             Mobile = GetProperty(result, "mobile"),
 
-                            StreetAddress =
-                                GetProperty(
-                                    result,
-                                    "streetAddress"),
+                            StreetAddress = GetProperty(result, "streetAddress"),
 
                             PostalCode = GetProperty(result, "postalCode"),
 
@@ -242,8 +242,7 @@ namespace Intranet2.Services.ActiveDirectory
         }
 
         // MITARBEITER EINER ABTEILUNG LADEN
-        public List<Mitarbeiter> GetMitarbeiterFuerAbteilung(
-            string abteilung)
+        public List<Mitarbeiter> GetMitarbeiterFuerAbteilung(string abteilung)
         {
             return GetMitarbeiter()
 
@@ -266,6 +265,61 @@ namespace Intranet2.Services.ActiveDirectory
                 .ThenBy(m => m.DisplayName)
 
                 .ToList();
+        }
+        // UNTERABTEILUNGEN EINER HAUPTABTEILUNG LADEN
+        public List<UnterabteilungGruppe> GetUnterabteilungenFuerAbteilung(string abteilung)
+        {
+            if (string.IsNullOrWhiteSpace(abteilung))
+            {
+                return new List<UnterabteilungGruppe>();
+            }
+
+            return GetMitarbeiter()
+
+                // Funktionskonten nicht anzeigen
+                .Where(m => !IstFunktionskonto(m))
+
+                // Nur Mitarbeiter der ausgewählten Hauptabteilung
+                .Where(m => !string.IsNullOrWhiteSpace(m.Department) && string.Equals(m.Department.Trim(), abteilung.Trim(), StringComparison.OrdinalIgnoreCase))
+
+                // Nur Mitarbeiter mit eingetragener Unterabteilung
+                .Where(m => !string.IsNullOrWhiteSpace(m.Description))
+
+                // Nach Beschreibung = Unterabteilung gruppieren
+                .GroupBy(m => m.Description.Trim(), StringComparer.OrdinalIgnoreCase)
+
+                // Gruppen erzeugen
+                .Select(gruppe => new UnterabteilungGruppe
+                {
+                    Name = gruppe.Key,
+
+                    Mitarbeiter = gruppe.OrderBy(m => m.Title).ThenBy(m => m.DisplayName).ToList()
+                })
+
+                // Alphabetisch
+                .OrderBy(g => g.Name).ToList();
+        }
+
+        // MITARBEITER EINER UNTERABTEILUNG LADEN
+        public List<Mitarbeiter> GetMitarbeiterFuerUnterabteilung(string abteilung, string unterabteilung)
+        {
+            if (string.IsNullOrWhiteSpace(abteilung) || string.IsNullOrWhiteSpace(unterabteilung))
+            {
+                return new List<Mitarbeiter>();
+            }
+
+            return GetMitarbeiter()
+
+                // Funktionskonten nicht anzeigen
+                .Where(m => !IstFunktionskonto(m))
+
+                // Hauptabteilung prüfen
+                .Where(m => !string.IsNullOrWhiteSpace(m.Department) && string.Equals(m.Department.Trim(), abteilung.Trim(), StringComparison.OrdinalIgnoreCase))
+
+                // Unterabteilung prüfen
+                .Where(m => !string.IsNullOrWhiteSpace(m.Description) && string.Equals(m.Description.Trim(), unterabteilung.Trim(), StringComparison.OrdinalIgnoreCase))
+
+                .OrderBy(m => m.Title).ThenBy(m => m.DisplayName).ToList();
         }
 
         // AKTUELLEN MITARBEITER ÜBER WINDOWS-BENUTZERNAMEN FINDEN

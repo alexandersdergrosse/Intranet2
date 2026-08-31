@@ -2,229 +2,68 @@
 @model Intranet2.Pages.Ansprechpartner.AbteilungModel
 
 @{
-    ViewData["Title"] = "Abteilung " + Model.Abteilung;
+    ViewData["Title"] = Model.Abteilung;
 }
 
-
-<div class="container py-4">
-
-
+<div class="abteilungen-container">
     <!-- Zurück -->
     <div class="mb-4">
-
         <a asp-page="/Ansprechpartner/Abteilungen" class="text-decoration-none">
             ← Zurück zu Abteilungen
         </a>
-
     </div>
-
 
     <!-- Überschrift -->
-    <div class="mb-4">
+    <h1 class="abteilungen-title">
+        @Model.Abteilung
+    </h1>
 
-        <h1 class="fw-bold">
-            @Model.Abteilung
-        </h1>
+    <p class="abteilungen-description">
+        Wähle eine Unterabteilung aus,
+        um die zugehörigen Mitarbeiter anzuzeigen.
+    </p>
 
-
-        <p class="text-muted">
-            Mitarbeiter der Abteilung
-            @Model.Abteilung
-        </p>
-
-    </div>
-
-
-    @if (Model.Mitarbeiter.Count == 0)
+    @if (Model.Unterabteilungen.Count == 0)
     {
         <div class="alert alert-warning">
-
             Für die Abteilung
-
             <strong>
                 @Model.Abteilung
             </strong>
-
-            wurden keine Mitarbeiter
+            wurden keine Unterabteilungen
             im Active Directory gefunden.
-
         </div>
     }
     else
     {
-        <div class="row g-4">
-
-
-            @foreach (var mitarbeiter in Model.Mitarbeiter)
+        <div class="abteilungen-list">
+            @foreach (var unterabteilung in Model.Unterabteilungen)
             {
-                <div class="col-xl-4 col-lg-6 col-md-6">
+                <a asp-page="/Ansprechpartner/Unterabteilung" asp-route-abteilung="@Model.Abteilung" asp-route-unterabteilung="@unterabteilung.Name" class="abteilung-item">
+                    <span class="abteilung-name">
+                        @unterabteilung.Name
+                    </span>
 
+                    <span class="abteilung-info">
+                        <span class="mitarbeiter-anzahl">
+                            @unterabteilung.Mitarbeiter.Count
 
-                    <div class="card h-100 shadow-sm">
-
-
-                        <div class="card-body">
-
-                            <!-- Foto -->
-                            @{
-                                string? fotoUrl = Model.Fotos.GetValueOrDefault(mitarbeiter.SamAccountName);
-                            }
-                            <div class="text-center mb-3">
-                                @if (!string.IsNullOrWhiteSpace(fotoUrl))
-                                {
-                                    <img src="@fotoUrl"
-                                         alt="@mitarbeiter.DisplayName"
-                                         class="rounded-circle"
-                                         style="width: 90px; height: 90px; object-fit: cover; object-position: top;" />
-                                }
-                                else
-                                {
-                                    <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto"
-                                         style="width: 90px; height: 90px;">
-                                        <span class="text-white fw-bold fs-4">
-                                            @(mitarbeiter.FirstName?.Length > 0 ? mitarbeiter.FirstName[0].ToString().ToUpper() : "?")
-                                        </span>
-                                    </div>
-                                }
-                            </div>
-
-                            <!-- Name -->
-                            <h2 class="h5 fw-bold mb-1">
-                                @mitarbeiter.DisplayName
-                            </h2>
-
-
-                            <!-- Position -->
-                            @if (!string.IsNullOrWhiteSpace(mitarbeiter.Title))
+                            @if (unterabteilung.Mitarbeiter.Count == 1)
                             {
-                                <div class="text-primary fw-semibold mb-2">
-                                    @mitarbeiter.Title
-                                </div>
+                                <text>Mitarbeiter</text>
                             }
-
-
-                            <!-- Abteilung -->
-                            @if (!string.IsNullOrWhiteSpace(mitarbeiter.Department))
+                            else
                             {
-                                <div class="text-muted mb-3">
-                                    @mitarbeiter.Department
-                                </div>
+                                <text>Mitarbeiter</text>
                             }
+                        </span>
 
-
-                            <hr />
-
-
-                            <!-- Niederlassung -->
-                            @if (!string.IsNullOrWhiteSpace(mitarbeiter.Niederlassung))
-                            {
-                                <div class="mb-2">
-
-                                    <strong>
-                                        Niederlassung:
-                                    </strong>
-
-                                    <br />
-
-                                    @mitarbeiter.Niederlassung
-
-                                </div>
-                            }
-
-
-                            <!-- Telefon -->
-                            @if (!string.IsNullOrWhiteSpace(mitarbeiter.TelephoneNumber))
-                            {
-                                <div class="mb-2">
-
-                                    <strong>
-                                        Telefon:
-                                    </strong>
-
-                                    <br />
-
-                                    <a href="tel:@mitarbeiter.TelephoneNumber" class="text-decoration-none">
-                                        @mitarbeiter.TelephoneNumber
-                                    </a>
-
-                                </div>
-                            }
-
-                            <!-- Mobil -->
-                            @if (!string.IsNullOrWhiteSpace(mitarbeiter.Mobile))
-                            {
-                                <div class="mb-2">
-
-                                    <strong>
-                                        Mobil:
-                                    </strong>
-
-                                    <br />
-
-                                    <a href="tel:@mitarbeiter.Mobile" class="text-decoration-none">
-                                        @mitarbeiter.Mobile
-                                    </a>
-
-                                </div>
-                            }
-
-
-                            <!-- E-Mail -->
-                            @if (!string.IsNullOrWhiteSpace(mitarbeiter.Email))
-                            {
-                                <div class="mb-2">
-
-                                    <strong>
-                                        E-Mail:
-                                    </strong>
-
-                                    <br />
-
-                                    <a href="mailto:@mitarbeiter.Email" class="text-decoration-none">
-
-                                        @mitarbeiter.Email
-
-                                    </a>
-
-                                </div>
-                            }
-
-
-                            <!-- Adresse -->
-                            @if (!string.IsNullOrWhiteSpace(mitarbeiter.StreetAddress))
-                            {
-                                <div class="mt-3">
-
-                                    <strong>
-                                        Standort:
-                                    </strong>
-
-                                    <br />
-
-                                    <span class="text-muted">
-
-                                        @mitarbeiter.StreetAddress
-
-                                        <br />
-
-                                        @mitarbeiter.PostalCode
-                                        @mitarbeiter.City
-
-                                    </span>
-
-                                </div>
-                            }
-
-
-                        </div>
-
-                    </div>
-
-                </div>
+                        <span class="abteilung-arrow">
+                            →
+                        </span>
+                    </span>
+                </a>
             }
-
-
         </div>
     }
-
 </div>
