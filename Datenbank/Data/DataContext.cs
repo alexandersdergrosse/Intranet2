@@ -28,11 +28,15 @@ namespace Intranet2.Datenbank.Data
             // Ein Windows-Benutzer darf nur einmal vorhanden sein.
             modelBuilder.Entity<Benutzer>().HasIndex(b => b.WindowsBenutzername).IsUnique();
 
+            // ✅ EINFÜGEN in OnModelCreating():
+            modelBuilder.Entity<NewsBeitrag>()
+                .Property(n => n.Inhalt)
+                .HasColumnType("nvarchar(max)");
+
             // PRO BENUTZER NUR EINE STIMME PRO UMFRAGE
             modelBuilder.Entity<UmfrageStimme>().HasIndex(s => new { s.UmfrageId, s.WindowsBenutzername }).IsUnique();
 
             // UMFRAGE -> OPTIONEN
-
             modelBuilder.Entity<UmfrageOption>()
                 .HasOne(o => o.Umfrage)
                 .WithMany(u => u.Optionen)

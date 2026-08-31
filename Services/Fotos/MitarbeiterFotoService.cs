@@ -8,8 +8,7 @@
 
         public MitarbeiterFotoService(IConfiguration configuration, ILogger<MitarbeiterFotoService> logger)
         {
-            _basisPfad = configuration["Mitarbeiterfotos:Pfad"]
-                         ?? @"\\fileserver\Volume_V\mitarbeiter_fotos";
+            _basisPfad = configuration["Mitarbeiterfotos:Pfad"] ?? @"\\fileserver\Volume_V\mitarbeiter_fotos";
             _logger = logger;
         }
 
@@ -19,60 +18,31 @@
 
             try
             {
-                // Ordnername = "Vorname Nachname"
                 string vollname = $"{vorname} {nachname}".Trim();
 
-                _logger.LogInformation("Suche Foto für: '{Vollname}'", vollname);
+                string? mitarbeiterOrdner = Directory.GetDirectories(_basisPfad).FirstOrDefault(d => Path.GetFileName(d).Equals(vollname, StringComparison.OrdinalIgnoreCase));
 
-                // Ordner suchen (case-insensitive)
-                string? mitarbeiterOrdner = Directory
-                    .GetDirectories(_basisPfad)
-                    .FirstOrDefault(d => Path.GetFileName(d)
-                        .Equals(vollname, StringComparison.OrdinalIgnoreCase));
+                if (mitarbeiterOrdner == null) return null;
 
-                if (mitarbeiterOrdner == null)
-                {
-                    _logger.LogInformation("Kein Ordner gefunden für: '{Vollname}'", vollname);
-                    return null;
-                }
+                var bilder = Directory.GetFiles(mitarbeiterOrdner).Where(f => _erlaubteEndungen.Contains(Path.GetExtension(f).ToLowerInvariant())).ToList();
 
-                _logger.LogInformation("Ordner gefunden: {Ordner}", mitarbeiterOrdner);
+                //Nur ein Durchlauf:
+                string? erstesBild = bilder.FirstOrDefault();
+                if (erstesBild == null) return null;
 
-                // Bild suchen – zuerst exakter Name, dann erstes Bild im Ordner
-                var bilder = Directory
-                    .GetFiles(mitarbeiterOrdner)
-                    .Where(f => _erlaubteEndungen.Contains(
-                        Path.GetExtension(f).ToLowerInvariant()))
-                    .ToList();
+                // Exaktes Bild bevorzugen:
+                string? exaktesBild = bilder.FirstOrDefault(f => Path.GetFileNameWithoutExtension(f).Equals(vollname, StringComparison.OrdinalIgnoreCase));
 
-                if (!bilder.Any())
-                {
-                    _logger.LogInformation("Keine Bilder im Ordner gefunden.");
-                    return null;
-                }
-
-                // 1. Bild mit exakt dem Vollnamen suchen (z.B. "Jens Behnken.jpg")
-                string? exaktesBild = bilder.FirstOrDefault(f =>
-                    Path.GetFileNameWithoutExtension(f)
-                        .Equals(vollname, StringComparison.OrdinalIgnoreCase));
-
-                if (exaktesBild != null)
-                {
-                    _logger.LogInformation("✅ Exaktes Bild gefunden: {Datei}", Path.GetFileName(exaktesBild));
-                    return ZuUrl(exaktesBild);
-                }
-
-                // 2. Erstes Bild im Ordner als Fallback
-                _logger.LogInformation("✅ Erstes Bild als Fallback: {Datei}", Path.GetFileName(bilder.First()));
-                return ZuUrl(bilder.First());
+                //Exaktes Bild oder Fallback — kein doppelter Durchlauf:
+                return ZuUrl(exaktesBild ?? erstesBild);
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "Foto für '{Vorname} {Nachname}' konnte nicht geladen werden.",
-                    vorname, nachname);
+                _logger.LogWarning(ex, "Foto für '{Vorname} {Nachname}' konnte nicht geladen werden.", vorname, nachname);
                 return null;
             }
         }
+
 
         private string ZuUrl(string dateiPfad)
         {

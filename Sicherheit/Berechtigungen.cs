@@ -1,6 +1,6 @@
 ﻿namespace Intranet2.Sicherheit
 {
-    public class Berechtigungen
+    public static class Berechtigungen
     {
         public const string AdminBereich = "AdminBereich";
 

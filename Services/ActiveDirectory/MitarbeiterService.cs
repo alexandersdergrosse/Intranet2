@@ -184,14 +184,11 @@ namespace Intranet2.Services.ActiveDirectory
         }
 
         // FUNKTIONSKONTEN NICHT ALS MITARBEITER ANZEIGEN
+        private static readonly string[] _funktionskontoSchluessel = ["Alarmhandy"];
+
         private static bool IstFunktionskonto(Mitarbeiter mitarbeiter)
         {
-            if (mitarbeiter.DisplayName.Contains("Alarmhandy", StringComparison.OrdinalIgnoreCase))
-            {
-                return true;
-            }
-
-            return false;
+            return _funktionskontoSchluessel.Any(k => mitarbeiter.DisplayName.Contains(k, StringComparison.OrdinalIgnoreCase));
         }
 
 

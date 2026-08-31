@@ -45,10 +45,8 @@ namespace Intranet2.Services.Jobs
 
                 // Die Webseite muss nicht bei jedem
                 // Intranet-Aufruf erneut geladen werden.
-                if (stellenangebote.Count > 0)
-                {
-                    _cache.Set(CacheKey, stellenangebote, TimeSpan.FromMinutes(15));
-                }
+                TimeSpan cacheDauer = stellenangebote.Count > 0 ? TimeSpan.FromMinutes(15) : TimeSpan.FromMinutes(2);
+                _cache.Set(CacheKey, stellenangebote, cacheDauer);
 
                 _logger.LogInformation("{Anzahl} Stellenangebote wurden von {Adresse} geladen.", stellenangebote.Count, StellenangeboteAdresse);
 

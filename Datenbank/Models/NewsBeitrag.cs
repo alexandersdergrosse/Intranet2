@@ -32,7 +32,7 @@ namespace Intranet2.Datenbank.Models
         public string? BildPfad { get; set; }
 
         // VERÖFFENTLICHUNG
-        public DateTime VeroeffentlichtAm { get; set; } = DateTime.Now;
+        public DateTime VeroeffentlichtAm { get; set; } = DateTime.UtcNow;
 
         public bool IstVeroeffentlicht { get; set; } = true;
 

@@ -13,7 +13,7 @@ namespace Intranet2.Datenbank.Models
         [MaxLength(1000)]
         public string? Beschreibung { get; set; }
 
-        public DateTime StartetAm { get; set; } = DateTime.Now;
+        public DateTime StartetAm { get; set; } = DateTime.UtcNow;
 
         public DateTime? EndetAm { get; set; }
 

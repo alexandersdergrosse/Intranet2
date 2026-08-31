@@ -31,7 +31,7 @@ namespace Intranet2.Pages
         // SEITE LADEN
         public async Task OnGetAsync()
         {
-            DateTime jetzt = DateTime.Now;
+            DateTime jetzt = DateTime.UtcNow;
 
             // GROSSE NEWS
             NewsItems = await _context.NewsBeitraege.AsNoTracking().Where(n => n.IstVeroeffentlicht).Where(n => n.VeroeffentlichtAm <= jetzt).Where(n => !n.IstKurzmeldung)
@@ -74,7 +74,7 @@ namespace Intranet2.Pages
                 return Forbid();
             }
 
-            DateTime jetzt = DateTime.Now;
+            DateTime jetzt = DateTime.UtcNow;
 
             bool umfrageAktiv = await _context.Umfragen.AnyAsync(u => u.Id == umfrageId && u.IstAktiv && u.StartetAm <= jetzt && (!u.EndetAm.HasValue || u.EndetAm.Value >= jetzt));
 

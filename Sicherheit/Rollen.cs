@@ -1,6 +1,6 @@
 ﻿namespace Intranet2.Sicherheit
 {
-    public class Rollen
+    public static class Rollen
     {
         public const string Benutzer = "Benutzer";
 

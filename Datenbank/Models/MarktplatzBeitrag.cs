@@ -23,7 +23,7 @@ namespace Intranet2.Datenbank.Models
         [MaxLength(500)]
         public string? BildPfad { get; set; }
 
-        public DateTime ErstelltAm { get; set; } = DateTime.Now;
+        public DateTime ErstelltAm { get; set; } = DateTime.UtcNow;
 
         // Benutzer, der den Beitrag erstellt hat
         public int BenutzerId { get; set; }
