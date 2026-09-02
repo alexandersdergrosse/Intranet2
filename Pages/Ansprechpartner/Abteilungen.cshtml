@@ -5,155 +5,77 @@
     ViewData["Title"] = "Abteilungen";
 }
 
-
-<style>
-
-    .abteilungen-container {
-        max-width: 1000px;
-        margin: 0 auto;
-        padding: 30px 20px;
-    }
-
-
-    .abteilungen-title {
-        font-size: 2.3rem;
-        font-weight: bold;
-        color: #333;
-        text-align: center;
-        margin-bottom: 10px;
-    }
-
-
-    .abteilungen-description {
-        text-align: center;
-        color: #6c757d;
-        margin-bottom: 35px;
-    }
-
-
-    .abteilungen-list {
-        max-width: 700px;
-        margin: 0 auto;
-    }
-
-
-    .abteilung-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 15px 18px;
-        border-bottom: 2px solid #0091b6;
-        color: #333;
-        text-decoration: none;
-        transition: background-color 0.2s ease, padding-left 0.2s ease;
-    }
-
-
-        .abteilung-item:hover {
-            background-color: #f0f8ff;
-            padding-left: 25px;
-            color: #273551;
-        }
-
-
-    .abteilung-name {
-        font-size: 1.1rem;
-        font-weight: 600;
-    }
-
-
-    .abteilung-info {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-
-
-    .mitarbeiter-anzahl {
-        color: #6c757d;
-        font-size: 0.9rem;
-    }
-
-
-    .abteilung-arrow {
-        font-size: 1.1rem;
-    }
-
-</style>
-
-
 <div class="abteilungen-container">
-
-    <div class="mb-4">
-
-        <a asp-page="/Ansprechpartner/Ansprechpartner" class="text-decoration-none">
-            ← Zurück zu Ansprechpartner
-        </a>
-
-    </div>
-
+    <a asp-page="/Ansprechpartner/Ansprechpartner" class="ansprechpartner-back-link">
+        ← Zurück zu Ansprechpartner
+    </a>
 
     <h1 class="abteilungen-title">
         Abteilungen
     </h1>
 
-
     <p class="abteilungen-description">
         Wähle eine Abteilung aus, um die zugehörigen
-        Unterabteilungen anzuzeigen.
+        Unterabteilungen und Mitarbeiter anzuzeigen.
     </p>
 
+    <partial name="_MitarbeiterSuche" />
 
     @if (Model.Abteilungen.Count == 0)
     {
         <div class="alert alert-warning">
-
             Es wurden keine Abteilungen
             im Active Directory gefunden.
-
         </div>
     }
     else
     {
         <div class="abteilungen-list">
-
             @foreach (var abteilung in Model.Abteilungen)
             {
-                <a asp-page="/Ansprechpartner/Abteilung" asp-route-abteilung="@abteilung.Name" class="abteilung-item">
+                bool istGeschaeftsfuehrung = string.Equals(abteilung.Name, "Geschäftsführung", StringComparison.OrdinalIgnoreCase) || string.Equals(abteilung.Name, "Geschaeftsfuehrung", StringComparison.OrdinalIgnoreCase);
 
-                    <span class="abteilung-name">
-                        @abteilung.Name
-                    </span>
-
-
-                    <span class="abteilung-info">
-
-                        <span class="mitarbeiter-anzahl">
-
-                            @abteilung.Mitarbeiter.Count
-
-                            @if (abteilung.Mitarbeiter.Count == 1)
-                            {
-                                <text>Mitarbeiter</text>
-                            }
-                            else
-                            {
-                                <text>Mitarbeiter</text>
-                            }
-
+                @if (istGeschaeftsfuehrung)
+                {
+                    <!-- Geschäftsführung besitzt keine Unterabteilung. Deshalb direkt zu den Mitarbeitern. -->
+                    <a asp-page="/Ansprechpartner/Unterabteilung" asp-route-abteilung="@abteilung.Name" asp-route-direkt="true" class="abteilung-item">
+                        <span class="abteilung-name">
+                            @abteilung.Name
                         </span>
 
+                        <span class="abteilung-info">
+                            <span class="mitarbeiter-anzahl">
+                                @abteilung.Mitarbeiter.Count
+                                Mitarbeiter
+                            </span>
 
-                        <span class="abteilung-arrow">
-                            ℹ️
+                            <span class="abteilung-arrow">
+                                →
+                            </span>
+                        </span>
+                    </a>
+                }
+                else
+                {
+                    <!-- Normale Abteilung: zuerst Unterabteilungen anzeigen. -->
+                    <a asp-page="/Ansprechpartner/Abteilung" asp-route-abteilung="@abteilung.Name" class="abteilung-item">
+                        <span class="abteilung-name">
+                            @abteilung.Name
                         </span>
 
-                    </span>
+                        <span class="abteilung-info">
+                            <span class="mitarbeiter-anzahl">
+                                @abteilung.Mitarbeiter.Count
+                                Mitarbeiter
+                            </span>
 
-                </a>
+                            <span class="abteilung-arrow">
+                                →
+                            </span>
+                        </span>
+                    </a>
+                }
             }
-
         </div>
     }
-
 </div>

@@ -1,11 +1,9 @@
 using Intranet2.Datenbank.Data;
-using Intranet2.Datenbank.Models;
 using Intranet2.Services.ActiveDirectory;
 using Intranet2.Services.Jobs;
 using Intranet2.Sicherheit;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -7,7 +7,6 @@ namespace Intranet2.Pages.Ansprechpartner
     {
         private readonly MitarbeiterService _mitarbeiterService;
 
-
         public AbteilungenModel(MitarbeiterService mitarbeiterService)
         {
             _mitarbeiterService = mitarbeiterService;

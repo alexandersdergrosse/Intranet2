@@ -24,9 +24,9 @@ namespace Intranet2.Pages.Ansprechpartner
                 return RedirectToPage("/Ansprechpartner/Abteilungen");
             }
 
-            Abteilung = abteilung;
+            Abteilung = abteilung.Trim();
 
-            Unterabteilungen = _mitarbeiterService.GetUnterabteilungenFuerAbteilung(abteilung);
+            Unterabteilungen = _mitarbeiterService.GetUnterabteilungenFuerAbteilung(Abteilung);
 
             return Page();
         }

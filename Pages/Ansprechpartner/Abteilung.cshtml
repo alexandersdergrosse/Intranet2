@@ -6,14 +6,10 @@
 }
 
 <div class="abteilungen-container">
-    <!-- Zurück -->
-    <div class="mb-4">
-        <a asp-page="/Ansprechpartner/Abteilungen" class="text-decoration-none">
-            ← Zurück zu Abteilungen
-        </a>
-    </div>
+    <a asp-page="/Ansprechpartner/Abteilungen" class="ansprechpartner-back-link">
+        ← Zurück zu Abteilungen
+    </a>
 
-    <!-- Überschrift -->
     <h1 class="abteilungen-title">
         @Model.Abteilung
     </h1>
@@ -27,11 +23,20 @@
     {
         <div class="alert alert-warning">
             Für die Abteilung
+
             <strong>
                 @Model.Abteilung
             </strong>
+
             wurden keine Unterabteilungen
             im Active Directory gefunden.
+
+            <br />
+            <br />
+
+            Prüfe, ob bei den Mitarbeitern im
+            AD-Feld <strong>Beschreibung</strong>
+            die Unterabteilung eingetragen ist.
         </div>
     }
     else
@@ -48,14 +53,7 @@
                         <span class="mitarbeiter-anzahl">
                             @unterabteilung.Mitarbeiter.Count
 
-                            @if (unterabteilung.Mitarbeiter.Count == 1)
-                            {
-                                <text>Mitarbeiter</text>
-                            }
-                            else
-                            {
-                                <text>Mitarbeiter</text>
-                            }
+                            @(unterabteilung.Mitarbeiter.Count == 1 ? "Mitarbeiter" : "Mitarbeiter")
                         </span>
 
                         <span class="abteilung-arrow">
@@ -63,7 +61,7 @@
                         </span>
                     </span>
                 </a>
-            }
+                }
         </div>
     }
 </div>

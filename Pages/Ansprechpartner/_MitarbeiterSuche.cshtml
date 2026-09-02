@@ -1,0 +1,405 @@
+﻿@using Intranet2.Services.ActiveDirectory
+@inject MitarbeiterService MitarbeiterService
+
+@{
+    List<Mitarbeiter> suchMitarbeiter =
+        MitarbeiterService.GetSuchbareMitarbeiter();
+
+    string aktuelleSeite =
+        ViewContext.RouteData.Values["page"]?.ToString()
+        ?? string.Empty;
+
+    bool istAbteilungsSuche =
+        aktuelleSeite.EndsWith(
+            "/Abteilungen",
+            StringComparison.OrdinalIgnoreCase);
+}
+
+
+<div class="mitarbeiter-suche">
+
+    <div class="mitarbeiter-suche-header">
+
+        <label for="mitarbeiterSuchfeld"
+               class="mitarbeiter-suche-label">
+            Mitarbeiter suchen
+        </label>
+
+        <p class="mitarbeiter-suche-hinweis">
+            Suche nach Vor- oder Nachname.
+        </p>
+
+    </div>
+
+
+    <div class="mitarbeiter-suche-input-wrapper">
+
+        <span class="mitarbeiter-suche-icon"
+              aria-hidden="true">
+            🔍
+        </span>
+
+        <input id="mitarbeiterSuchfeld"
+               type="search"
+               class="form-control mitarbeiter-suche-input"
+               placeholder="z. B. Jan-Peter Nissen"
+               autocomplete="off"
+               aria-label="Mitarbeiter suchen" />
+
+    </div>
+
+
+    <div id="mitarbeiterSuchErgebnis"
+         class="mitarbeiter-suche-ergebnisse"
+         hidden>
+
+
+        @foreach (Mitarbeiter mitarbeiter in suchMitarbeiter)
+        {
+            string suchText =
+            $"{mitarbeiter.Anzeigename} " +
+            $"{mitarbeiter.FirstName} " +
+            $"{mitarbeiter.LastName} " +
+            $"{mitarbeiter.Title} " +
+            $"{mitarbeiter.Department} " +
+            $"{mitarbeiter.Unterabteilung} " +
+            $"{mitarbeiter.Niederlassung}";
+
+
+            string initial =
+            !string.IsNullOrWhiteSpace(mitarbeiter.Anzeigename)
+            ? mitarbeiter.Anzeigename[0]
+            .ToString()
+            .ToUpperInvariant()
+            : "?";
+
+
+            bool istGeschaeftsfuehrung =
+            string.Equals(
+            mitarbeiter.Department,
+            "Geschäftsführung",
+            StringComparison.OrdinalIgnoreCase)
+            ||
+            string.Equals(
+            mitarbeiter.Department,
+            "Geschaeftsfuehrung",
+            StringComparison.OrdinalIgnoreCase);
+
+
+            <div class="mitarbeiter-suche-eintrag"
+                 data-mitarbeiter-suche="@suchText"
+                 hidden>
+
+
+                <div class="mitarbeiter-suche-person">
+
+
+                    <!-- =========================================
+                         PERSON
+                         ========================================= -->
+
+                    <div class="mitarbeiter-suche-avatar">
+
+                        @initial
+
+                    </div>
+
+
+                    <div class="mitarbeiter-suche-person-info">
+
+
+                        <!-- NAME -->
+
+                        <div class="mitarbeiter-suche-name">
+
+                            @mitarbeiter.Anzeigename
+
+                            @if (mitarbeiter.IstLeitung)
+                            {
+                                <span class="mitarbeiter-suche-leitung">
+                                    Leitung
+                                </span>
+                            }
+
+                        </div>
+
+
+                        <!-- POSITION -->
+                        @if (!string.IsNullOrWhiteSpace(
+                                            mitarbeiter.Title))
+                        {
+                            <div class="mitarbeiter-suche-position">
+
+                                @mitarbeiter.Title
+
+                            </div>
+                        }
+
+
+                        <!-- ABTEILUNG / UNTERABTEILUNG -->
+
+                        <div class="mitarbeiter-suche-meta">
+
+                            @if (!string.IsNullOrWhiteSpace(
+                                                    mitarbeiter.Department))
+                            {
+                                <span>
+                                    @mitarbeiter.Department
+                                </span>
+                            }
+
+
+                            @if (!string.IsNullOrWhiteSpace(
+                                                    mitarbeiter.Unterabteilung))
+                            {
+                                <span>·</span>
+
+                                <span>
+                                    @mitarbeiter.Unterabteilung
+                                </span>
+                            }
+
+
+                            @if (!string.IsNullOrWhiteSpace(
+                                                    mitarbeiter.Niederlassung))
+                            {
+                                <span>·</span>
+
+                                <span>
+                                    @mitarbeiter.Niederlassung
+                                </span>
+                            }
+
+                        </div>
+
+
+                        <!-- KONTAKT -->
+
+                        <div class="mitarbeiter-suche-kontakt">
+
+                            @if (!string.IsNullOrWhiteSpace(
+                                                    mitarbeiter.TelephoneNumber))
+                            {
+                                <a href="tel:@mitarbeiter.TelephoneNumber"
+                                   class="mitarbeiter-suche-kontakt-link">
+
+                                    Tel. @mitarbeiter.TelephoneNumber
+
+                                </a>
+                            }
+
+
+                            @if (!string.IsNullOrWhiteSpace(
+                                                    mitarbeiter.Mobile))
+                            {
+                                <a href="tel:@mitarbeiter.Mobile"
+                                   class="mitarbeiter-suche-kontakt-link">
+
+                                    Mobil @mitarbeiter.Mobile
+
+                                </a>
+                            }
+
+
+                            @if (!string.IsNullOrWhiteSpace(
+                                                    mitarbeiter.Email))
+                            {
+                                <a href="mailto:@mitarbeiter.Email"
+                                   class="mitarbeiter-suche-kontakt-link">
+
+                                    E-Mail
+
+                                </a>
+                            }
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =========================================
+                         ZUM PASSENDEN BEREICH
+                         ========================================= -->
+
+                    <div class="mitarbeiter-suche-aktion">
+
+
+                        @if (istAbteilungsSuche)
+                        {
+                            @if (istGeschaeftsfuehrung)
+                            {
+                                <a asp-page="/Ansprechpartner/Unterabteilung"
+                                   asp-route-abteilung="@mitarbeiter.Department"
+                                   asp-route-person="@mitarbeiter.SamAccountName"
+                                   asp-route-direkt="true"
+                                   class="btn btn-sm btn-outline-primary">
+
+                                    Zur Person →
+
+                                </a>
+                            }
+                            else if (
+                            !string.IsNullOrWhiteSpace(
+                            mitarbeiter.Department)
+                            &&
+                            !string.IsNullOrWhiteSpace(
+                            mitarbeiter.Unterabteilung))
+                            {
+                                <a asp-page="/Ansprechpartner/Unterabteilung"
+                                   asp-route-abteilung="@mitarbeiter.Department"
+                                   asp-route-unterabteilung="@mitarbeiter.Unterabteilung"
+                                   asp-route-person="@mitarbeiter.SamAccountName"
+                                   class="btn btn-sm btn-outline-primary">
+
+                                    Zur Person →
+
+                                </a>
+                            }
+                            else if (!string.IsNullOrWhiteSpace(
+                            mitarbeiter.Department))
+                            {
+                                <a asp-page="/Ansprechpartner/Abteilung"
+                                   asp-route-abteilung="@mitarbeiter.Department"
+                                   class="btn btn-sm btn-outline-primary">
+
+                                    Zur Abteilung →
+
+                                </a>
+                            }
+                        }
+                        else
+                        {
+                            @if (!string.IsNullOrWhiteSpace(
+                                                mitarbeiter.Niederlassung))
+                            {
+                                <a asp-page="/Ansprechpartner/Standort"
+                                   asp-route-niederlassung="@mitarbeiter.Niederlassung"
+                                   asp-route-person="@mitarbeiter.SamAccountName"
+                                   class="btn btn-sm btn-outline-primary">
+
+                                    Zur Person →
+
+                                </a>
+                            }
+                        }
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+
+
+        <div id="mitarbeiterSucheLeer"
+             class="mitarbeiter-suche-leer"
+             hidden>
+
+            Kein Mitarbeiter gefunden.
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const suchfeld =
+            document.getElementById("mitarbeiterSuchfeld");
+
+        const ergebnisContainer =
+            document.getElementById("mitarbeiterSuchErgebnis");
+
+        const eintraege =
+            document.querySelectorAll(".mitarbeiter-suche-eintrag");
+
+        const leerHinweis =
+            document.getElementById("mitarbeiterSucheLeer");
+
+
+        if (!suchfeld ||
+            !ergebnisContainer ||
+            !leerHinweis) {
+
+            return;
+        }
+
+
+        suchfeld.addEventListener("input", function () {
+
+            const suchbegriff =
+                suchfeld.value
+                    .trim()
+                    .toLocaleLowerCase("de-DE");
+
+
+            if (suchbegriff.length < 2) {
+
+                ergebnisContainer.hidden = true;
+
+                eintraege.forEach(function (eintrag) {
+                    eintrag.hidden = true;
+                });
+
+                leerHinweis.hidden = true;
+
+                return;
+            }
+
+
+            let anzahlTreffer = 0;
+
+
+            eintraege.forEach(function (eintrag) {
+
+                const suchText =
+                    (eintrag.dataset.mitarbeiterSuche || "")
+                        .toLocaleLowerCase("de-DE");
+
+
+                const istTreffer =
+                    suchText.includes(suchbegriff);
+
+
+                eintrag.hidden = !istTreffer;
+
+
+                if (istTreffer) {
+                    anzahlTreffer++;
+                }
+
+            });
+
+
+            leerHinweis.hidden =
+                anzahlTreffer > 0;
+
+
+            ergebnisContainer.hidden = false;
+
+        });
+
+
+        suchfeld.addEventListener("keydown", function (event) {
+
+            if (event.key === "Escape") {
+
+                suchfeld.value = "";
+
+                ergebnisContainer.hidden = true;
+
+                eintraege.forEach(function (eintrag) {
+                    eintrag.hidden = true;
+                });
+
+                leerHinweis.hidden = true;
+
+            }
+
+        });
+
+    });
+</script>

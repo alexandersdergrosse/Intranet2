@@ -23,6 +23,74 @@
         public string Office { get; set; } = string.Empty;
         public string EmployeeID { get; set; } = string.Empty;
 
+        public string BereinigterVorname
+        {
+            get
+            {
+                return BereinigeName(FirstName);
+            }
+        }
+
+
+        public string BereinigterNachname
+        {
+            get
+            {
+                return BereinigeName(LastName);
+            }
+        }
+
+
+        public string Anzeigename
+        {
+            get
+            {
+                string vorname = BereinigterVorname;
+                string nachname = BereinigterNachname;
+
+                if (!string.IsNullOrWhiteSpace(vorname) ||
+                    !string.IsNullOrWhiteSpace(nachname))
+                {
+                    return $"{vorname} {nachname}".Trim();
+                }
+
+                return BereinigeName(DisplayName);
+            }
+        }
+
+
+        private static string BereinigeName(string? name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return string.Empty;
+            }
+
+            string bereinigt = name.Trim();
+
+            string[] titel = { "Prof. Dr.", "Dipl.-Wirt.-Ing.", "Dipl.-Kfm.", "Dipl.-Ing.", "M.Sc.", "B.Sc.", "M.A.", "B.A.", "MBA", "Prof.", "Dr.", "Ing." };
+
+            foreach (string titelEintrag in titel)
+            {
+                bereinigt = bereinigt.Replace(titelEintrag, "", StringComparison.OrdinalIgnoreCase);
+            }
+
+            bereinigt = bereinigt
+                .Replace(",", "")
+                .Replace(";", "")
+                .Replace("(", "")
+                .Replace(")", "");
+
+            // Mehrfache Leerzeichen entfernen
+            while (bereinigt.Contains("  "))
+            {
+                bereinigt = bereinigt.Replace("  ", " ");
+            }
+
+            return bereinigt.Trim();
+        }
+
+
         // Niederlassung automatisch bestimmen
         public string Niederlassung
         {
@@ -37,13 +105,55 @@
             }
         }
 
-
-        // Unterabteilung aus Beschreibung
+        // UNTERABTEILUNG AUS AD-BESCHREIBUNG
         public string Unterabteilung
         {
             get
             {
-                return Description?.Trim() ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(Description))
+                {
+                    return string.Empty;
+                }
+
+                string beschreibung = Description.Trim();
+
+                int letzterTrenner = beschreibung.LastIndexOf('/');
+
+                if (letzterTrenner >= 0)
+                {
+                    string letzterTeil = beschreibung[(letzterTrenner + 1)..].Trim();
+
+                    if (string.Equals(letzterTeil, "Leitung", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return beschreibung[..letzterTrenner].Trim();
+                    }
+                }
+                return beschreibung;
+            }
+        }
+
+        // LEITUNG ERKENNEN
+        public bool IstLeitung
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(Description))
+                {
+                    return false;
+                }
+
+                string beschreibung = Description.Trim();
+
+                int letzterTrenner = beschreibung.LastIndexOf('/');
+
+                if (letzterTrenner < 0)
+                {
+                    return false;
+                }
+
+                string letzterTeil = beschreibung[(letzterTrenner + 1)..].Trim();
+
+                return string.Equals(letzterTeil, "Leitung", StringComparison.OrdinalIgnoreCase);
             }
         }
     }

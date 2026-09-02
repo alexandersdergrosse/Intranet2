@@ -45,15 +45,13 @@
     else
     {
         <div class="row g-4">
-
             @foreach (var mitarbeiter in Model.Mitarbeiter)
             {
-                <div class="col-xl-4 col-lg-6 col-md-6">
+                bool istGesuchtePerson = !string.IsNullOrWhiteSpace(Model.HervorgehobenerBenutzername) && string.Equals(mitarbeiter.SamAccountName, Model.HervorgehobenerBenutzername, StringComparison.OrdinalIgnoreCase);
 
+                <div class="col-xl-4 col-lg-6 col-md-6 @(istGesuchtePerson ? "ansprechpartner-gesucht" : "")" id="@(istGesuchtePerson ? "gesuchte-person" : null)">
                     <div class="card h-100 shadow-sm">
-
                         <div class="card-body">
-
                             <!-- Foto -->
                             @{
                                 string? fotoUrl = Model.Fotos.GetValueOrDefault(mitarbeiter.SamAccountName);
@@ -61,15 +59,11 @@
                             <div class="text-center mb-3">
                                 @if (!string.IsNullOrWhiteSpace(fotoUrl))
                                 {
-                                    <img src="@fotoUrl"
-                                         alt="@mitarbeiter.DisplayName"
-                                         class="rounded-circle"
-                                         style="width: 90px; height: 90px; object-fit: cover; object-position: top;" />
+                                    <img src="@fotoUrl" alt="@mitarbeiter.Anzeigename" class="rounded-circle" style="width: 90px; height: 90px; object-fit: cover; object-position: top;" />
                                 }
                                 else
                                 {
-                                    <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto"
-                                         style="width: 90px; height: 90px;">
+                                    <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto" style="width: 90px; height: 90px;">
                                         <span class="text-white fw-bold fs-4">
                                             @(mitarbeiter.FirstName?.Length > 0 ? mitarbeiter.FirstName[0].ToString().ToUpper() : "?")
                                         </span>
@@ -78,15 +72,15 @@
                             </div>
 
                             <!-- Name -->
-                            <h2 class="h5 fw-bold mb-1">
-                                @mitarbeiter.DisplayName
+                            <h2 class="h5 fw-bold mb-1 text-center">
+                                @mitarbeiter.Anzeigename
                             </h2>
 
 
                             <!-- Position -->
                             @if (!string.IsNullOrWhiteSpace(mitarbeiter.Title))
                             {
-                                <div class="text-primary fw-semibold mb-2">
+                                <div class="text-primary fw-semibold mb-2 text-center">
                                     @mitarbeiter.Title
                                 </div>
                             }
@@ -95,14 +89,12 @@
                             <!-- Abteilung -->
                             @if (!string.IsNullOrWhiteSpace(mitarbeiter.Department))
                             {
-                                <div class="text-muted mb-3">
+                                <div class="text-muted mb-3 text-center">
                                     @mitarbeiter.Department
                                 </div>
                             }
 
-
                             <hr />
-
 
                             <!-- Telefon -->
                             @if (!string.IsNullOrWhiteSpace(mitarbeiter.TelephoneNumber))
@@ -183,3 +175,25 @@
     }
 
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const gesuchtePerson =
+            document.getElementById("gesuchte-person");
+
+        if (!gesuchtePerson) {
+            return;
+        }
+
+        setTimeout(function () {
+
+            gesuchtePerson.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
+
+        }, 150);
+
+    });
+</script>

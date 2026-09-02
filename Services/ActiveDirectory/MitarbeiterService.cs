@@ -108,13 +108,11 @@ namespace Intranet2.Services.ActiveDirectory
                         {
                             DisplayName = GetProperty(result, "displayName"),
 
-                            FirstName =
-                                GetProperty(result, "givenName"),
+                            FirstName = GetProperty(result, "givenName"),
 
                             LastName = GetProperty(result, "sn"),
 
-                            Email =
-                                GetProperty(result, "mail"),
+                            Email = GetProperty(result, "mail"),
 
                             SamAccountName = GetProperty(result, "sAMAccountName"),
 
@@ -152,7 +150,8 @@ namespace Intranet2.Services.ActiveDirectory
                 mitarbeiter = mitarbeiter
                         .OrderBy(m => m.Niederlassung)
                         .ThenBy(m => m.Title)
-                        .ThenBy(m => m.DisplayName)
+                        .ThenBy(m => m.LastName)
+                        .ThenBy(m => m.FirstName)
                         .ToList();
 
 
@@ -171,37 +170,142 @@ namespace Intranet2.Services.ActiveDirectory
             return mitarbeiter;
         }
 
-        // MITARBEITER EINER NIEDERLASSUNG LADEN
-        public List<Mitarbeiter> GetMitarbeiterFuerNiederlassung(string niederlassung)
+        // MITARBEITER FÜR DIE ANSPRECHPARTNER-SUCHE
+        public List<Mitarbeiter> GetSuchbareMitarbeiter()
         {
             return GetMitarbeiter()
-                .Where(m => string.Equals(m.Niederlassung, niederlassung, StringComparison.OrdinalIgnoreCase))
+
+                // Funktionskonten wie Alarmhandy oder
+                // Service Rufbereitschaft nicht anzeigen
                 .Where(m => !IstFunktionskonto(m))
-                .OrderBy(m => m.Department)
-                .ThenBy(m => m.Title)
-                .ThenBy(m => m.DisplayName)
+
+                // Nur Mitarbeiter mit einem verwendbaren Namen
+                .Where(m => !string.IsNullOrWhiteSpace(m.Anzeigename))
+
+                // Alphabetisch
+                .OrderBy(m => m.BereinigterNachname)
+                .ThenBy(m => m.BereinigterVorname)
+
+                .ToList();
+        }
+
+        // MITARBEITER EINER NIEDERLASSUNG LADEN
+        public List<Mitarbeiter> GetMitarbeiterFuerNiederlassung(
+            string niederlassung)
+        {
+            if (string.IsNullOrWhiteSpace(niederlassung))
+            {
+                return new List<Mitarbeiter>();
+            }
+
+            return GetMitarbeiter()
+
+                // Nur Mitarbeiter der ausgewählten Niederlassung
+                .Where(m =>
+                    string.Equals(
+                        m.Niederlassung,
+                        niederlassung.Trim(),
+                        StringComparison.OrdinalIgnoreCase))
+
+                // Funktionskonten nicht anzeigen
+                .Where(m => !IstFunktionskonto(m))
+
+                // -------------------------------------------------
+                // 1. Jan-Peter Nissen immer zuerst
+                // -------------------------------------------------
+                .OrderByDescending(m => string.Equals(m.Anzeigename, "Jan-Peter Nissen", StringComparison.OrdinalIgnoreCase))
+
+                // -------------------------------------------------
+                // 2. Danach alle Leitungen
+                // -------------------------------------------------
+                .ThenByDescending(m => m.IstLeitung)
+
+                // -------------------------------------------------
+                // 3. Danach Hauptabteilung
+                // -------------------------------------------------
+                //.ThenBy(m => m.Department)
+
+                // -------------------------------------------------
+                // 4. Danach Unterabteilung
+                // -------------------------------------------------
+                //.ThenBy(m => m.Unterabteilung)
+
+                // -------------------------------------------------
+                // 5. Danach alphabetisch
+                // -------------------------------------------------
+                .ThenBy(m => m.BereinigterNachname)
+                .ThenBy(m => m.BereinigterVorname)
+
                 .ToList();
         }
 
         // FUNKTIONSKONTEN NICHT ALS MITARBEITER ANZEIGEN
-        private static readonly string[] _funktionskontoSchluessel = ["Alarmhandy"];
-
         private static bool IstFunktionskonto(Mitarbeiter mitarbeiter)
         {
-            return _funktionskontoSchluessel.Any(k => mitarbeiter.DisplayName.Contains(k, StringComparison.OrdinalIgnoreCase));
+            if (string.IsNullOrWhiteSpace(mitarbeiter.DisplayName))
+            {
+                return false;
+            }
+
+            string displayName = mitarbeiter.DisplayName.Trim();
+
+            // Service-Rufbereitschaft explizit ausschließen
+            if (string.Equals(displayName, "Service Rufbereitschaft", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            // Alarmhandys weiterhin ausschließen
+            if (displayName.Contains("Alarmhandy", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+            return false;
         }
 
-
         // MITARBEITER NACH NIEDERLASSUNG GRUPPIEREN
-        public List<NiederlassungGruppe>  GetMitarbeiterNachNiederlassung()
+        public List<NiederlassungGruppe> GetMitarbeiterNachNiederlassung()
         {
             return GetMitarbeiter()
-                .GroupBy(m => m.Niederlassung, StringComparer.OrdinalIgnoreCase)
+
+                // Funktionskonten nicht anzeigen
+                .Where(m => !IstFunktionskonto(m))
+
+                // Mitarbeiter ohne Niederlassung auslassen
+                .Where(m =>
+                    !string.IsNullOrWhiteSpace(m.Niederlassung))
+
+                // Nach Niederlassung gruppieren
+                .GroupBy(
+                    m => m.Niederlassung.Trim(),
+                    StringComparer.OrdinalIgnoreCase)
+
                 .Select(gruppe => new NiederlassungGruppe
                 {
                     Name = gruppe.Key,
-                    Mitarbeiter = gruppe.OrderBy(m => m.Title).ThenBy(m => m.DisplayName).ToList()
-                }).OrderBy(g => g.Name).ToList();
+
+                    Mitarbeiter = gruppe
+
+                        // Leitung immer ganz oben
+                        .OrderByDescending(m => m.IstLeitung)
+
+                        // Danach Abteilung
+                        .ThenBy(m => m.Department)
+
+                        // Danach Unterabteilung
+                        .ThenBy(m => m.Unterabteilung)
+
+                        // Danach Name
+                        .ThenBy(m => m.LastName)
+                        .ThenBy(m => m.FirstName)
+
+                        .ToList()
+                })
+
+                // Niederlassungen alphabetisch
+                .OrderBy(g => g.Name)
+
+                .ToList();
         }
 
         // MITARBEITER NACH ABTEILUNG GRUPPIEREN
@@ -213,13 +317,10 @@ namespace Intranet2.Services.ActiveDirectory
                 .Where(m => !IstFunktionskonto(m))
 
                 // Mitarbeiter ohne Abteilung auslassen
-                .Where(m =>
-                    !string.IsNullOrWhiteSpace(m.Department))
+                .Where(m => !string.IsNullOrWhiteSpace(m.Department))
 
                 // Nach Abteilung gruppieren
-                .GroupBy(
-                    m => m.Department.Trim(),
-                    StringComparer.OrdinalIgnoreCase)
+                .GroupBy(m => m.Department.Trim(), StringComparer.OrdinalIgnoreCase)
 
                 // Gruppe erstellen
                 .Select(gruppe => new AbteilungGruppe
@@ -228,7 +329,8 @@ namespace Intranet2.Services.ActiveDirectory
 
                     Mitarbeiter = gruppe
                         .OrderBy(m => m.Title)
-                        .ThenBy(m => m.DisplayName)
+                        .ThenBy(m => m.LastName)
+                        .ThenBy(m => m.FirstName)
                         .ToList()
                 })
 
@@ -247,22 +349,18 @@ namespace Intranet2.Services.ActiveDirectory
                 .Where(m => !IstFunktionskonto(m))
 
                 // Nur Mitarbeiter mit Abteilung
-                .Where(m =>
-                    !string.IsNullOrWhiteSpace(m.Department))
+                .Where(m => !string.IsNullOrWhiteSpace(m.Department))
 
                 // Gewählte Abteilung
-                .Where(m =>
-                    string.Equals(
-                        m.Department.Trim(),
-                        abteilung.Trim(),
-                        StringComparison.OrdinalIgnoreCase))
+                .Where(m => string.Equals(m.Department.Trim(), abteilung.Trim(), StringComparison.OrdinalIgnoreCase))
 
                 // Sortierung
                 .OrderBy(m => m.Title)
-                .ThenBy(m => m.DisplayName)
-
+                .ThenBy(m => m.LastName)
+                .ThenBy(m => m.FirstName)
                 .ToList();
         }
+
         // UNTERABTEILUNGEN EINER HAUPTABTEILUNG LADEN
         public List<UnterabteilungGruppe> GetUnterabteilungenFuerAbteilung(string abteilung)
         {
@@ -279,22 +377,31 @@ namespace Intranet2.Services.ActiveDirectory
                 // Nur Mitarbeiter der ausgewählten Hauptabteilung
                 .Where(m => !string.IsNullOrWhiteSpace(m.Department) && string.Equals(m.Department.Trim(), abteilung.Trim(), StringComparison.OrdinalIgnoreCase))
 
-                // Nur Mitarbeiter mit eingetragener Unterabteilung
-                .Where(m => !string.IsNullOrWhiteSpace(m.Description))
+                // Nur Mitarbeiter mit einer ermittelbaren Unterabteilung
+                .Where(m => !string.IsNullOrWhiteSpace(m.Unterabteilung))
 
-                // Nach Beschreibung = Unterabteilung gruppieren
-                .GroupBy(m => m.Description.Trim(), StringComparer.OrdinalIgnoreCase)
+                .GroupBy(m => m.Unterabteilung, StringComparer.OrdinalIgnoreCase)
 
-                // Gruppen erzeugen
                 .Select(gruppe => new UnterabteilungGruppe
                 {
                     Name = gruppe.Key,
 
-                    Mitarbeiter = gruppe.OrderBy(m => m.Title).ThenBy(m => m.DisplayName).ToList()
+                    Mitarbeiter = gruppe
+
+                        // Leitung innerhalb der Unterabteilung zuerst
+                        .OrderByDescending(m => m.IstLeitung)
+
+                        // Danach alphabetisch
+                        .ThenBy(m => m.LastName)
+                        .ThenBy(m => m.FirstName)
+
+                        .ToList()
                 })
 
-                // Alphabetisch
-                .OrderBy(g => g.Name).ToList();
+                // Unterabteilungen selbst alphabetisch
+                .OrderBy(g => g.Name)
+
+                .ToList();
         }
 
         // MITARBEITER EINER UNTERABTEILUNG LADEN
@@ -313,10 +420,16 @@ namespace Intranet2.Services.ActiveDirectory
                 // Hauptabteilung prüfen
                 .Where(m => !string.IsNullOrWhiteSpace(m.Department) && string.Equals(m.Department.Trim(), abteilung.Trim(), StringComparison.OrdinalIgnoreCase))
 
-                // Unterabteilung prüfen
-                .Where(m => !string.IsNullOrWhiteSpace(m.Description) && string.Equals(m.Description.Trim(), unterabteilung.Trim(), StringComparison.OrdinalIgnoreCase))
+                .Where(m => !string.IsNullOrWhiteSpace(m.Unterabteilung) && string.Equals(m.Unterabteilung, unterabteilung.Trim(), StringComparison.OrdinalIgnoreCase))
 
-                .OrderBy(m => m.Title).ThenBy(m => m.DisplayName).ToList();
+                // Leitung IMMER zuerst
+                .OrderByDescending(m => m.IstLeitung)
+
+                // Danach alphabetisch
+                .ThenBy(m => m.LastName)
+                .ThenBy(m => m.FirstName)
+
+                .ToList();
         }
 
         // AKTUELLEN MITARBEITER ÜBER WINDOWS-BENUTZERNAMEN FINDEN

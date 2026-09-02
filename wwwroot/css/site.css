@@ -2282,3 +2282,424 @@ img {
         gap: 0.15rem;
     }
 }
+
+/* =========================================================
+   ANSPRECHPARTNER - ABTEILUNGEN / UNTERABTEILUNGEN
+   ========================================================= */
+
+.abteilungen-container {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1rem 1rem 3rem;
+}
+
+
+.ansprechpartner-back-link {
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    color: var(--kt-hellblau);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+
+    .ansprechpartner-back-link:hover {
+        color: var(--kt-hellblau-hover);
+        text-decoration: underline;
+    }
+
+
+.abteilungen-title {
+    margin-bottom: 0.4rem;
+    color: var(--kt-dunkelblau);
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+
+.abteilungen-description {
+    margin-bottom: 2rem;
+    color: var(--kt-text-muted);
+    font-size: 1rem;
+}
+
+
+.abteilungen-list {
+    overflow: hidden;
+    background-color: var(--kt-weiss);
+    border: 1px solid var(--kt-border);
+    border-radius: var(--kt-radius-md);
+    box-shadow: var(--kt-shadow-sm);
+}
+
+
+.abteilung-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+    min-height: 68px;
+    padding: 1rem 1.4rem;
+    color: var(--kt-dunkelblau);
+    text-decoration: none;
+    background-color: var(--kt-weiss);
+    border-bottom: 1px solid var(--kt-border);
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+
+    .abteilung-item:last-child {
+        border-bottom: none;
+    }
+
+
+    .abteilung-item:hover {
+        color: var(--kt-hellblau);
+        background-color: var(--kt-grau);
+    }
+
+
+.abteilung-name {
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+
+.abteilung-info {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-shrink: 0;
+}
+
+
+.mitarbeiter-anzahl {
+    color: var(--kt-text-muted);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+
+.abteilung-item:hover .mitarbeiter-anzahl {
+    color: var(--kt-hellblau);
+}
+
+
+.abteilung-arrow {
+    color: var(--kt-hellblau);
+    font-size: 1.25rem;
+    font-weight: 700;
+    transition: transform 0.2s ease;
+}
+
+
+.abteilung-item:hover .abteilung-arrow {
+    transform: translateX(4px);
+}
+
+
+.ansprechpartner-parent-label {
+    margin-bottom: 0.25rem;
+    color: var(--kt-hellblau);
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03rem;
+}
+
+
+/* ---------------------------------------------------------
+   Mobil
+   --------------------------------------------------------- */
+
+@media (max-width: 575.98px) {
+
+    .abteilungen-container {
+        padding-right: 0;
+        padding-left: 0;
+    }
+
+
+    .abteilung-item {
+        gap: 1rem;
+        min-height: 64px;
+        padding: 1rem;
+    }
+
+
+    .abteilung-info {
+        gap: 0.7rem;
+    }
+
+
+    .mitarbeiter-anzahl {
+        font-size: 0.75rem;
+    }
+
+
+    .abteilungen-title {
+        font-size: 1.65rem;
+    }
+}
+
+/* =========================================================
+   ANSPRECHPARTNER - MITARBEITERSUCHE
+   ========================================================= */
+
+.mitarbeiter-suche {
+    position: relative;
+    margin-bottom: 2rem;
+    padding: 1.25rem;
+    background-color: var(--kt-weiss);
+    border: 1px solid var(--kt-border);
+    border-radius: var(--kt-radius-md);
+    box-shadow: var(--kt-shadow-sm);
+}
+
+
+.mitarbeiter-suche-header {
+    margin-bottom: 0.8rem;
+}
+
+
+.mitarbeiter-suche-label {
+    display: block;
+    margin-bottom: 0.15rem;
+    color: var(--kt-dunkelblau);
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+
+.mitarbeiter-suche-hinweis {
+    margin: 0;
+    color: var(--kt-text-muted);
+    font-size: 0.85rem;
+}
+
+
+.mitarbeiter-suche-input-wrapper {
+    position: relative;
+}
+
+
+.mitarbeiter-suche-icon {
+    position: absolute;
+    top: 50%;
+    left: 1rem;
+    z-index: 2;
+    pointer-events: none;
+    transform: translateY(-50%);
+}
+
+
+.mitarbeiter-suche-input {
+    min-height: 48px;
+    padding-left: 2.8rem;
+    background-color: var(--kt-weiss);
+    border: 1px solid var(--kt-border);
+    border-radius: var(--kt-radius-sm);
+}
+
+
+/* =========================================================
+   SUCHERGEBNISSE
+   ========================================================= */
+
+.mitarbeiter-suche-ergebnisse {
+    position: absolute;
+    top: calc(100% - 1rem);
+    right: 1.25rem;
+    left: 1.25rem;
+    z-index: 100;
+    overflow-y: auto;
+    max-height: 520px;
+    background-color: var(--kt-weiss);
+    border: 1px solid var(--kt-border);
+    border-radius: 0 0 var(--kt-radius-md) var(--kt-radius-md);
+    box-shadow: 0 12px 28px rgba(39, 53, 81, 0.18);
+}
+
+
+.mitarbeiter-suche-eintrag {
+    border-bottom: 1px solid var(--kt-border-light);
+}
+
+
+    .mitarbeiter-suche-eintrag:last-child {
+        border-bottom: none;
+    }
+
+
+/* =========================================================
+   PERSON
+   ========================================================= */
+
+.mitarbeiter-suche-person {
+    display: grid;
+    grid-template-columns: 54px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: var(--kt-weiss);
+    transition: background-color 0.2s ease;
+}
+
+
+    .mitarbeiter-suche-person:hover {
+        background-color: var(--kt-grau);
+    }
+
+
+.mitarbeiter-suche-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 54px;
+    height: 54px;
+    flex-shrink: 0;
+    color: var(--kt-weiss);
+    background-color: var(--kt-dunkelblau);
+    border-radius: 50%;
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+
+.mitarbeiter-suche-person-info {
+    min-width: 0;
+}
+
+
+.mitarbeiter-suche-name {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.15rem;
+    color: var(--kt-dunkelblau);
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+
+.mitarbeiter-suche-position {
+    margin-bottom: 0.25rem;
+    color: var(--kt-hellblau);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+
+.mitarbeiter-suche-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    color: var(--kt-text-muted);
+    font-size: 0.8rem;
+}
+
+
+.mitarbeiter-suche-leitung {
+    padding: 0.15rem 0.45rem;
+    color: var(--kt-hellblau);
+    background-color: rgba(0, 145, 182, 0.1);
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   KONTAKT
+   ========================================================= */
+
+.mitarbeiter-suche-kontakt {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.4rem;
+}
+
+
+.mitarbeiter-suche-kontakt-link {
+    color: var(--kt-hellblau);
+    font-size: 0.78rem;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+
+    .mitarbeiter-suche-kontakt-link:hover {
+        color: var(--kt-hellblau-hover);
+        text-decoration: underline;
+    }
+
+
+.mitarbeiter-suche-aktion {
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
+   KEIN TREFFER
+   ========================================================= */
+
+.mitarbeiter-suche-leer {
+    padding: 1.5rem;
+    color: var(--kt-text-muted);
+    text-align: center;
+}
+
+
+/* =========================================================
+   MOBIL
+   ========================================================= */
+
+@media (max-width: 767.98px) {
+
+    .mitarbeiter-suche-person {
+        grid-template-columns: 46px minmax(0, 1fr);
+    }
+
+
+    .mitarbeiter-suche-avatar {
+        width: 46px;
+        height: 46px;
+    }
+
+
+    .mitarbeiter-suche-aktion {
+        grid-column: 2;
+        margin-top: 0.3rem;
+    }
+
+
+    .mitarbeiter-suche-ergebnisse {
+        right: 1rem;
+        left: 1rem;
+    }
+}
+
+/* =========================================================
+   ANSPRECHPARTNER - GESUCHTE PERSON
+   ========================================================= */
+
+.ansprechpartner-gesucht .card {
+    border: 2px solid var(--kt-hellblau) !important;
+    box-shadow: 0 8px 24px rgba(0, 145, 182, 0.22) !important;
+}
+
+
+    .ansprechpartner-gesucht .card::before {
+        content: "Gesuchter Mitarbeiter";
+        display: block;
+        padding: 0.45rem 1rem;
+        color: var(--kt-weiss);
+        background-color: var(--kt-hellblau);
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-align: center;
+    }
