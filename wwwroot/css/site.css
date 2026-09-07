@@ -1,8 +1,38 @@
 /* =========================================================
-   1. KREUTZTRÄGER DESIGN-VARIABLEN
+   KREUTZTRÄGER INTRANET – site.css
+   Header/Navigation 1:1 nach Homepage-Quellcode angepasst
+   Alle anderen Bereiche unverändert übernommen
    ========================================================= */
 
+/* =========================================================
+   SCHRIFTARTEN – exakt wie auf der Homepage eingebunden
+   ========================================================= */
+@font-face {
+    font-family: "Gotham Bold";
+    src: url("https://kreutztraeger-kaeltetechnik.de/wp-content/uploads/2021/11/Gotham-Bold.woff") format("woff"), url("https://kreutztraeger-kaeltetechnik.de/wp-content/uploads/2021/11/Gotham-Bold.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Gotham Book";
+    src: url("https://kreutztraeger-kaeltetechnik.de/wp-content/uploads/2021/11/Gotham-Book.woff") format("woff"), url("https://kreutztraeger-kaeltetechnik.de/wp-content/uploads/2021/11/Gotham-Book.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Gotham SSM";
+    src: url("https://kreutztraeger-kaeltetechnik.de/wp-content/uploads/2021/11/GothamSSm-Medium.woff") format("woff"), url("https://kreutztraeger-kaeltetechnik.de/wp-content/uploads/2021/11/GothamSSm-Medium.woff2") format("woff2"), url("https://kreutztraeger-kaeltetechnik.de/wp-content/uploads/2021/11/GothamSSm-Medium.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* =========================================================
+   1. KREUTZTRÄGER DESIGN-VARIABLEN
+   ========================================================= */
 :root {
+    /* Exakte Farben aus dem Homepage-Quellcode */
     --kt-hellblau: #0091b6;
     --kt-hellblau-hover: #007a9a;
     --kt-dunkelblau: #273551;
@@ -17,51 +47,57 @@
     --kt-radius-lg: 14px;
     --kt-shadow-sm: 0 2px 10px rgba(39, 53, 81, 0.08);
     --kt-shadow-md: 0 4px 12px rgba(39, 53, 81, 0.12);
+    /* Homepage-Navigationsfarben (direkt aus gusta_inline_css) */
+    --kt-nav-bg: #f0f1f4; /* Hintergrund Menüleiste */
+    --kt-nav-hover-bg: #e7e8ec; /* Hover-Hintergrund */
+    --kt-nav-text: #242e51; /* Textfarbe normal */
+    --kt-nav-hover-text: #02a0c7; /* Textfarbe Hover/Aktiv */
+    --kt-nav-border: #ffffff; /* Trennlinie zwischen Items */
+    /* Topbar (Logo-Bereich) – Homepage: padding: 2vh 4vw */
+    --kt-topbar-bg: #ffffff;
+    --kt-topbar-padding-v: 2vh;
+    --kt-topbar-padding-h: 4vw;
 }
-
 
 /* =========================================================
    2. GLOBALE BASIS
    ========================================================= */
-
 html {
     scroll-behavior: smooth;
 }
 
-html,
-body {
+html, body {
     min-height: 100%;
     margin: 0;
     padding: 0;
     overflow-x: hidden;
 }
 
-
 body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    /* Exakt wie Homepage: "Gotham Book" als Hauptschrift */
+    font-family: "Gotham Book", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 28px;
+    font-weight: 400;
     background-color: var(--kt-grau);
 }
-
 
 header {
     flex-shrink: 0;
 }
-
 
 main {
     flex: 1;
     padding: 2rem 0;
 }
 
-
 img {
     max-width: 100%;
     height: auto;
 }
-
 
 .container-fluid {
     width: 100%;
@@ -71,29 +107,22 @@ img {
     margin-left: auto;
 }
 
-
 /* =========================================================
    3. BUTTONS UND FORMULARE
    ========================================================= */
-
 .btn {
     border-radius: var(--kt-radius-sm);
     transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-
     .btn:hover {
         transform: translateY(-1px);
     }
-
-
-/* Primärer Kreutzträger-Button */
 
 .btn-primary {
     background-color: var(--kt-hellblau);
     border-color: var(--kt-hellblau);
 }
-
 
     .btn-primary:hover,
     .btn-primary:focus {
@@ -101,24 +130,17 @@ img {
         border-color: var(--kt-hellblau-hover);
     }
 
-
-/* Primärer Outline-Button */
-
 .btn-outline-primary {
     color: var(--kt-hellblau);
     border-color: var(--kt-hellblau);
     background-color: transparent;
 }
 
-
     .btn-outline-primary:hover {
         color: var(--kt-weiss);
         background-color: var(--kt-hellblau);
         border-color: var(--kt-hellblau);
     }
-
-
-/* Einheitlicher Fokus */
 
 .btn:focus,
 .btn:active:focus,
@@ -130,29 +152,18 @@ img {
     outline: none;
 }
 
-
-/* Checkboxen / Radio-Buttons */
-
 .form-check-input:checked {
     background-color: var(--kt-hellblau);
     border-color: var(--kt-hellblau);
 }
 
 /* =========================================================
-   4. KREUTZTRÄGER TOPBAR
+   4. TOPBAR (Logo-Bereich)
+   Exakt nach Homepage-Quellcode:
+   - Hintergrund: #ffffff
+   - Padding: 2vh 4vw  (aus vc_custom_1784541194551)
+   - Spalten: 3 / 6 / 3  (vc_col-sm-3 / vc_col-sm-6 / vc_col-sm-3)
    ========================================================= */
-
-/*
-   Desktop-Aufbau nach dem Kopfbereich der öffentlichen
-   Kreutzträger-Webseite.
-
-   Referenzwerte der Homepage:
-   - äußerer horizontaler Abstand: 4vw
-   - vertikaler Abstand: 2vh oben / 2vh unten
-   - Logo gerendert: 450 x 90 px
-   - Spaltenprinzip: 3 / 6 / 3
-*/
-
 .kt-topbar {
     position: relative;
     width: 100%;
@@ -162,37 +173,30 @@ img {
 
 .kt-topbar-inner {
     display: grid;
-    grid-template-columns: minmax(450px, 25%) minmax(0, 50%) minmax(0, 25%);
+    /* 3 / 6 / 3 Spalten wie auf der Homepage */
+    grid-template-columns: 25% 50% 25%;
     align-items: center;
     width: 100%;
     margin: 0;
+    /* Exakt: padding: 2vh 4vw */
     padding: 2vh 4vw;
     background-color: #ffffff;
     box-sizing: border-box;
 }
 
-
-/* ---------------------------------------------------------
-   Logo
-   --------------------------------------------------------- */
-
+/* Logo-Bereich (linke Spalte) */
 .kt-topbar-left {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    min-width: 450px;
 }
 
 .kt-logo-link {
     display: inline-flex;
     align-items: center;
-    justify-content: flex-start;
     width: 550px;
     height: 110px;
-    margin: 0;
-    padding: 0;
     text-decoration: none;
-    flex: 0 0 450px;
 }
 
 .kt-topbar-logo {
@@ -208,14 +212,9 @@ img {
     border: 0 !important;
     object-fit: contain;
     object-position: left center;
-    flex: 0 0 550px;
 }
 
-
-/* ---------------------------------------------------------
-   Intranet-Titel
-   --------------------------------------------------------- */
-
+/* Mittlere Spalte (Intranet-Titel) */
 .kt-topbar-center {
     display: flex;
     align-items: center;
@@ -227,10 +226,11 @@ img {
     margin: 0;
     padding: 0;
     color: #242e51;
-    font-family: "Gotham Book", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    /* Gotham SSM wie auf der Homepage für Navigationstext */
+    font-family: "Gotham SSM", "Gotham Book", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     font-size: 20px;
     line-height: 28px;
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: 0;
     text-decoration: none;
     white-space: nowrap;
@@ -242,11 +242,7 @@ img {
         color: #0093be;
     }
 
-
-/* ---------------------------------------------------------
-   Angemeldeter Benutzer
-   --------------------------------------------------------- */
-
+/* Rechte Spalte (Benutzer) */
 .kt-topbar-right {
     position: absolute;
     top: 0;
@@ -268,7 +264,7 @@ img {
     margin: 0;
     padding: 0;
     color: #242e51;
-    font-family: "Gotham Book", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family: "Gotham SSM", "Gotham Book", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     font-size: 15px;
     line-height: 28px;
     font-weight: 600;
@@ -276,17 +272,19 @@ img {
     white-space: nowrap;
 }
 
-
 /* =========================================================
    5. HAUPTNAVIGATION
+   Exakt nach Homepage-Quellcode (gusta_inline_css):
+   - Hintergrund:       #f0f1f4  (--kt-nav-bg)
+   - Hover-Hintergrund: #e7e8ec  (--kt-nav-hover-bg)
+   - Textfarbe:         #242e51  (--kt-nav-text)
+   - Hover-Textfarbe:   #02a0c7  (--kt-nav-hover-text)
+   - Trennlinie:        1px solid #ffffff
+   - Schrift:           'Gotham SSM', font-weight: 600
+   - Schriftgröße:      15px (Homepage: font-size: 15px)
+   - Padding Links:     4vw (aus: padding-left:4vw !important)
+   - Mindesthöhe:       66px (aus: min-height: 66px)
    ========================================================= */
-
-/*
-   Original-Farben der Homepage:
-   Normal:  #f0f1f4 / #242e51
-   Hover:   #e7e8ec / #02a0c7
-*/
-
 .main-nav {
     position: sticky;
     top: 0;
@@ -313,6 +311,9 @@ img {
     margin: 0;
     padding: 0;
     gap: 0;
+    /* Trennlinien wie auf der Homepage: border-color: #ffffff */
+    border-left: 1px solid #ffffff;
+    border-right: 1px solid #ffffff;
 }
 
 .main-nav .nav-item {
@@ -322,29 +323,35 @@ img {
     min-width: 0;
     margin: 0;
     padding: 0;
+    /* Trennlinie zwischen Items: 1px solid #ffffff */
     border-right: 1px solid #ffffff;
 }
 
-    .main-nav .nav-item:first-child {
-        border-left: 1px solid #ffffff;
-    }
-
-
-/* ---------------------------------------------------------
+/* --------------------------------------------------------
    Hauptmenüpunkte
-   --------------------------------------------------------- */
-
+   Exakt aus gusta_inline_css:
+   padding-left: 4vw
+   background-color: rgb(240, 241, 244)
+   font-family: 'Gotham+SSM'
+   font-weight: 600
+   color: rgb(36, 46, 81)
+   min-height: 66px (aus dem Intranet-CSS, passt zur Homepage)
+   font-size: 15px (Homepage: #menu > ul > li > a { font-size: 15px })
+   -------------------------------------------------------- */
 .nav-box {
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
+    /* Mindesthöhe wie auf der Homepage */
     min-height: 66px;
     margin: 0;
-    padding: 0 0.7rem;
+    /* Padding wie auf der Homepage: padding-left: 4vw */
+    padding: 0 4vw;
     color: #242e51 !important;
     background-color: #f0f1f4;
-    font-family: "Gotham Book", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family: "Gotham SSM", "Gotham Book", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    /* Exakt wie Homepage: font-size: 15px */
     font-size: 15px;
     line-height: 28px;
     font-weight: 600;
@@ -357,6 +364,9 @@ img {
     transition: color 0.25s ease-out, background-color 0.25s ease-out;
 }
 
+    /* Hover / Aktiv – exakt aus gusta_inline_css:
+   background-color: rgb(231, 232, 236)
+   color: #02a0c7 */
     .nav-box:hover,
     .nav-box:focus,
     .nav-item.dropdown:hover > .nav-box,
@@ -367,10 +377,7 @@ img {
         background-color: #e7e8ec;
     }
 
-/* ---------------------------------------------------------
-   Externe Links
-   --------------------------------------------------------- */
-
+/* Externe Links */
 .external-link-icon {
     margin-left: 0.3rem;
     font-size: 0.8em;
@@ -385,13 +392,9 @@ img {
 /* =========================================================
    DROPDOWNS
    ========================================================= */
-
 .main-nav .nav-item.dropdown {
     position: relative;
 }
-
-
-    /* Haupt-Dropdown */
 
     .main-nav .nav-item.dropdown > .dropdown-menu {
         position: absolute;
@@ -400,6 +403,7 @@ img {
         min-width: 230px;
         margin: 0;
         padding: 0.4rem 0;
+        /* Dropdown-Hintergrund wie auf der Homepage: #e7e8ec */
         background-color: #e7e8ec;
         border: none;
         border-radius: 0;
@@ -407,18 +411,10 @@ img {
         z-index: 2000;
     }
 
-
-        /* Dropdown am rechten Rand, z. B. Admin / Mein Bereich */
-
         .main-nav .nav-item.dropdown > .dropdown-menu.dropdown-menu-end {
             right: 0;
             left: auto;
         }
-
-
-    /* ---------------------------------------------------------
-   HAUPTMENÜPUNKT BLEIBT SICHTBAR
-   --------------------------------------------------------- */
 
     .main-nav .nav-item.dropdown:hover > .nav-box,
     .main-nav .nav-item.dropdown.show > .nav-box {
@@ -426,16 +422,13 @@ img {
         background-color: #e7e8ec;
     }
 
-
-/* ---------------------------------------------------------
-   DROPDOWN-EINTRÄGE
-   --------------------------------------------------------- */
-
+/* Dropdown-Einträge */
 .main-nav .dropdown-item {
     display: block;
     width: 100%;
     padding: 0.75rem 1.2rem;
     color: #242e51;
+    font-family: "Gotham SSM", "Gotham Book", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     font-size: 0.9rem;
     font-weight: 500;
     white-space: nowrap;
@@ -444,15 +437,11 @@ img {
     transition: color 0.2s ease, background-color 0.2s ease;
 }
 
-
     .main-nav .dropdown-item:hover,
     .main-nav .dropdown-item:focus {
         color: #02a0c7;
         background-color: #f0f1f4;
     }
-
-
-/* Trennlinie */
 
 .main-nav .dropdown-divider {
     margin: 0.4rem 0;
@@ -462,7 +451,6 @@ img {
 /* =========================================================
    7. VERSCHACHTELTE DROPDOWNS
    ========================================================= */
-
 .dropdown-submenu {
     position: relative;
 }
@@ -478,7 +466,6 @@ img {
         display: block;
     }
 
-    /* Schlichter Chevron nach rechts */
     .dropdown-submenu > .dropdown-toggle::after {
         display: inline-block;
         width: 0.45em;
@@ -506,13 +493,10 @@ img {
         transform: rotate(135deg);
     }
 
-
 /* =========================================================
    8. DESKTOP-DROPDOWNS
    ========================================================= */
-
 @media (min-width: 992px) {
-
     .main-nav .dropdown-menu {
         z-index: 2000;
     }
@@ -535,11 +519,9 @@ img {
     }
 }
 
-
 /* =========================================================
    9. MOBILE NAVIGATION
    ========================================================= */
-
 .navbar-toggler {
     margin: 0.65rem 0;
     padding: 0.5rem 0.7rem;
@@ -556,36 +538,34 @@ img {
     box-shadow: 0 0 0 0.2rem rgba(0, 147, 190, 0.15);
 }
 
-
 /* =========================================================
    10. TABLET / MOBILE
    ========================================================= */
-
 @media (max-width: 1199.98px) {
-
     .kt-topbar-inner {
-        grid-template-columns: 300px minmax(0, 1fr) auto;
+        grid-template-columns: auto 1fr auto;
         padding: 1.5vh 3vw;
         column-gap: 1.25rem;
     }
 
-    .kt-topbar-left {
-        min-width: 300px;
+    .kt-topbar-right {
+        position: static;
+        top: auto;
+        right: auto;
+        bottom: auto;
     }
 
     .kt-logo-link {
-        width: 300px;
-        height: 60px;
-        flex-basis: 300px;
+        width: 350px;
+        height: 70px;
     }
 
     .kt-topbar-logo {
-        width: 300px !important;
-        height: 60px !important;
-        min-width: 300px !important;
-        min-height: 60px !important;
-        max-height: 60px !important;
-        flex-basis: 300px;
+        width: 350px !important;
+        height: 70px !important;
+        min-width: 350px !important;
+        min-height: 70px !important;
+        max-height: 70px !important;
     }
 
     .kt-intranet-title {
@@ -595,30 +575,22 @@ img {
     .kt-user-name {
         font-size: 14px;
     }
-
+    /* Menüpunkte auf Tablet: etwas weniger Padding */
     .nav-box {
-        padding: 0 0.45rem;
+        padding: 0 2vw;
         font-size: 13px;
+        min-height: 56px;
     }
 }
 
-
 @media (max-width: 991.98px) {
-
     .kt-topbar-inner {
-        grid-template-columns: 260px minmax(0, 1fr) auto;
-        padding: 1rem 1.25rem;
-    }
-
-    .kt-topbar-left {
-        min-width: 260px;
+        grid-template-columns: auto 1fr auto;
+        padding: 1vh 1.25rem;
     }
 
     .kt-topbar-right {
         position: static;
-        top: auto;
-        right: auto;
-        bottom: auto;
         display: flex;
         align-items: center;
         justify-content: flex-end;
@@ -627,7 +599,6 @@ img {
     .kt-logo-link {
         width: 260px;
         height: 52px;
-        flex-basis: 260px;
     }
 
     .kt-topbar-logo {
@@ -636,7 +607,6 @@ img {
         min-width: 260px !important;
         min-height: 52px !important;
         max-height: 52px !important;
-        flex-basis: 260px;
     }
 
     .kt-user-name {
@@ -654,14 +624,13 @@ img {
 
     .kt-main-menu {
         display: block;
+        border: none;
     }
 
-    .main-nav .nav-item,
-    .main-nav .nav-item:first-child {
+    .main-nav .nav-item {
         display: block;
         width: 100%;
         border-right: 0;
-        border-left: 0;
         border-bottom: 1px solid #ffffff;
     }
 
@@ -716,13 +685,10 @@ img {
     }
 }
 
-
 /* =========================================================
    11. KLEINE BILDSCHIRME
    ========================================================= */
-
 @media (max-width: 575.98px) {
-
     .kt-topbar-inner {
         grid-template-columns: 1fr auto;
         grid-template-rows: auto auto;
@@ -733,22 +699,6 @@ img {
     .kt-topbar-left {
         grid-column: 1;
         grid-row: 1;
-        min-width: 0;
-    }
-
-    .kt-logo-link {
-        width: 210px;
-        height: 42px;
-        flex-basis: 210px;
-    }
-
-    .kt-topbar-logo {
-        width: 210px !important;
-        height: 42px !important;
-        min-width: 210px !important;
-        min-height: 42px !important;
-        max-height: 42px !important;
-        flex-basis: 210px;
     }
 
     .kt-topbar-center {
@@ -763,6 +713,19 @@ img {
         justify-content: flex-end;
     }
 
+    .kt-logo-link {
+        width: 200px;
+        height: 40px;
+    }
+
+    .kt-topbar-logo {
+        width: 200px !important;
+        height: 40px !important;
+        min-width: 200px !important;
+        min-height: 40px !important;
+        max-height: 40px !important;
+    }
+
     .kt-intranet-title {
         font-size: 16px;
         line-height: 22px;
@@ -774,11 +737,9 @@ img {
     }
 }
 
-
 /* =========================================================
    12. ACCESSIBILITY
    ========================================================= */
-
 .nav-box:focus-visible,
 .dropdown-item:focus-visible,
 .kt-intranet-title:focus-visible {
@@ -786,20 +747,13 @@ img {
     outline-offset: -2px;
 }
 
-
 /* =========================================================
    15. JOBS / STELLENANGEBOTE
    ========================================================= */
-
 .jobs-page {
     padding-top: 1rem;
     padding-bottom: 3rem;
 }
-
-
-/* ---------------------------------------------------------
-   Hero
-   --------------------------------------------------------- */
 
 .jobs-hero {
     position: relative;
@@ -807,10 +761,9 @@ img {
     padding: 3.5rem;
     margin-bottom: 2rem;
     color: var(--kt-weiss);
-    background: linear-gradient( 135deg, var(--kt-dunkelblau) 0%, #354769 100% );
+    background: linear-gradient(135deg, var(--kt-dunkelblau) 0%, #354769 100%);
     border-radius: var(--kt-radius-lg);
 }
-
 
     .jobs-hero::after {
         content: "";
@@ -823,13 +776,11 @@ img {
         border-radius: 50%;
     }
 
-
 .jobs-hero-content {
     position: relative;
     z-index: 1;
     max-width: 850px;
 }
-
 
 .jobs-kicker {
     display: inline-block;
@@ -841,11 +792,9 @@ img {
     text-transform: uppercase;
 }
 
-
 .jobs-hero .jobs-kicker {
     color: #7edbf2;
 }
-
 
 .jobs-hero h1 {
     margin-bottom: 1rem;
@@ -854,7 +803,6 @@ img {
     font-weight: 700;
 }
 
-
 .jobs-hero p {
     max-width: 650px;
     margin-bottom: 0;
@@ -862,38 +810,25 @@ img {
     font-size: 1.05rem;
 }
 
-
-/* ---------------------------------------------------------
-   Kennzahlen
-   --------------------------------------------------------- */
-
 .jobs-summary {
     display: flex;
     gap: 2.5rem;
     margin-top: 2rem;
 }
 
-
 .jobs-summary-item {
     display: flex;
     flex-direction: column;
 }
 
-
     .jobs-summary-item strong {
         font-size: 1.5rem;
     }
-
 
     .jobs-summary-item span {
         color: rgba(255, 255, 255, 0.7);
         font-size: 0.9rem;
     }
-
-
-/* ---------------------------------------------------------
-   Suche / Filter
-   --------------------------------------------------------- */
 
 .jobs-toolbar {
     padding: 1.5rem;
@@ -903,7 +838,6 @@ img {
     box-shadow: var(--kt-shadow-sm);
 }
 
-
     .jobs-toolbar .form-control,
     .jobs-toolbar .form-select {
         min-height: 46px;
@@ -911,24 +845,17 @@ img {
         border-radius: var(--kt-radius-sm);
     }
 
-
         .jobs-toolbar .form-control:focus,
         .jobs-toolbar .form-select:focus {
             border-color: var(--kt-hellblau);
             box-shadow: 0 0 0 0.2rem rgba(0, 145, 182, 0.15);
         }
 
-
-/* ---------------------------------------------------------
-   Überschrift
-   --------------------------------------------------------- */
-
 .jobs-section-title {
     margin-bottom: 0.3rem;
     color: var(--kt-dunkelblau);
     font-weight: 700;
 }
-
 
 .jobs-count {
     padding: 0.45rem 0.8rem;
@@ -937,11 +864,6 @@ img {
     background: rgba(0, 145, 182, 0.1);
     border-radius: 20px;
 }
-
-
-/* ---------------------------------------------------------
-   Stellenkarte
-   --------------------------------------------------------- */
 
 .job-card {
     display: flex;
@@ -954,13 +876,11 @@ img {
     transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-
     .job-card:hover {
         transform: translateY(-4px);
         border-color: rgba(0, 145, 182, 0.4);
         box-shadow: 0 10px 25px rgba(39, 53, 81, 0.12);
     }
-
 
 .job-card-top {
     display: flex;
@@ -968,7 +888,6 @@ img {
     gap: 0.5rem;
     padding: 1.4rem 1.4rem 0;
 }
-
 
 .job-location,
 .job-area {
@@ -978,24 +897,20 @@ img {
     border-radius: 20px;
 }
 
-
 .job-location {
     color: var(--kt-weiss);
     background: var(--kt-hellblau);
 }
-
 
 .job-area {
     color: var(--kt-dunkelblau);
     background: #eef1f4;
 }
 
-
 .job-card-body {
     flex: 1;
     padding: 1.2rem 1.4rem;
 }
-
 
     .job-card-body h3 {
         margin-bottom: 0.8rem;
@@ -1005,19 +920,16 @@ img {
         line-height: 1.4;
     }
 
-
     .job-card-body p {
         margin: 0;
         color: var(--kt-text-muted);
         line-height: 1.6;
     }
 
-
 .job-card-footer {
     padding: 1rem 1.4rem;
     border-top: 1px solid var(--kt-border-light);
 }
-
 
 .job-details-link {
     display: inline-flex;
@@ -1028,25 +940,17 @@ img {
     text-decoration: none;
 }
 
-
     .job-details-link:hover {
         color: var(--kt-hellblau-hover);
     }
-
 
     .job-details-link span {
         transition: transform 0.2s ease;
     }
 
-
     .job-details-link:hover span {
         transform: translateX(4px);
     }
-
-
-/* ---------------------------------------------------------
-   Keine Treffer
-   --------------------------------------------------------- */
 
 .jobs-empty {
     margin-top: 1rem;
@@ -1057,15 +961,9 @@ img {
     border-radius: var(--kt-radius-md);
 }
 
-
     .jobs-empty h3 {
         color: var(--kt-dunkelblau);
     }
-
-
-/* ---------------------------------------------------------
-   Kontakt
-   --------------------------------------------------------- */
 
 .jobs-contact {
     display: flex;
@@ -1080,45 +978,33 @@ img {
     box-shadow: var(--kt-shadow-sm);
 }
 
-
     .jobs-contact h2 {
         margin-bottom: 0.5rem;
         color: var(--kt-dunkelblau);
     }
-
 
     .jobs-contact p {
         margin-bottom: 0;
         color: var(--kt-text-muted);
     }
 
-
 .jobs-contact-button {
     white-space: nowrap;
 }
 
-
-/* ---------------------------------------------------------
-   Jobs Mobil
-   --------------------------------------------------------- */
-
 @media (max-width: 767.98px) {
-
     .jobs-hero {
         padding: 2rem 1.5rem;
     }
-
 
         .jobs-hero h1 {
             font-size: 1.8rem;
         }
 
-
     .jobs-summary {
         flex-direction: column;
         gap: 1rem;
     }
-
 
     .jobs-contact {
         flex-direction: column;
@@ -1126,20 +1012,13 @@ img {
     }
 }
 
-
 /* =========================================================
    16. STARTSEITE
    ========================================================= */
-
 .home-page {
     padding-top: 2rem;
     padding-bottom: 3rem;
 }
-
-
-/* ---------------------------------------------------------
-   Überschrift
-   --------------------------------------------------------- */
 
 .home-section-header {
     display: flex;
@@ -1148,11 +1027,6 @@ img {
     gap: 1rem;
     margin-bottom: 1.5rem;
 }
-
-
-/* ---------------------------------------------------------
-   Gemeinsame Kartenoptik
-   --------------------------------------------------------- */
 
 .home-news-card,
 .home-side-feed {
@@ -1163,22 +1037,15 @@ img {
     box-shadow: var(--kt-shadow-sm);
 }
 
-
-/* ---------------------------------------------------------
-   Große News links
-   --------------------------------------------------------- */
-
 .home-news-list {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
 
-
 .home-news-image-link {
     display: block;
 }
-
 
 .home-news-image {
     display: block;
@@ -1187,11 +1054,9 @@ img {
     object-fit: cover;
 }
 
-
 .home-news-content {
     padding: 1.6rem;
 }
-
 
 .home-news-title {
     margin-bottom: 0.8rem;
@@ -1199,17 +1064,14 @@ img {
     font-weight: 700;
 }
 
-
     .home-news-title a {
         color: var(--kt-dunkelblau);
         text-decoration: none;
     }
 
-
         .home-news-title a:hover {
             color: var(--kt-hellblau);
         }
-
 
 .home-news-text {
     margin-bottom: 1rem;
@@ -1218,22 +1080,15 @@ img {
     line-height: 1.65;
 }
 
-
 .home-news-more {
     color: var(--kt-hellblau);
     font-weight: 600;
     text-decoration: none;
 }
 
-
     .home-news-more:hover {
         color: var(--kt-hellblau-hover);
     }
-
-
-/* ---------------------------------------------------------
-   Kleiner Feed rechts
-   --------------------------------------------------------- */
 
 .home-side-feed-header {
     padding: 1rem 1.2rem;
@@ -1241,17 +1096,14 @@ img {
     background: var(--kt-dunkelblau);
 }
 
-
     .home-side-feed-header span {
         color: rgba(255, 255, 255, 0.75);
         font-size: 0.85rem;
     }
 
-
 .home-side-feed-body {
     padding: 0;
 }
-
 
 .home-feed-item {
     display: block;
@@ -1262,16 +1114,13 @@ img {
     transition: background-color 0.2s ease;
 }
 
-
     .home-feed-item:last-child {
         border-bottom: none;
     }
 
-
     .home-feed-item:hover {
         background: var(--kt-grau);
     }
-
 
 .home-feed-meta {
     display: flex;
@@ -1283,7 +1132,6 @@ img {
     font-size: 0.8rem;
 }
 
-
 .home-feed-title {
     margin-bottom: 0.35rem;
     color: var(--kt-dunkelblau);
@@ -1291,13 +1139,11 @@ img {
     font-weight: 700;
 }
 
-
 .home-feed-text {
     color: var(--kt-text-muted);
     font-size: 0.85rem;
     line-height: 1.45;
 }
-
 
 .home-feed-empty {
     padding: 2rem 1rem;
@@ -1305,28 +1151,19 @@ img {
     text-align: center;
 }
 
-
-/* ---------------------------------------------------------
-   Startseite Mobil
-   --------------------------------------------------------- */
-
 @media (max-width: 767.98px) {
-
     .home-section-header {
         flex-direction: column;
         align-items: flex-start;
     }
 
-
     .home-news-image {
         height: 220px;
     }
 
-
     .home-news-content {
         padding: 1.2rem;
     }
-
 
     .home-news-title {
         font-size: 1.3rem;
@@ -1336,12 +1173,10 @@ img {
 /* =========================================================
    17. UMFRAGEN / STARTSEITEN-FEED
    ========================================================= */
-
 .home-poll {
     padding: 1.2rem;
     border-bottom: 1px solid var(--kt-border);
 }
-
 
 .home-poll-label {
     display: inline-block;
@@ -1356,7 +1191,6 @@ img {
     letter-spacing: 0.04rem;
 }
 
-
 .home-poll-title {
     margin-bottom: 0.5rem;
     color: var(--kt-dunkelblau);
@@ -1365,7 +1199,6 @@ img {
     line-height: 1.4;
 }
 
-
 .home-poll-description {
     margin-bottom: 1rem;
     color: var(--kt-text-muted);
@@ -1373,13 +1206,11 @@ img {
     line-height: 1.45;
 }
 
-
 .home-poll-options {
     display: flex;
     flex-direction: column;
     gap: 0.55rem;
 }
-
 
 .home-poll-option {
     display: flex;
@@ -1394,30 +1225,23 @@ img {
     transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
-
     .home-poll-option:hover {
         background: var(--kt-weiss);
         border-color: var(--kt-hellblau);
     }
-
 
     .home-poll-option input {
         flex-shrink: 0;
         accent-color: var(--kt-hellblau);
     }
 
-
-/* Ergebnisse */
-
 .home-poll-results {
     margin-top: 1rem;
 }
 
-
 .home-poll-result {
     margin-bottom: 0.8rem;
 }
-
 
 .home-poll-result-header {
     display: flex;
@@ -1429,11 +1253,9 @@ img {
     font-size: 0.82rem;
 }
 
-
     .home-poll-result-header strong {
         color: var(--kt-hellblau);
     }
-
 
 .home-poll-progress {
     height: 7px;
@@ -1442,14 +1264,12 @@ img {
     border-radius: 20px;
 }
 
-
 .home-poll-progress-bar {
     height: 100%;
     background: var(--kt-hellblau);
     border-radius: 20px;
     transition: width 0.3s ease;
 }
-
 
 .home-poll-total {
     margin-top: 0.8rem;
@@ -1458,9 +1278,6 @@ img {
     text-align: right;
 }
 
-
-/* Hinweise */
-
 .home-poll-message {
     padding: 0.7rem 1rem;
     color: var(--kt-dunkelblau);
@@ -1468,9 +1285,6 @@ img {
     border-bottom: 1px solid var(--kt-border);
     font-size: 0.83rem;
 }
-
-
-/* Überschrift für Kurzmeldungen */
 
 .home-feed-section-title {
     padding: 0.7rem 1.2rem;
@@ -1486,11 +1300,6 @@ img {
 /* =========================================================
    18. UMFRAGEN - ÜBERSICHT UND DETAILSEITE
    ========================================================= */
-
-/* ---------------------------------------------------------
-   Übersicht
-   --------------------------------------------------------- */
-
 .poll-card {
     overflow: hidden;
     background: var(--kt-weiss);
@@ -1500,17 +1309,14 @@ img {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-
     .poll-card:hover {
         transform: translateY(-3px);
         box-shadow: var(--kt-shadow-md);
     }
 
-
 .poll-card-ended {
     background: #fcfcfc;
 }
-
 
 .poll-card-header {
     display: flex;
@@ -1521,11 +1327,9 @@ img {
     border-bottom: 1px solid var(--kt-border);
 }
 
-
 .poll-card-body {
     padding: 1.4rem;
 }
-
 
 .poll-card-title {
     margin-bottom: 0.8rem;
@@ -1535,16 +1339,10 @@ img {
     line-height: 1.4;
 }
 
-
 .poll-card-meta {
     color: var(--kt-text-muted);
     font-size: 0.88rem;
 }
-
-
-/* ---------------------------------------------------------
-   Detailseite
-   --------------------------------------------------------- */
 
 .poll-detail-card {
     padding: 2rem;
@@ -1554,7 +1352,6 @@ img {
     box-shadow: var(--kt-shadow-sm);
 }
 
-
 .poll-detail-title {
     margin-bottom: 1rem;
     color: var(--kt-dunkelblau);
@@ -1562,22 +1359,17 @@ img {
     font-weight: 700;
 }
 
-
 .poll-detail-description {
     color: var(--kt-text-muted);
     font-size: 1.05rem;
     line-height: 1.6;
 }
 
-
-/* Antworten */
-
 .poll-detail-options {
     display: flex;
     flex-direction: column;
     gap: 0.8rem;
 }
-
 
 .poll-detail-option {
     display: flex;
@@ -1591,26 +1383,18 @@ img {
     transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
-
     .poll-detail-option:hover {
         background: var(--kt-weiss);
         border-color: var(--kt-hellblau);
     }
 
-
     .poll-detail-option input {
         accent-color: var(--kt-hellblau);
     }
 
-
-/* ---------------------------------------------------------
-   Ergebnisse
-   --------------------------------------------------------- */
-
 .poll-detail-result {
     margin-bottom: 1.4rem;
 }
-
 
 .poll-detail-result-header {
     display: flex;
@@ -1620,13 +1404,11 @@ img {
     color: var(--kt-dunkelblau);
 }
 
-
 .poll-own-vote {
     margin-left: 0.5rem;
     color: var(--kt-hellblau);
     font-size: 0.8rem;
 }
-
 
 .poll-detail-progress {
     height: 12px;
@@ -1635,20 +1417,17 @@ img {
     border-radius: 20px;
 }
 
-
 .poll-detail-progress-bar {
     height: 100%;
-    background: linear-gradient( 90deg, var(--kt-hellblau), var(--kt-hellblau-hover) );
+    background: linear-gradient(90deg, var(--kt-hellblau), var(--kt-hellblau-hover));
     border-radius: 20px;
 }
-
 
 .poll-detail-votes {
     margin-top: 0.35rem;
     color: var(--kt-text-muted);
     font-size: 0.8rem;
 }
-
 
 .poll-detail-total {
     margin-top: 2rem;
@@ -1658,22 +1437,14 @@ img {
     text-align: right;
 }
 
-
-/* ---------------------------------------------------------
-   Mobil
-   --------------------------------------------------------- */
-
 @media (max-width: 767.98px) {
-
     .poll-detail-card {
         padding: 1.3rem;
     }
 
-
     .poll-detail-title {
         font-size: 1.6rem;
     }
-
 
     .poll-card-header {
         align-items: flex-start;
@@ -1684,11 +1455,6 @@ img {
 /* =========================================================
    19. MARKTPLATZ
    ========================================================= */
-
-/* ---------------------------------------------------------
-   Navigation Badge
-   --------------------------------------------------------- */
-
 .marketplace-nav-badge {
     display: inline-flex;
     align-items: center;
@@ -1705,11 +1471,6 @@ img {
     line-height: 1;
 }
 
-
-/* ---------------------------------------------------------
-   Marktplatz Übersicht
-   --------------------------------------------------------- */
-
 .marketplace-header {
     display: flex;
     align-items: center;
@@ -1717,7 +1478,6 @@ img {
     gap: 1rem;
     margin-bottom: 2rem;
 }
-
 
 .marketplace-card {
     display: flex;
@@ -1732,17 +1492,14 @@ img {
     cursor: pointer;
 }
 
-
     .marketplace-card:hover {
         transform: translateY(-4px);
         box-shadow: 0 10px 25px rgba(39, 53, 81, 0.12);
     }
 
-
 .marketplace-card-image-link {
     display: block;
 }
-
 
 .marketplace-card-image {
     display: block;
@@ -1750,7 +1507,6 @@ img {
     height: 220px;
     object-fit: cover;
 }
-
 
 .marketplace-card-placeholder {
     display: flex;
@@ -1763,14 +1519,12 @@ img {
     font-weight: 600;
 }
 
-
 .marketplace-card-body {
     display: flex;
     flex: 1;
     flex-direction: column;
     padding: 1.3rem;
 }
-
 
 .marketplace-card-meta {
     display: flex;
@@ -1782,24 +1536,20 @@ img {
     font-size: 0.8rem;
 }
 
-
 .marketplace-card-title {
     margin-bottom: 0.7rem;
     font-size: 1.15rem;
     font-weight: 700;
 }
 
-
     .marketplace-card-title a {
         color: var(--kt-dunkelblau);
         text-decoration: none;
     }
 
-
         .marketplace-card-title a:hover {
             color: var(--kt-hellblau);
         }
-
 
 .marketplace-card-description {
     flex: 1;
@@ -1808,14 +1558,12 @@ img {
     line-height: 1.55;
 }
 
-
 .marketplace-card-price {
     margin-top: 0.7rem;
     color: var(--kt-dunkelblau);
     font-size: 1.2rem;
     font-weight: 700;
 }
-
 
 .marketplace-card-footer {
     display: flex;
@@ -1827,12 +1575,10 @@ img {
     border-top: 1px solid var(--kt-border);
 }
 
-
     .marketplace-card-footer span {
         color: var(--kt-text-muted);
         font-size: 0.82rem;
     }
-
 
     .marketplace-card-footer a {
         color: var(--kt-hellblau);
@@ -1840,7 +1586,6 @@ img {
         font-weight: 600;
         text-decoration: none;
     }
-
 
 .marketplace-empty {
     padding: 4rem 2rem;
@@ -1850,11 +1595,6 @@ img {
     border-radius: var(--kt-radius-md);
 }
 
-
-/* ---------------------------------------------------------
-   Formular
-   --------------------------------------------------------- */
-
 .marketplace-form-card {
     padding: 2rem;
     background: var(--kt-weiss);
@@ -1862,11 +1602,6 @@ img {
     border-radius: var(--kt-radius-md);
     box-shadow: var(--kt-shadow-sm);
 }
-
-
-/* ---------------------------------------------------------
-   Detailseite
-   --------------------------------------------------------- */
 
 .marketplace-detail {
     overflow: hidden;
@@ -1876,7 +1611,6 @@ img {
     box-shadow: var(--kt-shadow-sm);
 }
 
-
 .marketplace-detail-image {
     display: block;
     width: 100%;
@@ -1885,11 +1619,9 @@ img {
     background: var(--kt-grau);
 }
 
-
 .marketplace-detail-body {
     padding: 2rem;
 }
-
 
 .marketplace-detail-meta {
     display: flex;
@@ -1901,14 +1633,12 @@ img {
     font-size: 0.85rem;
 }
 
-
 .marketplace-detail-title {
     margin-bottom: 1rem;
     color: var(--kt-dunkelblau);
     font-size: 2rem;
     font-weight: 700;
 }
-
 
 .marketplace-detail-price {
     margin-bottom: 1.5rem;
@@ -1917,14 +1647,12 @@ img {
     font-weight: 700;
 }
 
-
 .marketplace-detail-description {
     margin-bottom: 1.5rem;
     color: #343a40;
     line-height: 1.7;
     white-space: pre-line;
 }
-
 
 .marketplace-author {
     display: flex;
@@ -1933,35 +1661,25 @@ img {
     gap: 1rem;
 }
 
-
     .marketplace-author div {
         display: flex;
         flex-direction: column;
     }
 
-
-/* ---------------------------------------------------------
-   Mobil
-   --------------------------------------------------------- */
-
 @media (max-width: 767.98px) {
-
     .marketplace-header {
         flex-direction: column;
         align-items: flex-start;
     }
-
 
     .marketplace-form-card,
     .marketplace-detail-body {
         padding: 1.3rem;
     }
 
-
     .marketplace-detail-title {
         font-size: 1.6rem;
     }
-
 
     .marketplace-author {
         flex-direction: column;
@@ -1972,7 +1690,6 @@ img {
 /* =========================================================
    20. MEIN PROFIL
    ========================================================= */
-
 .profile-card {
     overflow: hidden;
     background: var(--kt-weiss);
@@ -1980,7 +1697,6 @@ img {
     border-radius: var(--kt-radius-md);
     box-shadow: var(--kt-shadow-sm);
 }
-
 
 .profile-row {
     display: grid;
@@ -1990,18 +1706,15 @@ img {
     border-bottom: 1px solid var(--kt-border);
 }
 
-
     .profile-row:last-child {
         border-bottom: none;
     }
-
 
 .profile-label {
     color: var(--kt-text-muted);
     font-size: 0.9rem;
     font-weight: 600;
 }
-
 
 .profile-value {
     color: var(--kt-dunkelblau);
@@ -2013,16 +1726,11 @@ img {
         color: var(--kt-hellblau);
     }
 
-
         .profile-value a:hover {
             color: var(--kt-hellblau-hover);
         }
 
-
-/* Mobil */
-
 @media (max-width: 575.98px) {
-
     .profile-row {
         grid-template-columns: 1fr;
         gap: 0.35rem;
@@ -2032,22 +1740,15 @@ img {
 /* =========================================================
    21. DOKUMENTE
    ========================================================= */
-
 .dokumente-page {
     max-width: 1100px;
 }
-
-
-/* ---------------------------------------------------------
-   Accordion
-   --------------------------------------------------------- */
 
 .dokumente-accordion {
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
-
 
 .dokumente-accordion-item {
     overflow: hidden;
@@ -2056,7 +1757,6 @@ img {
     border-radius: var(--kt-radius-md) !important;
     box-shadow: var(--kt-shadow-sm);
 }
-
 
 .dokumente-accordion .accordion-button {
     padding: 1.2rem 1.4rem;
@@ -2067,44 +1767,29 @@ img {
     box-shadow: none;
 }
 
-
     .dokumente-accordion .accordion-button:not(.collapsed) {
         color: var(--kt-weiss);
         background: var(--kt-dunkelblau);
     }
-
 
     .dokumente-accordion .accordion-button:focus {
         border-color: var(--kt-hellblau);
         box-shadow: none;
     }
 
-
-    .dokumente-accordion
-    .accordion-button:not(.collapsed)::after {
+    .dokumente-accordion .accordion-button:not(.collapsed)::after {
         filter: brightness(0) invert(1);
     }
-
-
-/* ---------------------------------------------------------
-   Inhalt
-   --------------------------------------------------------- */
 
 .dokumente-accordion-body {
     padding: 1.5rem;
 }
-
 
 .dokumente-description {
     margin-bottom: 1.3rem;
     color: var(--kt-text-muted);
     line-height: 1.6;
 }
-
-
-/* ---------------------------------------------------------
-   Speicherort
-   --------------------------------------------------------- */
 
 .dokumente-path {
     display: flex;
@@ -2115,7 +1800,6 @@ img {
     border-radius: var(--kt-radius-sm);
 }
 
-
     .dokumente-path span {
         color: var(--kt-text-muted);
         font-size: 0.78rem;
@@ -2123,17 +1807,11 @@ img {
         text-transform: uppercase;
     }
 
-
     .dokumente-path code {
         color: var(--kt-dunkelblau);
         white-space: normal;
         word-break: break-word;
     }
-
-
-/* ---------------------------------------------------------
-   Hervorgehobene Dokumente
-   --------------------------------------------------------- */
 
 .dokumente-highlights {
     display: flex;
@@ -2142,7 +1820,6 @@ img {
     margin-top: 1.2rem;
 }
 
-
 .dokumente-highlight {
     padding: 0.9rem 1rem;
     background: var(--kt-weiss);
@@ -2150,36 +1827,26 @@ img {
     border-radius: var(--kt-radius-sm);
 }
 
-
     .dokumente-highlight div {
         display: flex;
         flex-direction: column;
         gap: 0.2rem;
     }
 
-
     .dokumente-highlight strong {
         color: var(--kt-dunkelblau);
     }
-
 
     .dokumente-highlight span {
         color: var(--kt-text-muted);
         font-size: 0.85rem;
     }
 
-
-/* ---------------------------------------------------------
-   Mobile
-   --------------------------------------------------------- */
-
 @media (max-width: 575.98px) {
-
     .dokumente-accordion .accordion-button {
         padding: 1rem;
         font-size: 0.95rem;
     }
-
 
     .dokumente-accordion-body {
         padding: 1rem;
@@ -2189,7 +1856,6 @@ img {
 /* =========================================================
    ERSTHELFER
    ========================================================= */
-
 .ersthelfer-card {
     overflow: hidden;
     background-color: var(--kt-weiss);
@@ -2198,7 +1864,6 @@ img {
     box-shadow: var(--kt-shadow-sm);
 }
 
-
 .ersthelfer-card-header {
     display: flex;
     align-items: center;
@@ -2206,7 +1871,6 @@ img {
     padding: 1.25rem;
     border-bottom: 1px solid var(--kt-border-light);
 }
-
 
 .ersthelfer-icon {
     display: flex;
@@ -2223,7 +1887,6 @@ img {
     line-height: 1;
 }
 
-
 .ersthelfer-name {
     margin: 0 0 0.2rem;
     color: var(--kt-dunkelblau);
@@ -2231,17 +1894,14 @@ img {
     font-weight: 700;
 }
 
-
 .ersthelfer-bereich {
     color: var(--kt-text-muted);
     font-size: 0.85rem;
 }
 
-
 .ersthelfer-contact {
     padding: 1.1rem 1.25rem;
 }
-
 
 .ersthelfer-contact-row {
     display: grid;
@@ -2250,13 +1910,11 @@ img {
     padding: 0.4rem 0;
 }
 
-
 .ersthelfer-contact-label {
     color: var(--kt-text-muted);
     font-size: 0.88rem;
     font-weight: 600;
 }
-
 
 .ersthelfer-contact-row a {
     color: var(--kt-hellblau);
@@ -2264,19 +1922,12 @@ img {
     text-decoration: none;
 }
 
-
     .ersthelfer-contact-row a:hover {
         color: var(--kt-hellblau-hover);
         text-decoration: underline;
     }
 
-
-/* ---------------------------------------------------------
-   Mobil
-   --------------------------------------------------------- */
-
 @media (max-width: 575.98px) {
-
     .ersthelfer-contact-row {
         grid-template-columns: 1fr;
         gap: 0.15rem;
@@ -2286,14 +1937,12 @@ img {
 /* =========================================================
    ANSPRECHPARTNER - ABTEILUNGEN / UNTERABTEILUNGEN
    ========================================================= */
-
 .abteilungen-container {
     width: 100%;
     max-width: 1100px;
     margin: 0 auto;
     padding: 1rem 1rem 3rem;
 }
-
 
 .ansprechpartner-back-link {
     display: inline-block;
@@ -2304,12 +1953,10 @@ img {
     text-decoration: none;
 }
 
-
     .ansprechpartner-back-link:hover {
         color: var(--kt-hellblau-hover);
         text-decoration: underline;
     }
-
 
 .abteilungen-title {
     margin-bottom: 0.4rem;
@@ -2318,13 +1965,11 @@ img {
     font-weight: 700;
 }
 
-
 .abteilungen-description {
     margin-bottom: 2rem;
     color: var(--kt-text-muted);
     font-size: 1rem;
 }
-
 
 .abteilungen-list {
     overflow: hidden;
@@ -2333,7 +1978,6 @@ img {
     border-radius: var(--kt-radius-md);
     box-shadow: var(--kt-shadow-sm);
 }
-
 
 .abteilung-item {
     display: flex;
@@ -2349,23 +1993,19 @@ img {
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-
     .abteilung-item:last-child {
         border-bottom: none;
     }
-
 
     .abteilung-item:hover {
         color: var(--kt-hellblau);
         background-color: var(--kt-grau);
     }
 
-
 .abteilung-name {
     font-size: 1rem;
     font-weight: 700;
 }
-
 
 .abteilung-info {
     display: flex;
@@ -2374,18 +2014,15 @@ img {
     flex-shrink: 0;
 }
 
-
 .mitarbeiter-anzahl {
     color: var(--kt-text-muted);
     font-size: 0.85rem;
     font-weight: 500;
 }
 
-
 .abteilung-item:hover .mitarbeiter-anzahl {
     color: var(--kt-hellblau);
 }
-
 
 .abteilung-arrow {
     color: var(--kt-hellblau);
@@ -2394,11 +2031,9 @@ img {
     transition: transform 0.2s ease;
 }
 
-
 .abteilung-item:hover .abteilung-arrow {
     transform: translateX(4px);
 }
-
 
 .ansprechpartner-parent-label {
     margin-bottom: 0.25rem;
@@ -2409,18 +2044,11 @@ img {
     letter-spacing: 0.03rem;
 }
 
-
-/* ---------------------------------------------------------
-   Mobil
-   --------------------------------------------------------- */
-
 @media (max-width: 575.98px) {
-
     .abteilungen-container {
         padding-right: 0;
         padding-left: 0;
     }
-
 
     .abteilung-item {
         gap: 1rem;
@@ -2428,16 +2056,13 @@ img {
         padding: 1rem;
     }
 
-
     .abteilung-info {
         gap: 0.7rem;
     }
 
-
     .mitarbeiter-anzahl {
         font-size: 0.75rem;
     }
-
 
     .abteilungen-title {
         font-size: 1.65rem;
@@ -2447,7 +2072,6 @@ img {
 /* =========================================================
    ANSPRECHPARTNER - MITARBEITERSUCHE
    ========================================================= */
-
 .mitarbeiter-suche {
     position: relative;
     margin-bottom: 2rem;
@@ -2458,11 +2082,9 @@ img {
     box-shadow: var(--kt-shadow-sm);
 }
 
-
 .mitarbeiter-suche-header {
     margin-bottom: 0.8rem;
 }
-
 
 .mitarbeiter-suche-label {
     display: block;
@@ -2472,18 +2094,15 @@ img {
     font-weight: 700;
 }
 
-
 .mitarbeiter-suche-hinweis {
     margin: 0;
     color: var(--kt-text-muted);
     font-size: 0.85rem;
 }
 
-
 .mitarbeiter-suche-input-wrapper {
     position: relative;
 }
-
 
 .mitarbeiter-suche-icon {
     position: absolute;
@@ -2494,7 +2113,6 @@ img {
     transform: translateY(-50%);
 }
 
-
 .mitarbeiter-suche-input {
     min-height: 48px;
     padding-left: 2.8rem;
@@ -2502,11 +2120,6 @@ img {
     border: 1px solid var(--kt-border);
     border-radius: var(--kt-radius-sm);
 }
-
-
-/* =========================================================
-   SUCHERGEBNISSE
-   ========================================================= */
 
 .mitarbeiter-suche-ergebnisse {
     position: absolute;
@@ -2522,20 +2135,13 @@ img {
     box-shadow: 0 12px 28px rgba(39, 53, 81, 0.18);
 }
 
-
 .mitarbeiter-suche-eintrag {
     border-bottom: 1px solid var(--kt-border-light);
 }
 
-
     .mitarbeiter-suche-eintrag:last-child {
         border-bottom: none;
     }
-
-
-/* =========================================================
-   PERSON
-   ========================================================= */
 
 .mitarbeiter-suche-person {
     display: grid;
@@ -2547,11 +2153,9 @@ img {
     transition: background-color 0.2s ease;
 }
 
-
     .mitarbeiter-suche-person:hover {
         background-color: var(--kt-grau);
     }
-
 
 .mitarbeiter-suche-avatar {
     display: flex;
@@ -2567,11 +2171,9 @@ img {
     font-weight: 700;
 }
 
-
 .mitarbeiter-suche-person-info {
     min-width: 0;
 }
-
 
 .mitarbeiter-suche-name {
     display: flex;
@@ -2584,14 +2186,12 @@ img {
     font-weight: 700;
 }
 
-
 .mitarbeiter-suche-position {
     margin-bottom: 0.25rem;
     color: var(--kt-hellblau);
     font-size: 0.85rem;
     font-weight: 600;
 }
-
 
 .mitarbeiter-suche-meta {
     display: flex;
@@ -2600,7 +2200,6 @@ img {
     color: var(--kt-text-muted);
     font-size: 0.8rem;
 }
-
 
 .mitarbeiter-suche-leitung {
     padding: 0.15rem 0.45rem;
@@ -2611,18 +2210,12 @@ img {
     font-weight: 700;
 }
 
-
-/* =========================================================
-   KONTAKT
-   ========================================================= */
-
 .mitarbeiter-suche-kontakt {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
     margin-top: 0.4rem;
 }
-
 
 .mitarbeiter-suche-kontakt-link {
     color: var(--kt-hellblau);
@@ -2631,21 +2224,14 @@ img {
     text-decoration: none;
 }
 
-
     .mitarbeiter-suche-kontakt-link:hover {
         color: var(--kt-hellblau-hover);
         text-decoration: underline;
     }
 
-
 .mitarbeiter-suche-aktion {
     flex-shrink: 0;
 }
-
-
-/* =========================================================
-   KEIN TREFFER
-   ========================================================= */
 
 .mitarbeiter-suche-leer {
     padding: 1.5rem;
@@ -2653,29 +2239,20 @@ img {
     text-align: center;
 }
 
-
-/* =========================================================
-   MOBIL
-   ========================================================= */
-
 @media (max-width: 767.98px) {
-
     .mitarbeiter-suche-person {
         grid-template-columns: 46px minmax(0, 1fr);
     }
-
 
     .mitarbeiter-suche-avatar {
         width: 46px;
         height: 46px;
     }
 
-
     .mitarbeiter-suche-aktion {
         grid-column: 2;
         margin-top: 0.3rem;
     }
-
 
     .mitarbeiter-suche-ergebnisse {
         right: 1rem;
@@ -2686,12 +2263,10 @@ img {
 /* =========================================================
    ANSPRECHPARTNER - GESUCHTE PERSON
    ========================================================= */
-
 .ansprechpartner-gesucht .card {
     border: 2px solid var(--kt-hellblau) !important;
     box-shadow: 0 8px 24px rgba(0, 145, 182, 0.22) !important;
 }
-
 
     .ansprechpartner-gesucht .card::before {
         content: "Gesuchter Mitarbeiter";
@@ -2706,20 +2281,16 @@ img {
 
 /* =========================================================
    FOOTER
+   Exakt nach Homepage: Hintergrund #f0f1f4, Padding 2rem 4vw
    ========================================================= */
-
 .kt-footer {
     flex-shrink: 0;
     width: 100%;
     margin-top: auto;
+    /* Exakt wie Homepage-Footer: background #f0f1f4 */
     background-color: #f0f1f4;
     border-top: 1px solid #e2e4e8;
 }
-
-
-/* =========================================================
-   OBERER FOOTER-BEREICH
-   ========================================================= */
 
 .kt-footer-inner {
     display: flex;
@@ -2727,13 +2298,9 @@ img {
     justify-content: space-between;
     gap: 2rem;
     width: 100%;
+    /* Exakt wie Homepage: padding: 2rem 4vw */
     padding: 2rem 4vw;
 }
-
-
-/* =========================================================
-   LINKE SEITE - KONTAKT / IMPRESSUM / DATENSCHUTZ
-   ========================================================= */
 
 .kt-footer-links {
     display: flex;
@@ -2742,7 +2309,6 @@ img {
     gap: 2rem;
     min-width: 0;
 }
-
 
 .kt-footer-link {
     color: var(--kt-dunkelblau);
@@ -2753,17 +2319,11 @@ img {
     transition: color 0.2s ease;
 }
 
-
     .kt-footer-link:hover,
     .kt-footer-link:focus {
         color: var(--kt-hellblau);
         text-decoration: none;
     }
-
-
-/* =========================================================
-   RECHTE SEITE - IT + SOCIAL MEDIA
-   ========================================================= */
 
 .kt-footer-right {
     display: flex;
@@ -2773,18 +2333,12 @@ img {
     flex-shrink: 0;
 }
 
-
-/* =========================================================
-   IT-KONTAKT
-   ========================================================= */
-
 .kt-footer-it {
     display: flex;
     align-items: center;
     justify-content: flex-end;
     flex-shrink: 0;
 }
-
 
 .kt-footer-it-button {
     display: inline-flex;
@@ -2804,7 +2358,6 @@ img {
     transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-
     .kt-footer-it-button:hover,
     .kt-footer-it-button:focus {
         color: var(--kt-weiss);
@@ -2815,18 +2368,12 @@ img {
         box-shadow: 0 4px 10px rgba(39, 53, 81, 0.12);
     }
 
-
-/* =========================================================
-   SOCIAL MEDIA
-   ========================================================= */
-
 .kt-footer-social {
     display: flex;
     align-items: center;
     justify-content: flex-end;
     gap: 1.25rem;
 }
-
 
 .kt-footer-social-link {
     display: inline-flex;
@@ -2841,7 +2388,6 @@ img {
     transition: color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
 }
 
-
     .kt-footer-social-link:hover,
     .kt-footer-social-link:focus {
         color: var(--kt-hellblau);
@@ -2849,11 +2395,6 @@ img {
         text-decoration: none;
         transform: translateY(-2px);
     }
-
-
-/* =========================================================
-   SOCIAL MEDIA ICONS
-   ========================================================= */
 
 .kt-social-icon {
     display: inline-flex;
@@ -2864,21 +2405,14 @@ img {
     line-height: 1;
 }
 
-
 .kt-social-instagram {
     font-size: 1.55rem;
     font-weight: 500;
 }
 
-
 .kt-social-youtube {
     font-size: 1rem;
 }
-
-
-/* =========================================================
-   UNTERE FOOTER-ZEILE
-   ========================================================= */
 
 .kt-footer-bottom {
     display: flex;
@@ -2893,11 +2427,6 @@ img {
     font-size: 0.78rem;
 }
 
-
-/* =========================================================
-   FOKUS / BARRIEREFREIHEIT
-   ========================================================= */
-
 .kt-footer-link:focus-visible,
 .kt-footer-social-link:focus-visible,
 .kt-footer-it-button:focus-visible {
@@ -2905,13 +2434,7 @@ img {
     outline-offset: 3px;
 }
 
-
-/* =========================================================
-   TABLET
-   ========================================================= */
-
 @media (max-width: 991.98px) {
-
     .kt-footer-inner {
         flex-direction: column;
         align-items: center;
@@ -2920,12 +2443,10 @@ img {
         text-align: center;
     }
 
-
     .kt-footer-links {
         justify-content: center;
         flex-wrap: wrap;
     }
-
 
     .kt-footer-right {
         justify-content: center;
@@ -2933,25 +2454,21 @@ img {
         gap: 1.5rem;
     }
 
-
     .kt-footer-social {
         justify-content: center;
     }
 }
 
-/* MOBIL */
 @media (max-width: 575.98px) {
     .kt-footer-inner {
         padding: 1.5rem 1rem;
     }
 
-    /* Links untereinander */
     .kt-footer-links {
         flex-direction: column;
         gap: 0.8rem;
     }
 
-    /* IT über Social Media */
     .kt-footer-right {
         flex-direction: column;
         gap: 1rem;
@@ -2966,12 +2483,10 @@ img {
         gap: 1rem;
     }
 
-    /* Button auf kleinen Geräten etwas breiter */
     .kt-footer-it-button {
         min-width: 170px;
     }
 
-    /* Untere Zeile untereinander */
     .kt-footer-bottom {
         flex-direction: column;
         gap: 0.35rem;
