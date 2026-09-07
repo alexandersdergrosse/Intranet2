@@ -1,11 +1,11 @@
-/* =========================================================
-   KREUTZTRÄGER INTRANET – site.css
+ï»¿/* =========================================================
+   KREUTZTRÃ„GER INTRANET â€“ site.css
    Header/Navigation 1:1 nach Homepage-Quellcode angepasst
-   Alle anderen Bereiche unverändert übernommen
+   Alle anderen Bereiche unverÃ¤ndert Ã¼bernommen
    ========================================================= */
 
 /* =========================================================
-   SCHRIFTARTEN – exakt wie auf der Homepage eingebunden
+   SCHRIFTARTEN â€“ exakt wie auf der Homepage eingebunden
    ========================================================= */
 @font-face {
     font-family: "Gotham Bold";
@@ -29,7 +29,7 @@
 }
 
 /* =========================================================
-   1. KREUTZTRÄGER DESIGN-VARIABLEN
+   1. KREUTZTRÃ„GER DESIGN-VARIABLEN
    ========================================================= */
 :root {
     /* Exakte Farben aus dem Homepage-Quellcode */
@@ -48,12 +48,12 @@
     --kt-shadow-sm: 0 2px 10px rgba(39, 53, 81, 0.08);
     --kt-shadow-md: 0 4px 12px rgba(39, 53, 81, 0.12);
     /* Homepage-Navigationsfarben (direkt aus gusta_inline_css) */
-    --kt-nav-bg: #f0f1f4; /* Hintergrund Menüleiste */
+    --kt-nav-bg: #f0f1f4; /* Hintergrund MenÃ¼leiste */
     --kt-nav-hover-bg: #e7e8ec; /* Hover-Hintergrund */
     --kt-nav-text: #242e51; /* Textfarbe normal */
     --kt-nav-hover-text: #02a0c7; /* Textfarbe Hover/Aktiv */
     --kt-nav-border: #ffffff; /* Trennlinie zwischen Items */
-    /* Topbar (Logo-Bereich) – Homepage: padding: 2vh 4vw */
+    /* Topbar (Logo-Bereich) â€“ Homepage: padding: 2vh 4vw */
     --kt-topbar-bg: #ffffff;
     --kt-topbar-padding-v: 2vh;
     --kt-topbar-padding-h: 4vw;
@@ -226,7 +226,7 @@ img {
     margin: 0;
     padding: 0;
     color: #242e51;
-    /* Gotham SSM wie auf der Homepage für Navigationstext */
+    /* Gotham SSM wie auf der Homepage fÃ¼r Navigationstext */
     font-family: "Gotham SSM", "Gotham Book", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     font-size: 20px;
     line-height: 28px;
@@ -281,9 +281,9 @@ img {
    - Hover-Textfarbe:   #02a0c7  (--kt-nav-hover-text)
    - Trennlinie:        1px solid #ffffff
    - Schrift:           'Gotham SSM', font-weight: 600
-   - Schriftgröße:      15px (Homepage: font-size: 15px)
+   - SchriftgrÃ¶ÃŸe:      15px (Homepage: font-size: 15px)
    - Padding Links:     4vw (aus: padding-left:4vw !important)
-   - Mindesthöhe:       66px (aus: min-height: 66px)
+   - MindesthÃ¶he:       66px (aus: min-height: 66px)
    ========================================================= */
 .main-nav {
     position: sticky;
@@ -328,7 +328,7 @@ img {
 }
 
 /* --------------------------------------------------------
-   Hauptmenüpunkte
+   HauptmenÃ¼punkte
    Exakt aus gusta_inline_css:
    padding-left: 4vw
    background-color: rgb(240, 241, 244)
@@ -343,17 +343,16 @@ img {
     align-items: center;
     justify-content: center;
     width: 100%;
-    /* Mindesthöhe wie auf der Homepage */
     min-height: 66px;
     margin: 0;
-    /* Padding wie auf der Homepage: padding-left: 4vw */
-    padding: 0 4vw;
+    /* Padding stark reduziert: statt 0 4vw jetzt clamp */
+    padding: 0 clamp(0.4rem, 1vw, 1.2rem);
     color: #242e51 !important;
     background-color: #f0f1f4;
     font-family: "Gotham SSM", "Gotham Book", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    /* Exakt wie Homepage: font-size: 15px */
-    font-size: 15px;
-    line-height: 28px;
+    /* SchriftgrÃ¶ÃŸe skaliert automatisch mit der Breite */
+    font-size: clamp(11px, 1.1vw, 15px);
+    line-height: 1.2;
     font-weight: 600;
     letter-spacing: 0;
     text-align: center;
@@ -364,7 +363,7 @@ img {
     transition: color 0.25s ease-out, background-color 0.25s ease-out;
 }
 
-    /* Hover / Aktiv – exakt aus gusta_inline_css:
+    /* Hover / Aktiv â€“ exakt aus gusta_inline_css:
    background-color: rgb(231, 232, 236)
    color: #02a0c7 */
     .nav-box:hover,
@@ -422,7 +421,7 @@ img {
         background-color: #e7e8ec;
     }
 
-/* Dropdown-Einträge */
+/* Dropdown-EintrÃ¤ge */
 .main-nav .dropdown-item {
     display: block;
     width: 100%;
@@ -575,12 +574,13 @@ img {
     .kt-user-name {
         font-size: 14px;
     }
-    /* Menüpunkte auf Tablet: etwas weniger Padding */
+    /* MenÃ¼punkte auf Tablet: etwas weniger Padding */
     .nav-box {
-        padding: 0 2vw;
-        font-size: 13px;
+        padding: 0 clamp(0.3rem, 0.8vw, 1rem);
+        font-size: clamp(10px, 1vw, 13px);
         min-height: 56px;
     }
+}
 }
 
 @media (max-width: 991.98px) {
@@ -628,10 +628,14 @@ img {
     }
 
     .main-nav .nav-item {
-        display: block;
-        width: 100%;
-        border-right: 0;
-        border-bottom: 1px solid #ffffff;
+        display: flex;
+        align-items: stretch;
+        /* Statt flex: 1 1 0 â†’ Items nur so breit wie nÃ¶tig, aber dehnbar */
+        flex: 0 1 auto;
+        min-width: 0;
+        margin: 0;
+        padding: 0;
+        border-right: 1px solid #ffffff;
     }
 
     .navbar-collapse {
@@ -1298,7 +1302,7 @@ img {
 }
 
 /* =========================================================
-   18. UMFRAGEN - ÜBERSICHT UND DETAILSEITE
+   18. UMFRAGEN - ÃœBERSICHT UND DETAILSEITE
    ========================================================= */
 .poll-card {
     overflow: hidden;
@@ -2492,5 +2496,37 @@ img {
         gap: 0.35rem;
         padding: 0.85rem 1rem;
         text-align: center;
+    }
+}
+
+/* =========================================================
+   NAVBAR-FIX: MenÃ¼punkte Ã¼berschneiden sich nicht mehr
+   ========================================================= */
+
+/* Padding drastisch reduzieren */
+.nav-box {
+    padding: 0 clamp(0.3rem, 0.8vw, 1rem) !important;
+    font-size: clamp(11px, 1vw, 14px) !important;
+    letter-spacing: -0.01em;
+}
+
+/* Items nicht mehr gleichmÃ¤ÃŸig strecken, sondern nur so breit wie nÃ¶tig */
+.main-nav .nav-item {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+}
+
+/* Sicherstellen dass Text nicht umbricht */
+.nav-box {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+/* Tablet-Anpassung */
+@media (max-width: 1400px) {
+    .nav-box {
+        padding: 0 clamp(0.2rem, 0.5vw, 0.7rem) !important;
+        font-size: clamp(10px, 0.85vw, 13px) !important;
     }
 }
