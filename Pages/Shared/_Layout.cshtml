@@ -32,28 +32,19 @@
 
                     @if (User.Identity?.IsAuthenticated == true)
                     {
-                        string windowsName =
-                        User.Identity.Name
-                        ?? string.Empty;
+                        string windowsName = User.Identity.Name ?? string.Empty;
 
-                        var mitarbeiter =
-                        MitarbeiterService
-                        .GetMitarbeiterFuerBenutzername(windowsName);
+                        var mitarbeiter = MitarbeiterService.GetMitarbeiterFuerBenutzername(windowsName);
 
                         string anzeigename;
 
                         if (mitarbeiter != null)
                         {
-                            string vorname =
-                            mitarbeiter.FirstName?.Trim()
-                            ?? string.Empty;
+                            string vorname = mitarbeiter.FirstName?.Trim() ?? string.Empty;
 
-                            string nachname =
-                            mitarbeiter.LastName?.Trim()
-                            ?? string.Empty;
+                            string nachname = mitarbeiter.LastName?.Trim() ?? string.Empty;
 
-                            anzeigename =
-                            $"{vorname} {nachname}".Trim();
+                            anzeigename = $"{vorname} {nachname}".Trim();
 
                             if (string.IsNullOrWhiteSpace(anzeigename))
                             {
@@ -62,10 +53,7 @@
                         }
                         else
                         {
-                            anzeigename =
-                            windowsName.Contains("\\")
-                            ? windowsName.Split('\\').Last()
-                            : windowsName;
+                            anzeigename = windowsName.Contains("\\") ? windowsName.Split('\\').Last() : windowsName;
                         }
 
                         <div class="kt-user-area">
@@ -562,6 +550,12 @@
                                 <li>
                                     <a class="dropdown-item" href="/Images/Schadenprozess_kreuztraeger.pdf" target="_blank" rel="noopener noreferrer">Verhalten bei Cyber Angriffen</a>
                                 </li>
+                                <li>
+                                    <a class="dropdown-item"  href="https://teams.microsoft.com/l/entity/16a3854d-6951-4aa7-9221-01511db8f199/_djb2_msteams_prefix_3603039616?context=%7B%22channelId%22%3A%2219%3Ac027253af1024cc8b54bcc7c3d6b7765%40thread.tacv2%22%7D&tenantId=6f135fc0-3063-4a29-b094-08146694ddb8"
+                                       target="_blank" rel="noopener noreferrer" >
+                                        Interne Meldestelle
+                                    </a>
+                                </li>
                             </ul>
                         </li>
 
@@ -604,6 +598,49 @@
     <main role="main" class="pb-3">
         @RenderBody()
     </main>
+
+    <!-- FOOTER -->
+    <footer class="kt-footer">
+        <div class="kt-footer-inner">
+            <!-- FOOTER-LINKS LINKS -->
+            <nav class="kt-footer-links" aria-label="Fußnavigation">
+
+                <a href="#" class="kt-footer-link">
+                    Kontakt
+                </a>
+
+                <a href="#" class="kt-footer-link">
+                    Impressum
+                </a>
+
+                <a href="#" class="kt-footer-link">
+                    Datenschutz
+                </a>
+            </nav>
+
+            <!-- RECHTER FOOTER-BEREICH -->
+            <div class="kt-footer-right">
+                <!-- IT-KONTAKT -->
+                <div class="kt-footer-it">
+                    <a href="mailto:IT@kreutztraeger.de" class="kt-footer-it-button">
+                        Verbesserungsvorschläge und Kritik?
+                    </a>
+                </div>
+
+                <div class="kt-footer-social">
+                    <!-- Instagram -->
+                    <a href="https://www.instagram.com/kreutztraeger.kaeltetechnik/" class="kt-footer-social-link" aria-label="Instagram" title="Instagram" target="_blank" rel="noopener noreferrer">
+                        <img src="~/Images/Social Media/Insta.png" alt="Instagram" class="kt-footer-social-image" />
+                    </a>
+
+                    <!-- Linkedin -->
+                    <a href="https://www.linkedin.com/search/results/all/?keywords=Kreutztr%C3%A4ger%20K%C3%A4ltetechnik%20&origin=ENTITY_SEARCH_HOME_HISTORY&heroEntityKey=urn%3Ali%3Aorganization%3A7493899" class="kt-footer-social-link" aria-label="Linkedin" title="Linkedin" target="_blank" rel="noopener noreferrer">
+                        <img src="~/Images/Social Media/Linkedin.png" alt="linked" class="kt-footer-social-image" />
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

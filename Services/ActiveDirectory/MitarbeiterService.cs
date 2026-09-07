@@ -190,8 +190,7 @@ namespace Intranet2.Services.ActiveDirectory
         }
 
         // MITARBEITER EINER NIEDERLASSUNG LADEN
-        public List<Mitarbeiter> GetMitarbeiterFuerNiederlassung(
-            string niederlassung)
+        public List<Mitarbeiter> GetMitarbeiterFuerNiederlassung(string niederlassung)
         {
             if (string.IsNullOrWhiteSpace(niederlassung))
             {
