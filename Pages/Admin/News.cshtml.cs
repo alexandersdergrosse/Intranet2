@@ -278,13 +278,12 @@ namespace Intranet2.Pages.Admin
                 ".jpg",
                 ".jpeg",
                 ".png",
-                ".webp",
-                ".pdf"
+                ".webp"
             };
 
             if (!erlaubteDateiendungen.Contains(dateiendung))
             {
-                ModelState.AddModelError("Formular.BildDatei", "Erlaubt sind nur JPG, JPEG, PNG, PDF und WebP.");
+                ModelState.AddModelError("Formular.BildDatei", "Erlaubt sind nur JPG, JPEG, PNG und WebP.");
             }
         }
 

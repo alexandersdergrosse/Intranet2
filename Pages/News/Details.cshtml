@@ -45,7 +45,18 @@
             <!-- BILD -->
             @if (!string.IsNullOrWhiteSpace(Model.News.BildPfad))
             {
-                <img src="@Url.Content(Model.News.BildPfad)" alt="@Model.News.Titel" class="img-fluid rounded mb-4 w-100" style="max-height: 500px; object-fit: cover;" />
+                @if (Model.News.BildPfad.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+                {
+                    <div class="news-pdf-anhang">
+                        <a href="@Url.Content(Model.News.BildPfad)" target="_blank" class="btn btn-outline-secondary">
+                            <i class="bi bi-file-earmark-pdf"></i> PDF-Anhang öffnen
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <img src="@Url.Content(Model.News.BildPfad)" alt="@Model.News.Titel" class="news-bild" />
+                }
             }
 
             <!-- INHALT -->
