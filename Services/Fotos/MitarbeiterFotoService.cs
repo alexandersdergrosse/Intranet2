@@ -18,7 +18,7 @@ namespace Intranet2.Services.Fotos
 
         public MitarbeiterFotoService(IConfiguration configuration, ILogger<MitarbeiterFotoService> logger, IMemoryCache cache)
         {
-            _basisPfad = configuration["Mitarbeiterfotos:Pfad"] ?? @"\\fileserver\Volume_V\mitarbeiter_fotos";
+            _basisPfad = configuration["Mitarbeiterfotos:Pfad"] ?? @"\\192.168.165.13\Volume_V\mitarbeiter_fotos";
 
             _logger = logger;
             _cache = cache;

@@ -101,7 +101,7 @@ app.UseStaticFiles(new StaticFileOptions
 
 // MITARBEITERFOTOS VOM FILESERVER EINBINDEN
 string fotosPfad = builder.Configuration["Mitarbeiterfotos:Pfad"]
-                   ?? @"\\fileserver\Volume_V\mitarbeiter_fotos";
+                   ?? @"\\192.168.165.13\Volume_V\mitarbeiter_fotos";
 
 if (Directory.Exists(fotosPfad))
 {
