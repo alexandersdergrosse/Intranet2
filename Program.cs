@@ -1,6 +1,6 @@
 using Intranet2.Datenbank.Data;
 using Intranet2.Services.ActiveDirectory;
-using Intranet2.Services.Jobs;
+using Intranet2.Services;
 using Intranet2.Sicherheit;
 using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +16,9 @@ builder.Services.AddRazorPages();
 builder.Services.AddMemoryCache();
 
 // Active Directory Mitarbeiter
-builder.Services.AddScoped<MitarbeiterService>();
+builder.Services.AddSingleton<MitarbeiterService>();
+
+builder.Services.AddHostedService<MitarbeiterCacheWarmup>();
 
 // Kreutzträger-Webseite automatisch auslesen
 builder.Services.AddHttpClient<StellenService>(client =>
