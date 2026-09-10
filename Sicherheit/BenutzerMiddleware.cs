@@ -1,6 +1,7 @@
 ﻿using Intranet2.Datenbank.Data;
 using Intranet2.Datenbank.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using System.Security.Claims;
 
 namespace Intranet2.Sicherheit
@@ -8,19 +9,24 @@ namespace Intranet2.Sicherheit
     public class BenutzerMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly IMemoryCache _cache;
+
+        private static readonly TimeSpan BenutzerCacheDauer = TimeSpan.FromMinutes(5);
 
         private static readonly string[] _statischePfade =
             ["/css", "/js", "/lib", "/Images", "/uploads", "/favicon", "/mitarbeiterfotos"];
 
-        public BenutzerMiddleware(RequestDelegate next)
+        public BenutzerMiddleware(RequestDelegate next, IMemoryCache cache)
         {
             _next = next;
+            _cache = cache;
         }
 
         public async Task InvokeAsync(HttpContext context, DataContext db)
         {
             string path = context.Request.Path.Value ?? "";
 
+            // Statische Dateien sofort durchlassen
             if (_statischePfade.Any(p => path.StartsWith(p, StringComparison.OrdinalIgnoreCase)))
             {
                 await _next(context);
@@ -40,39 +46,50 @@ namespace Intranet2.Sicherheit
             await _next(context);
         }
 
-        private static async Task VerarbeiteBenutzerAsync(HttpContext context, DataContext db, string windowsBenutzername)
+        private async Task VerarbeiteBenutzerAsync(
+            HttpContext context, DataContext db, string windowsBenutzername)
         {
-            Benutzer? benutzer = await db.Benutzer.FirstOrDefaultAsync(b => b.WindowsBenutzername == windowsBenutzername);
+            string cacheKey = $"Benutzer_{windowsBenutzername.ToLowerInvariant()}";
 
-            if (benutzer == null)
+            // Benutzer aus Cache laden – kein DB-Zugriff bei jedem Request
+            if (!_cache.TryGetValue(cacheKey, out Benutzer? benutzer) || benutzer == null)
             {
-                benutzer = await LegeBenutzerAnAsync(db, windowsBenutzername);
-            }
+                benutzer = await db.Benutzer
+                    .FirstOrDefaultAsync(b => b.WindowsBenutzername == windowsBenutzername);
 
-            if (benutzer == null)
-            {
-                return;
-            }
+                if (benutzer == null)
+                    benutzer = await LegeBenutzerAnAsync(db, windowsBenutzername);
 
-            // Neue Marktplatz-Beiträge zählen
-            DateTime letzterBesuch = benutzer.LetzterMarktplatzBesuch ?? benutzer.RegisteredAt;
-            int neueBeitraege = await db.MarktplatzBeitraege.CountAsync(m => m.ErstelltAm > letzterBesuch && m.BenutzerId != benutzer.Id);
-            context.Items["NeueMarktplatzBeitraege"] = neueBeitraege;
+                if (benutzer == null)
+                    return;
+
+                // Benutzer 5 Minuten cachen
+                _cache.Set(cacheKey, benutzer, BenutzerCacheDauer);
+            }
 
             // Gesperrte Benutzer blockieren
             if (!benutzer.IstAktiv)
             {
                 context.Response.StatusCode = StatusCodes.Status403Forbidden;
-                await context.Response.WriteAsync("Ihr Benutzerkonto ist für das Intranet deaktiviert.");
+                await context.Response.WriteAsync(
+                    "Ihr Benutzerkonto ist für das Intranet deaktiviert.");
                 return;
             }
 
-            // Rollen als Claims hinzufügen
-            var claims = new List<Claim>
+            // Neue Marktplatz-Beiträge ebenfalls cachen (1 Minute reicht)
+            string marktplatzCacheKey = $"NeueMarktplatzBeitraege_{benutzer.Id}";
+            if (!_cache.TryGetValue(marktplatzCacheKey, out int neueBeitraege))
             {
-                new(ClaimTypes.Role, Rollen.Benutzer)
-            };
+                DateTime letzterBesuch = benutzer.LetzterMarktplatzBesuch ?? benutzer.RegisteredAt;
+                neueBeitraege = await db.MarktplatzBeitraege.CountAsync(m => m.ErstelltAm > letzterBesuch && m.BenutzerId != benutzer.Id);
 
+                _cache.Set(marktplatzCacheKey, neueBeitraege, TimeSpan.FromMinutes(1));
+            }
+
+            context.Items["NeueMarktplatzBeitraege"] = neueBeitraege;
+
+            // Rollen als Claims hinzufügen
+            var claims = new List<Claim> { new(ClaimTypes.Role, Rollen.Benutzer) };
             if (benutzer.Rolle == Rollen.Admin) claims.Add(new Claim(ClaimTypes.Role, Rollen.Admin));
             if (benutzer.Rolle == Rollen.Redaktion) claims.Add(new Claim(ClaimTypes.Role, Rollen.Redaktion));
 
@@ -118,7 +135,6 @@ namespace Intranet2.Sicherheit
             }
             catch (DbUpdateException)
             {
-                // Anderer Request war schneller → Benutzer nochmal laden
                 db.ChangeTracker.Clear();
                 return await db.Benutzer.FirstOrDefaultAsync(b => b.WindowsBenutzername == windowsBenutzername);
             }
