@@ -11,70 +11,128 @@
         <h1 class="fw-bold mb-2" style="color: var(--kt-dunkelblau);">
             Ersthelfer
         </h1>
+
+        <p class="text-muted mb-0">
+            Wähle eine Niederlassung aus,
+            um die dortigen Ersthelfer anzuzeigen.
+        </p>
     </div>
 
-    <!-- ERSTHELFER NACH BEREICH -->
-    @foreach (var gruppe in Model.Ersthelfer.GroupBy(e => e.Bereich))
+    <!-- KEINE NIEDERLASSUNGEN -->
+    @if (Model.Niederlassungen.Count == 0)
     {
-        <section class="mb-5">
-            <h2 class="h4 fw-bold mb-3" style="color: var(--kt-dunkelblau);">
-                @gruppe.Key
-            </h2>
+        <div class="alert alert-warning">
+            Es konnten aktuell keine Ersthelfer
+            aus dem Active Directory geladen werden.
+        </div>
+    } 
+    else 
+    { 
+        <!-- NIEDERLASSUNGEN --> 
+        <div class="ersthelfer-niederlassungen accordion" id="ersthelferNiederlassungen"> 
+            @for (int i = 0; i < Model.Niederlassungen.Count; i++) 
+            { 
+                var niederlassung = Model.Niederlassungen[i]; 
+                string accordionId = $"ersthelfer-niederlassung-{i}"; 
 
-            <div class="row g-3">
-                @foreach (var ersthelfer in gruppe)
-                {
-                    <div class="col-12 col-md-6 col-xl-4">
-                        <div class="ersthelfer-card h-100">
-                            <div class="ersthelfer-card-header">
-                                @if (!string.IsNullOrWhiteSpace(ersthelfer.FotoUrl))
-                                {
-                                    <img src="@ersthelfer.FotoUrl" alt="@ersthelfer.Name" class="rounded-circle me-3 flex-shrink-0" style="width: 70px; height: 70px; object-fit: cover; object-position: top;" />
-                                }
-                                else
-                                {
-                                    <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center me-3 flex-shrink-0" style="width: 70px; height: 70px;">
-                                        <span class="text-white fw-bold fs-5">
-                                            @(ersthelfer.Name.Length > 0 ? ersthelfer.Name[0].ToString().ToUpper() : "?")
-                                        </span>
-                                    </div>
-                                }
+                <div class="ersthelfer-niederlassung accordion-item">  
+                    <!-- NIEDERLASSUNGS-KOPF -->  
+                    <h2 class="accordion-header">  
+                        <button class="accordion-button ersthelfer-niederlassung-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#@accordionId" aria-expanded="false" aria-controls="@accordionId">  
+                            <!-- Niederlassungsname -->
+                            <span class="ersthelfer-niederlassung-name">
+                                @Model.GetNiederlassungAnzeigename(niederlassung.Niederlassung)&nbsp;hat&nbsp;@niederlassung.Ersthelfer.Count&nbsp;Ersthelfer
+                            </span>
+                        </button> 
+                    </h2> 
 
-                                <div>
-                                    <h3 class="ersthelfer-name">
-                                        @ersthelfer.Name
-                                    </h3>
-                                    <div class="ersthelfer-bereich">
-                                        @ersthelfer.Bereich
-                                    </div>
+                    <!-- AUSKLAPPBARER INHALT --> 
+                    <div id="@accordionId" class="accordion-collapse collapse" data-bs-parent="#ersthelferNiederlassungen"> 
+                        <div class="accordion-body ersthelfer-niederlassung-inhalt"> 
+                            <!-- KEINE ERSTHELFER --> 
+                            @if (niederlassung.Ersthelfer.Count == 0) 
+                            { 
+                                <div class="ersthelfer-keine-eintraege"> 
+                                    Für diese Niederlassung sind aktuell keine Ersthelfer hinterlegt. 
+                                </div> 
+                            } 
+                            else 
+                            { 
+                                <!-- ERSTHELFER-KARTEN -->
+                                <div class="row g-4">
+                                    @foreach (var ersthelfer in niederlassung.Ersthelfer)
+                                    {
+                                        <div class="col-12 col-md-6 col-xl-3">
+                                            <div class="beauftragten-card ersthelfer-card h-100">
+                                                <div class="beauftragten-badge">
+                                                    Ersthelfer
+                                                </div>
+
+                                                <div class="beauftragten-bild-wrap">
+                                                    @if (!string.IsNullOrWhiteSpace(ersthelfer.FotoUrl))
+                                                    {
+                                                        <img src="@ersthelfer.FotoUrl" alt="@ersthelfer.Name" class="beauftragten-bild" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="beauftragten-bild-placeholder">
+                                                            @(string.IsNullOrWhiteSpace(ersthelfer.Name) ? "?" : ersthelfer.Name.Substring(0, 1).ToUpper())
+                                                        </div>
+                                                    }
+                                                </div>
+
+                                                <div class="beauftragten-body">
+                                                    @if (!string.IsNullOrWhiteSpace(ersthelfer.Abteilung))
+                                                    {
+                                                        <div class="beauftragten-untertitel">@ersthelfer.Abteilung</div>
+                                                    }
+
+                                                    <h3 class="beauftragten-name">@ersthelfer.Name</h3>
+
+                                                    <div class="beauftragten-kontaktliste">
+                                                        @if (!string.IsNullOrWhiteSpace(ersthelfer.Telefon))
+                                                        {
+                                                            <div class="beauftragten-kontaktzeile">
+                                                                <span class="kontakt-label">Telefon</span>
+                                                                <a href="tel:@ersthelfer.Telefon">@ersthelfer.Telefon</a>
+                                                            </div>
+                                                        }
+
+                                                        @if (!string.IsNullOrWhiteSpace(ersthelfer.Mobil))
+                                                        {
+                                                            <div class="beauftragten-kontaktzeile">
+                                                                <span class="kontakt-label">Mobil</span>
+                                                                <a href="tel:@ersthelfer.Mobil">@ersthelfer.Mobil</a>
+                                                            </div>
+                                                        }
+
+                                                        @if (!string.IsNullOrWhiteSpace(ersthelfer.Email))
+                                                        {
+                                                            <div class="beauftragten-kontaktzeile">
+                                                                <span class="kontakt-label">E-Mail</span>
+                                                                <a href="mailto:@ersthelfer.Email">@ersthelfer.Email</a>
+                                                            </div>
+                                                        }
+                                                    </div>
+
+                                                    @if (!string.IsNullOrWhiteSpace(ersthelfer.Email))
+                                                    {
+                                                        <div class="beauftragten-actions">
+                                                            <a class="btn btn-outline-primary btn-sm" href="mailto:@ersthelfer.Email">
+                                                                Nachricht senden
+                                                            </a>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
                                 </div>
-                            </div>
-
-                            <div class="ersthelfer-contact">
-                                <div class="ersthelfer-contact-row">
-                                    <span class="ersthelfer-contact-label">
-                                        Telefon
-                                    </span>
-
-                                    <a href="tel:@ersthelfer.Telefon">
-                                        @ersthelfer.Telefon
-                                    </a>
-                                </div>
-
-                                <div class="ersthelfer-contact-row">
-                                    <span class="ersthelfer-contact-label">
-                                        Mobil
-                                    </span>
-
-                                    <a href="tel:@ersthelfer.Mobil.Replace(" ", "")">
-                                        @ersthelfer.Mobil
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                }
-            </div>
-        </section>
+                            }
+                        </div> 
+                    </div> 
+                </div> 
+            } 
+        </div> 
     }
 </div>

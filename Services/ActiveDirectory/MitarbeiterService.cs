@@ -201,18 +201,20 @@ namespace Intranet2.Services.ActiveDirectory
 
                 // Nur Mitarbeiter der ausgewählten Niederlassung
                 .Where(m =>
-                    string.Equals(
-                        m.Niederlassung,
-                        niederlassung.Trim(),
-                        StringComparison.OrdinalIgnoreCase))
+                    string.Equals(m.Niederlassung, niederlassung.Trim(), StringComparison.OrdinalIgnoreCase))
 
                 // Funktionskonten nicht anzeigen
                 .Where(m => !IstFunktionskonto(m))
 
                 // -------------------------------------------------
-                // 1. Jan-Peter Nissen immer zuerst
+                // 1. Jan-Peter Nissen immer zuerst, dann Andreas Betke
                 // -------------------------------------------------
                 .OrderByDescending(m => string.Equals(m.Anzeigename, "Jan-Peter Nissen", StringComparison.OrdinalIgnoreCase))
+
+                // -------------------------------------------------
+                // 2. Andreas Betke im Stammhaus Bremen als Zweiter
+                // -------------------------------------------------
+                .ThenByDescending(m => string.Equals(m.Anzeigename, "Andreas Betke", StringComparison.OrdinalIgnoreCase))
 
                 // -------------------------------------------------
                 // 2. Danach alle Leitungen
