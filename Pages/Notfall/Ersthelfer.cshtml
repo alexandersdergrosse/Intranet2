@@ -13,17 +13,6 @@
         </h1>
     </div>
 
-    <!-- HINWEIS -->
-    <div class="alert alert-info mb-4">
-        <strong>Im Notfall:</strong>
-        Wendet euch an einen der unten aufgeführten Ersthelfer.
-        Bei schweren oder lebensbedrohlichen Notfällen ist
-        zusätzlich der Rettungsdienst unter
-        <strong>112</strong>
-        zu verständigen.
-    </div>
-
-
     <!-- ERSTHELFER NACH BEREICH -->
     @foreach (var gruppe in Model.Ersthelfer.GroupBy(e => e.Bereich))
     {
