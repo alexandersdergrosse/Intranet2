@@ -19,12 +19,12 @@ namespace Intranet2.Pages.Ansprechpartner
         public string Niederlassung { get; set; } = string.Empty;
         public string HervorgehobenerBenutzername { get; set; } = string.Empty;
         public List<Mitarbeiter> Mitarbeiter { get; set; } = new();
-
         public Dictionary<string, string?> Fotos { get; set; } = new();
 
         public IActionResult OnGet(string niederlassung, string? person = null)
         {
-            if (string.IsNullOrWhiteSpace(niederlassung)) return RedirectToPage("/Ansprechpartner/Ansprechpartner");
+            if (string.IsNullOrWhiteSpace(niederlassung))
+                return RedirectToPage("/Ansprechpartner/Ansprechpartner");
 
             Niederlassung = niederlassung;
             Mitarbeiter = _mitarbeiterService.GetMitarbeiterFuerNiederlassung(niederlassung);
@@ -33,16 +33,18 @@ namespace Intranet2.Pages.Ansprechpartner
             if (!string.IsNullOrWhiteSpace(person))
             {
                 HervorgehobenerBenutzername = person.Trim();
-
-                Mitarbeiter = Mitarbeiter
-                    .OrderByDescending(m => string.Equals(m.SamAccountName, HervorgehobenerBenutzername, StringComparison.OrdinalIgnoreCase))
-                    .ToList();
+                Mitarbeiter = Mitarbeiter.OrderByDescending(m => string.Equals(m.SamAccountName, HervorgehobenerBenutzername, StringComparison.OrdinalIgnoreCase)).ToList();
             }
 
-            foreach (var m in Mitarbeiter)
-            {
-                Fotos[m.SamAccountName] = _fotoService.GetFotoUrl(m.BereinigterNachname, m.BereinigterVorname);
-            }
+            //Alle Fotos PARALLEL laden statt nacheinander
+            var fotoErgebnisse = Mitarbeiter.AsParallel()
+                .Select(m => new
+                {
+                    Key = m.SamAccountName,
+                    Url = _fotoService.GetFotoUrl(m.BereinigterNachname, m.BereinigterVorname)
+                }).ToList();
+
+            Fotos = fotoErgebnisse.ToDictionary(x => x.Key, x => x.Url);
 
             return Page();
         }

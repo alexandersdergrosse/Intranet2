@@ -1,4 +1,4 @@
-using Intranet2.Datenbank.Data;
+ï»¿using Intranet2.Datenbank.Data;
 using Intranet2.Services.ActiveDirectory;
 using Intranet2.Services;
 using Intranet2.Services.Jobs;
@@ -8,12 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.WebHost.UseUrls("http://localhost:5005", "https://localhost:5006");
-
 // Razor Pages
 builder.Services.AddRazorPages();
 
-// Cache für automatisch geladene Website-Inhalte
+// Cache fÃ¼r automatisch geladene Website-Inhalte
 builder.Services.AddMemoryCache();
 
 // Active Directory Mitarbeiter
@@ -21,7 +19,7 @@ builder.Services.AddSingleton<MitarbeiterService>();
 
 builder.Services.AddHostedService<MitarbeiterCacheWarmup>();
 
-// Kreutzträger-Webseite automatisch auslesen
+// KreutztrÃ¤ger-Webseite automatisch auslesen
 builder.Services.AddHttpClient<StellenService>(client =>
 {
     client.BaseAddress = new Uri("https://kreutztraeger-kaeltetechnik.de/");
@@ -40,21 +38,27 @@ builder.Services.AddDbContext<DataContext>(options =>
 });
 
 // WINDOWS-AUTHENTIFIZIERUNG
-builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme).AddNegotiate();
+builder.Services.AddAuthentication(NegotiateDefaults.AuthenticationScheme)
+    .AddNegotiate(options =>
+    {
+        // Kerberos deaktivieren â†’ immer NTLM verwenden
+        // Das lÃ¶st das Problem mit dem Hostnamen ohne SPN
+        options.PersistKerberosCredentials = false;
+    });
 
 // AUTORISIERUNG/BERECHTIGUNGEN
 builder.Services.AddAuthorization(options =>
 {
-    // Standardmäßig muss jeder Benutzer angemeldet sein.
+    // StandardmÃ¤ÃŸig muss jeder Benutzer angemeldet sein.
     options.FallbackPolicy = options.DefaultPolicy;
 
-    // Nur Administratoren dürfen den Admin-Bereich öffnen.
+    // Nur Administratoren dÃ¼rfen den Admin-Bereich Ã¶ffnen.
     options.AddPolicy(Berechtigungen.AdminBereich, policy =>
         {
             policy.RequireRole(Rollen.Admin);
         });
 
-    // Nur Administratoren dürfen News verwalten.
+    // Nur Administratoren dÃ¼rfen News verwalten.
     options.AddPolicy(Berechtigungen.NewsVerwalten, policy =>
         {
             policy.RequireRole(Rollen.Admin, Rollen.Redaktion);
@@ -67,7 +71,7 @@ builder.Services.AddAuthorization(options =>
             Rollen.Redaktion);
     });
 
-    // Nur Administratoren dürfen Benutzer verwalten.
+    // Nur Administratoren dÃ¼rfen Benutzer verwalten.
     options.AddPolicy(Berechtigungen.BenutzerVerwalten, policy =>
         {
             policy.RequireRole(Rollen.Admin);
@@ -122,7 +126,7 @@ app.UseAuthentication();
 
 app.UseMiddleware<BenutzerMiddleware>();
 
-// BERECHTIGUNGEN PRÜFEN
+// BERECHTIGUNGEN PRÃœFEN
 
 app.UseAuthorization();
 
