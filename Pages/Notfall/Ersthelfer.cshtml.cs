@@ -37,7 +37,9 @@ namespace Intranet2.Pages.Notfall
             "freese",
             "lieske",
             "risthaus",
-            "erlhoff"
+            "erlhoff",
+            "kautz",
+            "mindt"
         };
 
         public void OnGet()

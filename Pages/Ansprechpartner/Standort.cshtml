@@ -1,6 +1,5 @@
 ﻿@page
 @model Intranet2.Pages.Ansprechpartner.StandortModel
-
 @{
     ViewData["Title"] = "Ansprechpartner " + Model.Niederlassung;
 }
@@ -9,34 +8,28 @@
 
     <!-- Zurück -->
     <div class="mb-4">
-
         <a asp-page="/Ansprechpartner/Ansprechpartner" class="text-decoration-none">
             ← Zurück zu Ansprechpartner
         </a>
-
     </div>
-
 
     <!-- Überschrift -->
     <div class="mb-4">
-
         <h1 class="fw-bold">
-            @(string.Equals(Model.Niederlassung, "Bremen", StringComparison.OrdinalIgnoreCase) ? "Stammhaus Bremen" : $"Niederlassung {Model.Niederlassung}")
+            @(string.Equals(Model.Niederlassung, "Bremen", StringComparison.OrdinalIgnoreCase)
+                        ? "Stammhaus Bremen"
+                        : $"Niederlassung {Model.Niederlassung}")
         </h1>
-
         <p class="text-muted">
-            Mitarbeiter @(string.Equals(Model.Niederlassung, "Bremen", StringComparison.OrdinalIgnoreCase) ? "Stammhaus Bremen" : $"Niederlassung {Model.Niederlassung}")
+            @Model.Mitarbeiter.Count Mitarbeiter
         </p>
-
     </div>
-
 
     @if (Model.Mitarbeiter.Count == 0)
     {
         <div class="alert alert-warning">
-
-            Es wurden keine Mitarbeiter für <strong>@Model.Niederlassung</strong> im Active Directory gefunden.
-
+            Es wurden keine Mitarbeiter für
+            <strong>@Model.Niederlassung</strong> gefunden.
         </div>
     }
     else
@@ -44,35 +37,48 @@
         <div class="row g-4">
             @foreach (var mitarbeiter in Model.Mitarbeiter)
             {
-                bool istGesuchtePerson = !string.IsNullOrWhiteSpace(Model.HervorgehobenerBenutzername) && string.Equals(mitarbeiter.SamAccountName, Model.HervorgehobenerBenutzername, StringComparison.OrdinalIgnoreCase);
+                bool istGesuchtePerson =
+                !string.IsNullOrWhiteSpace(Model.HervorgehobenerBenutzername) &&
+                string.Equals(
+                mitarbeiter.SamAccountName,
+                Model.HervorgehobenerBenutzername,
+                StringComparison.OrdinalIgnoreCase);
 
-                <div class="col-xl-4 col-lg-6 col-md-6 @(istGesuchtePerson ? "ansprechpartner-gesucht" : "")" id="@(istGesuchtePerson ? "gesuchte-person" : null)">
+                string? fotoUrl = Model.Fotos.GetValueOrDefault(mitarbeiter.SamAccountName);
+
+                <div class="col-xl-4 col-lg-6 col-md-6 @(istGesuchtePerson ? "ansprechpartner-gesucht" : "")"
+                     id="@(istGesuchtePerson ? "gesuchte-person" : null)">
                     <div class="card h-100 shadow-sm">
                         <div class="card-body">
+
                             <!-- Foto -->
-                            @{
-                                string? fotoUrl = Model.Fotos.GetValueOrDefault(mitarbeiter.SamAccountName);
-                            }
                             <div class="text-center mb-3">
                                 @if (!string.IsNullOrWhiteSpace(fotoUrl))
                                 {
-                                    <img src="@fotoUrl" alt="@mitarbeiter.Anzeigename" class="rounded-circle" style="width: 90px; height: 90px; object-fit: cover; object-position: top;" />
+                                    <!-- loading="lazy" – Browser lädt nur sichtbare Fotos -->
+                                    <img src="@fotoUrl"
+                                         alt="@mitarbeiter.Anzeigename"
+                                         class="rounded-circle"
+                                         loading="lazy"
+                                         width="90"
+                                         height="90"
+                                         style="width:90px;height:90px;object-fit:cover;object-position:top;" />
                                 }
                                 else
                                 {
-                                    <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto" style="width: 90px; height: 90px;">
+                                    <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto"
+                                         style="width:90px;height:90px;">
                                         <span class="text-white fw-bold fs-4">
-                                            @(mitarbeiter.FirstName?.Length > 0 ? mitarbeiter.FirstName[0].ToString().ToUpper() : "?")
-                                        </span>
-                                    </div>
-                                }
+                                            @(mitarbeiter.FirstName?.Length > 0
+                                                                            ? mitarbeiter.FirstName[0].ToString().ToUpper()
+                                                                            : "?")
+                            </span>
+                        </div>
+                                                }
                             </div>
 
                             <!-- Name -->
-                            <h2 class="h5 fw-bold mb-1 text-center">
-                                @mitarbeiter.Anzeigename
-                            </h2>
-
+                            <h2 class="h5 fw-bold mb-1 text-center">@mitarbeiter.Anzeigename</h2>
 
                             <!-- Position -->
                             @if (!string.IsNullOrWhiteSpace(mitarbeiter.Title))
@@ -82,13 +88,10 @@
                                 </div>
                             }
 
-
                             <!-- Abteilung -->
                             @if (!string.IsNullOrWhiteSpace(mitarbeiter.Department))
                             {
-                                <div class="text-muted mb-3 text-center">
-                                    @mitarbeiter.Department
-                                </div>
+                                <div class="text-muted mb-3 text-center">@mitarbeiter.Department</div>
                             }
 
                             <hr />
@@ -97,100 +100,61 @@
                             @if (!string.IsNullOrWhiteSpace(mitarbeiter.TelephoneNumber))
                             {
                                 <div class="mb-2">
-
-                                    <strong>Telefon:</strong>
-
-                                    <br />
-
+                                    <strong>Telefon:</strong><br />
                                     <a href="tel:@mitarbeiter.TelephoneNumber" class="text-decoration-none">
                                         @mitarbeiter.TelephoneNumber
                                     </a>
                                 </div>
                             }
 
-
                             <!-- Mobil -->
                             @if (!string.IsNullOrWhiteSpace(mitarbeiter.Mobile))
                             {
                                 <div class="mb-2">
-
-                                    <strong>Mobil:</strong>
-
-                                    <br />
-
+                                    <strong>Mobil:</strong><br />
                                     <a href="tel:@mitarbeiter.Mobile" class="text-decoration-none">
                                         @mitarbeiter.Mobile
                                     </a>
-
                                 </div>
                             }
-
 
                             <!-- E-Mail -->
                             @if (!string.IsNullOrWhiteSpace(mitarbeiter.Email))
                             {
                                 <div class="mb-2">
-
-                                    <strong>E-Mail:</strong>
-
-                                    <br />
-
+                                    <strong>E-Mail:</strong><br />
                                     <a href="mailto:@mitarbeiter.Email" class="text-decoration-none">
                                         @mitarbeiter.Email
                                     </a>
-
                                 </div>
                             }
-
 
                             <!-- Adresse -->
                             @if (!string.IsNullOrWhiteSpace(mitarbeiter.StreetAddress))
                             {
                                 <div class="mt-3">
-                                    <strong>Standort:</strong>
-
-                                    <br />
-
+                                    <strong>Standort:</strong><br />
                                     <span class="text-muted">
-                                        @mitarbeiter.StreetAddress
-                                        <br />
-                                        @mitarbeiter.PostalCode
-                                        @mitarbeiter.City
+                                        @mitarbeiter.StreetAddress<br />
+                                        @mitarbeiter.PostalCode @mitarbeiter.City
                                     </span>
-
                                 </div>
                             }
 
                         </div>
-
                     </div>
-
                 </div>
             }
-
         </div>
     }
-
 </div>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-
-        const gesuchtePerson =
-            document.getElementById("gesuchte-person");
-
-        if (!gesuchtePerson) {
-            return;
-        }
-
+        const gesuchtePerson = document.getElementById("gesuchte-person");
+        if (!gesuchtePerson) return;
         setTimeout(function () {
-
-            gesuchtePerson.scrollIntoView({
-                behavior: "smooth",
-                block: "center"
-            });
-
+            gesuchtePerson.scrollIntoView({ behavior: "smooth", block: "center" });
         }, 150);
-
     });
 </script>
